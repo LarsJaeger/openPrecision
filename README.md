@@ -1,1 +1,1 @@
-# open-precision
+# openPrecision
