@@ -2,10 +2,20 @@ from dataclasses import dataclass
 
 import numpy as np
 
-import core
+
+@dataclass
+class Location:
+    lon: float
+    lat: float
+    height: float
+
+
+@dataclass
+class Orientation:
+    ypr: np.array
 
 
 @dataclass
 class Position:
-    location: core.location.Location
-    orientation:
+    location: Location
+    orientation: Orientation
