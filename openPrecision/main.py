@@ -1,0 +1,65 @@
+from __future__ import print_function
+
+import sys
+import time
+
+import qwiic_icm20948
+import yaml
+from yaml import SafeLoader
+
+from sensor_io import imu
+
+
+class Main:
+    imu = None
+    lcd = None
+    position = None
+    keyboard = None
+    with open('config.yml') as f:
+        config = yaml.load(f, Loader=SafeLoader)
+    print(config)
+
+    def init_hardware(self):
+        # init LCD
+        # self.lcd = lcd.LCD()
+
+        # init IMU
+        self.imu = imu.IMU(self.config)
+
+        # init KeyBoard
+        # self.keyboard = FoilKeyboard([["1", "2", "3", "A"],
+        #                              ["4", "5", "6", "B"],
+        #                              ["7", "8", "9", "C"],
+        #                              ["*", "0", "#", "D"]], [[21, 20, 16, 26], [19, 13, 6, 5]])
+
+    def run(self):
+        try:
+            while True:
+                print(self.imu.scaled_magnetometer)
+                time.sleep(0.2)
+        except KeyboardInterrupt:
+            # here you put any code you want to run before the program
+            # exits when you press CTRL+C
+            pass  # print value of counter
+        except:
+            # this catches ALL other exceptions including errors.
+            # You won't get any error messages for debugging
+            # so only use it once your code is working
+            pass
+        finally:
+            self.keyboard.disable()
+
+    def __init__(self):
+        self.init_hardware()
+        self.run()
+
+    def close(self):
+        self.keyboard.close()
+
+
+if __name__ == '__main__':
+    try:
+        Main()
+    except (KeyboardInterrupt, SystemExit) as exErr:
+        print("\nEnding Example 1")
+        sys.exit(0)
