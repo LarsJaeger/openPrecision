@@ -25,7 +25,7 @@ def get_rotation_matrix_ypr(y, p, r):
     return ry * rp * rr
 
 
-def get_rotation_matrix_ypr(rotation_array):
+def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.ndarray:
     """
     Rotationsmatrix für y=yaw, p=pitch, r=roll in degrees
     """
@@ -41,3 +41,11 @@ def get_rotation_matrix_ypr(rotation_array):
     return np.dot(np.dot(ry, rp), rr)
 
 
+def declination_from_vector(vector: np.array) -> float:
+    # vector[0] -> forward; vector[1] -> left; vector[2] -> up
+    return np.arctan(np.divide(vector[1], vector[0]))
+
+
+def inclination_from_vector(vector: np.array) -> float:
+    # vector[0] -> forward; vector[1] -> left; vector[2] -> up
+    return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))

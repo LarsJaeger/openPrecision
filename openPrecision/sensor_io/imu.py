@@ -3,7 +3,7 @@ import qwiic_icm20948
 
 import yaml
 
-import utils
+from openPrecision import utils
 
 shortest_update_dt = 10 # in ms
 
