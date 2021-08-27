@@ -1,11 +1,11 @@
 import yaml
 
 from openPrecision import utils
-from openPrecision.sensor_io import GPS, IMU
+from openPrecision.sensor_adapters import GPS, IMU
 from openPrecision.wrappers.wmmToolWrapper import WmmToolWrapper
 
 
-class AbsoluteImu:
+class AbsolutePositioningSensor:
     def __init__(self, wmm_tool_wrapper: WmmToolWrapper, gps: GPS, imu: IMU):
         self.wmm_tool_wrapper = wmm_tool_wrapper
         self.gps = gps

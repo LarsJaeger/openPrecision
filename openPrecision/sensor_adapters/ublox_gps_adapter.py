@@ -3,18 +3,19 @@ import serial
 import yaml
 
 import externalTools.ublox_gps_fixed as ublox_gps
+import openPrecision.core.sensors
 from openPrecision import utils
 
 shortest_update_dt = 100  # in ms
 
 
-class GPS(ublox_gps.UbloxGps):
+class UbloxGPSAdapter(openPrecision.core.sensors.GlobalPositioningSystem):
     def __init__(self, config: yaml):
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
-        super().__init__(self._port)
+        self.gps = ublox_gps.UbloxGps(self._port)
         self.config = config
         self._last_update = None
-        self._message = self.hp_geo_coords()
+        self._message = self.gps.hp_geo_coords()
         # reset correction
         self._correction_is_active = None
         self.stop_rtk_correction()
@@ -25,7 +26,7 @@ class GPS(ublox_gps.UbloxGps):
 
     def update_values(self):
         if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
-            self._message = self.hp_geo_coords()
+            self._message = self.gps.hp_geo_coords()
             self._last_update = utils.millis()
 
     @property

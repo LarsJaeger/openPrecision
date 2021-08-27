@@ -7,7 +7,7 @@ import qwiic_icm20948
 import yaml
 from yaml import SafeLoader
 
-from sensor_io import imu
+from sensor_adapters import sparkfun_icm20948_imu_adapter
 
 
 class Main:
@@ -24,7 +24,7 @@ class Main:
         # self.lcd = lcd.LCD()
 
         # init IMU
-        self.imu = imu.IMU(self.config)
+        self.imu = sparkfun_icm20948_imu_adapter.IMU(self.config)
 
         # init KeyBoard
         # self.keyboard = FoilKeyboard([["1", "2", "3", "A"],
