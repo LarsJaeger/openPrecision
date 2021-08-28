@@ -3,10 +3,11 @@ import adafruit_bno055
 import busio
 import numpy as np
 import yaml
+from pyquaternion import Quaternion
 import open_precision.core.sensors
 
 
-class BNO055AOSAdapter(open_precision.core.sensors.absolute_orientation_sensor):
+class Bno055AosAdapter(open_precision.core.sensors.absolute_orientation_sensor):
     def __init__(self, config: yaml):
         i2c = busio.I2C(board.SCL, board.SDA)
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
@@ -27,8 +28,8 @@ class BNO055AOSAdapter(open_precision.core.sensors.absolute_orientation_sensor):
         return np.array(self.sensor.magnetic)
 
     @property
-    def orientation(self) -> np.ndarray:
-        """returns an orientation vector"""
+    def orientation(self) -> Quaternion:
+        """returns an orientation quaternion"""
         return np.array(self.sensor.euler)
 
     @property
@@ -38,12 +39,10 @@ class BNO055AOSAdapter(open_precision.core.sensors.absolute_orientation_sensor):
 
     @property
     def is_calibrated(self) -> bool:
-        # TODO
-        pass
+        return self.sensor.calibrated
 
     def calibrate(self) -> bool:
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
          return True if calibration succeeded"""
         # TODO
-        self.sensor.ca
         pass
