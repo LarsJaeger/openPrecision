@@ -3,3 +3,5 @@ numpy~=1.21.2
 PyYAML~=5.4.1
 pyserial~=3.5
 board~=1.0
+spidev~=3.5
+pyquaternion~=0.9.9
