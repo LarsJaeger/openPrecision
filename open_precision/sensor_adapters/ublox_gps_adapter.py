@@ -3,13 +3,13 @@ import serial
 import yaml
 
 import externalTools.ublox_gps_fixed as ublox_gps
-import openPrecision.core.sensors
-from openPrecision import utils
+import open_precision.core.sensors
+from open_precision import utils
 
 shortest_update_dt = 100  # in ms
 
 
-class UbloxGPSAdapter(openPrecision.core.sensors.GlobalPositioningSystem):
+class UbloxGPSAdapter(open_precision.core.sensors.GlobalPositioningSystem):
     def __init__(self, config: yaml):
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
         self.gps = ublox_gps.UbloxGps(self._port)

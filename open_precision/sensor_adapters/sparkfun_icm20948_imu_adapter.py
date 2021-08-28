@@ -1,13 +1,13 @@
 import numpy as np
-import openPrecision.core.sensors
+import open_precision.core.sensors
 import qwiic_icm20948
 import yaml
-from openPrecision import utils
+from open_precision import utils
 
 shortest_update_dt = 10 # in ms
 
 
-class IMU(openPrecision.core.sensors.InertialMeasurementUnit):
+class IMU(open_precision.core.sensors.InertialMeasurementUnit):
 
     def __init__(self, config: yaml):
         self.config = config

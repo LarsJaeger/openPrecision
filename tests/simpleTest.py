@@ -1,6 +1,6 @@
 import numpy as np
 
-from context import openPrecision
+from context import open_precision
 import unittest
 
 
@@ -9,7 +9,7 @@ import unittest
 class MyTestCase(unittest.TestCase):
     def test_something(self):
         print("test starts")
-        print(openPrecision.utils.get_rotation_matrix_ypr(np.array([5, 5, 5])))
+        print(open_precision.utils.get_rotation_matrix_ypr(np.array([5, 5, 5])))
         self.assertEqual(True, False, "test001")  # add assertion here
 
 
