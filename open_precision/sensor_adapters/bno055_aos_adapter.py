@@ -30,7 +30,7 @@ class Bno055AosAdapter(open_precision.core.sensors.absolute_orientation_sensor):
     @property
     def orientation(self) -> Quaternion:
         """returns an orientation quaternion"""
-        return Quaternion(self.sensor.euler)
+        return Quaternion(self.sensor.quaternion)
 
     @property
     def gravity(self) -> np.ndarray:

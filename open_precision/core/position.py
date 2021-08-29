@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-
-import numpy as np
+import pyquaternion
 
 
 @dataclass
@@ -12,7 +11,7 @@ class Location:
 
 @dataclass
 class Orientation:
-    ypr: np.array
+    orientation: pyquaternion
 
 
 @dataclass

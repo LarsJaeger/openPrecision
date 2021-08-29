@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 import numpy as np
 import yaml
+from pyquaternion import Quaternion
 
 from open_precision import utils
 from open_precision.wrappers.wmmToolWrapper import WmmToolWrapper
@@ -29,8 +30,8 @@ class AbsoluteOrientationSensor:
         pass
 
     @abstractmethod(property)
-    def orientation(self) -> np.ndarray:
-        """returns an orientation vector"""
+    def orientation(self) -> Quaternion:
+        """returns an orientation quaternion"""
         pass
 
     @abstractmethod(property)
