@@ -4,10 +4,10 @@ import busio
 import numpy as np
 import yaml
 from pyquaternion import Quaternion
-import open_precision.core.sensors
+from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
 
 
-class Bno055AosAdapter(open_precision.core.sensors.absolute_orientation_sensor):
+class Bno055AosAdapter(AbsoluteOrientationSensor):
     def __init__(self, config: yaml):
         i2c = busio.I2C(board.SCL, board.SDA)
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)

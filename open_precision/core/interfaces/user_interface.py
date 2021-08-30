@@ -1,7 +1,7 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 
-class OutputDevice:
+class InputDevice(ABC):
     @abstractmethod
     def __init__(self):
         pass
@@ -10,7 +10,8 @@ class OutputDevice:
     def __del__(self):
         pass
 
-    @abstractmethod(property)
+    @property
+    @abstractmethod
     def is_operational(self):
         pass
 

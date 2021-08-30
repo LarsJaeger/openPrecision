@@ -3,11 +3,10 @@ from __future__ import print_function
 import sys
 import time
 
-import qwiic_icm20948
 import yaml
 from yaml import SafeLoader
 
-from sensor_adapters import sparkfun_icm20948_imu_adapter
+from open_precision.plugins.sensor_adapters import sparkfun_icm20948_imu_adapter
 
 
 class Main:
