@@ -13,7 +13,7 @@ for (_, module_name, _) in iter_modules([str(package_dir)]):
     for attribute_name in dir(module):
         attribute = getattr(module, attribute_name)
 
-        if issubclass(attribute,):
+        if isclass(attribute):
             # Add the class to this package's variables
             #__all__ += attribute
             globals()[attribute_name] = attribute
