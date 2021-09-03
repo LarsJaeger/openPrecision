@@ -1,7 +1,7 @@
-import numpy as np
-
 from context import open_precision
 import unittest
+
+import open_precision.plugins.sensor_adapters
 
 
 # simple unit test for file structure
@@ -9,7 +9,8 @@ import unittest
 class MyTestCase(unittest.TestCase):
     def test_something(self):
         print("test starts")
-        print(open_precision.utils.get_rotation_matrix_ypr(np.array([5, 5, 5])))
+        print(open_precision.plugins.sensor_adapters.__all__)
+        #open_precision.utils.get_classes_of_module(open_precision.plugins.sensor_adapters)
         self.assertEqual(True, False, "test001")  # add assertion here
 
 

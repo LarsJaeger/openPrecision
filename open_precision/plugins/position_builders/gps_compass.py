@@ -1,11 +1,8 @@
-from abc import ABC
-
 import yaml
+from open_precision.core.interfaces.position_builder import PositionBuilder
 
-import open_precision.core.position_builder
 
-
-class GpsCompassPositionBuilder(open_precision.core.position_builder.PositionBuilder, ABC):
+class GpsCompassPositionBuilder(PositionBuilder):
 
     def __init__(self, config: yaml):
         """get available sensors"""

@@ -1,3 +1,4 @@
+import inspect
 import os
 import time as time_
 from datetime import datetime
@@ -49,3 +50,14 @@ def declination_from_vector(vector: np.array) -> float:
 def inclination_from_vector(vector: np.array) -> float:
     # vector[0] -> forward; vector[1] -> left; vector[2] -> up
     return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))
+
+
+def get_classes_of_module(module):
+    print("aa")
+    for name, obj in inspect.getmembers(module):
+        print("a")
+        print(name)
+        print(obj)
+        if inspect.isclass(obj):
+            print("b")
+            print(obj)

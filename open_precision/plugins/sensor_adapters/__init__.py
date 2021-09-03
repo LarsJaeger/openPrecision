@@ -1,8 +1,9 @@
-"""from inspect import isclass
+from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
 from importlib import import_module
 
+__all__ = []
 # iterate through the modules in the current package
 package_dir = Path(__file__).resolve().parent
 for (_, module_name, _) in iter_modules([str(package_dir)]):
@@ -14,6 +15,5 @@ for (_, module_name, _) in iter_modules([str(package_dir)]):
 
         if issubclass(attribute):
             # Add the class to this package's variables
-            globals()[attribute_name] = attribute
-
-            """
+            __all__ += attribute
+            #globals()[attribute_name] = attribute
