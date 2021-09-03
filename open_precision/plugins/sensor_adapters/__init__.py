@@ -17,3 +17,4 @@ for (_, module_name, _) in iter_modules([str(package_dir)]):
             # Add the class to this package's variables
             #__all__ += attribute
             globals()[attribute_name] = attribute
+    print(globals())
