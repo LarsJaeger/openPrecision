@@ -1,4 +1,4 @@
-from inspect import isclass
+"""from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
 from importlib import import_module
@@ -16,4 +16,13 @@ for (_, module_name, _) in iter_modules([str(package_dir)]):
         if isclass(attribute):
             # Add the class to this package's variables
             __all__.append(attribute)
-            # globals()[attribute_name] = attribute
+            # globals()[attribute_name] = attribute"""
+import inspect
+import open_precision
+
+__all__ = []
+
+
+for name, obj in inspect.getmembers(open_precision.plugins.sensor_adapters):
+    if inspect.isclass(obj):
+        __all__.append(obj)
