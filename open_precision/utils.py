@@ -52,12 +52,37 @@ def inclination_from_vector(vector: np.array) -> float:
     return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))
 
 
-def get_classes_of_module(module):
-    print("aa")
-    for name, obj in inspect.getmembers(module):
-        print("a")
-        print(name)
-        print(obj)
-        if inspect.isclass(obj):
-            print("b")
-            print(obj)
+def get_classes_in_package(package: str):
+    _get_classes_in_package(package, [])
+
+
+def _get_classes_in_package(package, classes):
+    """Recursively walk the supplied package to retrieve all plugins
+            """
+    imported_package = __import__(package, fromlist=['a'])
+
+    for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__,
+                                                           imported_package.__name__ + '.'):
+        if not is_package:
+            plugin_module = __import__(plugin_name, fromlist=['a'])
+            classes += inspect.getmembers(plugin_module, inspect.isclass)
+
+    # Now that we have looked at all the modules in the current package, start looking
+    # recursively for additional modules in sub packages
+    all_current_paths = []
+    if isinstance(imported_package.__path__, str):
+        all_current_paths.append(imported_package.__path__)
+    else:
+        all_current_paths.extend([x for x in imported_package.__path__])
+
+    seen_paths = []
+    for pkg_path in all_current_paths:
+        if pkg_path not in seen_paths:
+            seen_paths.append(pkg_path)
+
+            # Get all sub directory of the current package path directory
+            child_pkgs = [p for p in os.listdir(pkg_path) if os.path.isdir(os.path.join(pkg_path, p))]
+
+            # For each sub directory, apply the walk_package method recursively
+            for child_pkg in child_pkgs:
+                self.get_classes_in_package(package + '.' + child_pkg, classes)
