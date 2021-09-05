@@ -26,6 +26,6 @@ class SensorManager:
                     break
 
                 if issubclass(c, sensor_type) and (c is not sensor_type):
-                    print(f'    Found plugin class: {c.__module__}.{c.__name__} is subclass of {sensor_type}')
+                    #print(f'    Found plugin class: {c.__module__}.{c.__name__} is subclass of {sensor_type}')
                     self.plugins.append(c)
         print(f'blah {self.plugins}')
