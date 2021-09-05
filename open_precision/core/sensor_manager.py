@@ -23,7 +23,7 @@ class SensorManager:
         for (_, c) in plugin_classes:
             # Only add classes that are a sub class of plugin interfaces, but NOT an interface itself
             for (_, sensor_type) in sensor_types:
-                if not issubclass(sensor_type, ABC):
+                if sensor_type is ABC:
                     break
 
                 if issubclass(c, sensor_type) and (c is not sensor_type):
