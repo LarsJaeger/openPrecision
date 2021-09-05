@@ -21,7 +21,7 @@ class SensorManager:
         for (_, c) in utils.get_classes_in_package(self.plugin_dir):
             # Only add classes that are a sub class of plugin interfaces, but NOT an interface itself
             sensor_types = utils.get_classes_in_package('open_precision.core.interfaces.sensor_types')
-            for sensor_type in sensor_types:
-                if issubclass(c, sensor_type) & (c is not sensor_type):
+            for (_, sensor_type) in sensor_types:
+                if issubclass(c, sensor_types):
                     print(f'    Found plugin class: {c.__module__}.{c.__name__}')
                     self.plugins.append(c())
