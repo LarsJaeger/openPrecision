@@ -84,7 +84,7 @@ def _get_classes_in_package(package, classes):
 
             # For each sub directory, apply the walk_package method recursively
             for child_pkg in child_pkgs:
-                classes += _get_classes_in_package(package + '.' + child_pkg, classes)
+                _get_classes_in_package(package + '.' + child_pkg, classes)
     return classes
 
 def _is_not_abstract_and_class(obj):
