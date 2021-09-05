@@ -24,7 +24,7 @@ class SensorManager:
             # Only add classes that are a sub class of plugin interfaces, but NOT an interface itself
             for (_, sensor_type) in sensor_types:
                 if sensor_type is ABC:
-                    break
+                    continue
 
                 if issubclass(c, sensor_type) and (c is not sensor_type):
                     print(f'    Found plugin class: {c.__module__}.{c.__name__} is subclass of {sensor_type}')
