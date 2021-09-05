@@ -53,7 +53,7 @@ def inclination_from_vector(vector: np.array) -> float:
 
 
 def get_classes_in_package(package: str):
-    _get_classes_in_package(package, [])
+    return _get_classes_in_package(package, [])
 
 
 def _get_classes_in_package(package, classes):
@@ -86,3 +86,4 @@ def _get_classes_in_package(package, classes):
             # For each sub directory, apply the walk_package method recursively
             for child_pkg in child_pkgs:
                 _get_classes_in_package(package + '.' + child_pkg, classes)
+    return classes
