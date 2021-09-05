@@ -57,8 +57,7 @@ def get_classes_in_package(package: str):
 
 
 def _get_classes_in_package(package, classes):
-    """Recursively walk the supplied package to retrieve all plugins
-            """
+    """Recursively walk the supplied package to retrieve all plugins"""
     imported_package = __import__(package, fromlist=['a'])
 
     for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__,

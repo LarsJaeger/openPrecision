@@ -13,7 +13,6 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         print("test starts")
         sensor_manager = SensorManager()
-        sensor_manager.load_plugins()
         # open_precision.utils.get_classes_of_module(open_precision.plugins.sensor_adapters)
         self.assertEqual(True, False, "test001")  # add assertion here
 
