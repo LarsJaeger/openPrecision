@@ -5,11 +5,11 @@ from open_precision import utils
 
 
 class SensorManager:
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """Constructor that initiates the reading of all available plugins
         when an instance of the PluginCollection object is created
         """
-        self.plugin_dir = plugin_dir
+        self.plugin_dir = 'open_precision.plugins.sensor_adapters'
         self.plugins = []
         self.load_plugins()
 
