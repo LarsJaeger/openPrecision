@@ -5,7 +5,7 @@ from pyquaternion import Quaternion
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
-class AbsoluteOrientationSensor(ABC, BasicSensor):
+class AbsoluteOrientationSensor(BasicSensor, ABC):
     @property
     @abstractmethod
     def orientation(self) -> Quaternion:

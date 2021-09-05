@@ -3,7 +3,7 @@ import numpy as np
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
-class InertialMeasurementUnit(ABC, BasicSensor):
+class InertialMeasurementUnit(BasicSensor, ABC):
     @property
     @abstractmethod
     def scaled_acceleration(self) -> np.ndarray:

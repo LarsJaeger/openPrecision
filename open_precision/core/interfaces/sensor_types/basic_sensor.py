@@ -1,9 +1,9 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 import yaml
 
 
-class BasicSensor:
+class BasicSensor(ABC):
     @abstractmethod
     def __init__(self, config: yaml):
         pass

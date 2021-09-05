@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
-class GlobalPositioningSystem(ABC, BasicSensor):
+class GlobalPositioningSystem(BasicSensor, ABC):
     @property
     @abstractmethod
     def longitude(self) -> float:
