@@ -64,7 +64,10 @@ def _get_classes_in_package(package, classes):
                                                            imported_package.__name__ + '.'):
         if not is_package:
             plugin_module = __import__(plugin_name, fromlist=['a'])
-            classes += inspect.getmembers(plugin_module, _is_not_abstract_and_class)
+            found_classes = inspect.getmembers(plugin_module, inspect.isclass)
+            for name, cls in found_classes:
+                if str(cls.__module__) == plugin_name:
+                    classes += (name, cls)
 
     # Now that we have looked at all the modules in the current package, start looking
     # recursively for additional modules in sub packages
@@ -86,6 +89,3 @@ def _get_classes_in_package(package, classes):
             for child_pkg in child_pkgs:
                 _get_classes_in_package(package + '.' + child_pkg, classes)
     return classes
-
-def _is_not_abstract_and_class(obj):
-    return inspect.isclass(obj) and not inspect.isabstract(obj)

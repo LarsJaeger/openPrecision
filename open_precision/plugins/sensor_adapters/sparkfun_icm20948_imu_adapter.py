@@ -15,8 +15,9 @@ class IMU(InertialMeasurementUnit):
 
     @property
     def is_available(self):
-        # todo
-        pass
+        """returns wether sensor is connected and can be accessed"""
+        # TODO
+        return True
 
     def __init__(self, config: yaml):
         self.config = config

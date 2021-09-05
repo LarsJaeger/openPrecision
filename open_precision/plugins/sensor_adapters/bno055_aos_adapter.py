@@ -16,6 +16,22 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         pass
 
     @property
+    def is_calibrated(self) -> bool:
+        return self.sensor.calibrated
+
+    def calibrate(self) -> bool:
+        """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
+         return True if calibration succeeded"""
+        # TODO
+        pass
+
+    @property
+    def is_available(self):
+        """returns wether sensor is connected and can be accessed"""
+        # TODO
+        return True
+
+    @property
     def scaled_acceleration(self) -> np.ndarray:
         return np.array(self.sensor.acceleration)
 
@@ -37,12 +53,5 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         """returns an gravity vector"""
         return np.array(self.sensor.gravity)
 
-    @property
-    def is_calibrated(self) -> bool:
-        return self.sensor.calibrated
 
-    def calibrate(self) -> bool:
-        """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
-         return True if calibration succeeded"""
-        # TODO
-        pass
+

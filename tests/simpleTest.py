@@ -3,8 +3,6 @@ import importlib
 from context import open_precision
 import unittest
 
-
-
 # simple unit test for file structure
 from open_precision.core.sensor_manager import SensorManager
 
