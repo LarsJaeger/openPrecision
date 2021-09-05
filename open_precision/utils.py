@@ -1,7 +1,7 @@
 import inspect
 import os
+import pkgutil
 import time as time_
-from datetime import datetime
 
 import numpy as np
 
@@ -85,4 +85,4 @@ def _get_classes_in_package(package, classes):
 
             # For each sub directory, apply the walk_package method recursively
             for child_pkg in child_pkgs:
-                self.get_classes_in_package(package + '.' + child_pkg, classes)
+                _get_classes_in_package(package + '.' + child_pkg, classes)
