@@ -88,4 +88,4 @@ def _get_classes_in_package(package, classes):
     return classes
 
 def _is_not_abstract_and_class(obj):
-    return inspect.isclass(obj) and not inspect.isabstract()
+    return inspect.isclass(obj) and not inspect.isabstract(obj)
