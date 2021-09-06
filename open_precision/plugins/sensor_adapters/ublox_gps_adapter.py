@@ -19,6 +19,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # todo
         pass
 
+    @property
     def is_available(self):
         """returns wether sensor is connected and can be accessed"""
         # TODO

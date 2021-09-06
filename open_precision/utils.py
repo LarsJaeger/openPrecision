@@ -52,12 +52,13 @@ def inclination_from_vector(vector: np.array) -> float:
     return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))
 
 
-def get_classes_in_package(package: str):
+def get_classes_in_package(package: str) -> list:
+    """returns a dict with classes as key and class names as value"""
     return _get_classes_in_package(package, [])
 
 
-def _get_classes_in_package(package, classes):
-    """Recursively walk the supplied package to retrieve all plugins"""
+def _get_classes_in_package(package, classes: list) -> list:
+    """recursively walk the supplied package to retrieve all classes"""
     imported_package = __import__(package, fromlist=['a'])
 
     for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__,
@@ -67,7 +68,7 @@ def _get_classes_in_package(package, classes):
             found_classes = inspect.getmembers(plugin_module, inspect.isclass)
             for name, cls in found_classes:
                 if str(cls.__module__) == plugin_name:
-                    classes += (name, cls)
+                    classes.append((name, cls))
 
     # Now that we have looked at all the modules in the current package, start looking
     # recursively for additional modules in sub packages
