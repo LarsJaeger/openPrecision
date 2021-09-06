@@ -12,7 +12,7 @@ class InputDevice(ABC):
 
     @property
     @abstractmethod
-    def is_operational(self):
+    def is_available(self):
         pass
 
     # TODO
