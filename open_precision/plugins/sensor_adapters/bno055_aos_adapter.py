@@ -1,6 +1,6 @@
-import board
 import adafruit_bno055
 import busio
+import board
 import numpy as np
 import yaml
 from pyquaternion import Quaternion
@@ -9,8 +9,10 @@ from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor imp
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
     def __init__(self, config: yaml):
+        print('[Bno055AosAdapter] starting initialisation')
         i2c = busio.I2C(board.SCL, board.SDA)
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
+        print('[Bno055AosAdapter] finished initialisation')
 
     def __del__(self):
         pass
@@ -52,6 +54,3 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
     def gravity(self) -> np.ndarray:
         """returns an gravity vector"""
         return np.array(self.sensor.gravity)
-
-
-

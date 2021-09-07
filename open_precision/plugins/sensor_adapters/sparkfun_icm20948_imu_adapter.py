@@ -7,19 +7,18 @@ from open_precision import utils
 shortest_update_dt = 10 # in ms
 
 
-class IMU(InertialMeasurementUnit):
+class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
     def __del__(self):
-        # todo
         pass
 
     @property
     def is_available(self):
         """returns wether sensor is connected and can be accessed"""
-        # TODO
-        return True
+        return self.imu.connected
 
     def __init__(self, config: yaml):
+        print('[SparkfunIcm20948Adapter] started initialisation')
         self.config = config
         self.imu = qwiic_icm20948.QwiicIcm20948()
         if not self.imu.connected:
@@ -36,6 +35,7 @@ class IMU(InertialMeasurementUnit):
         self._scaled_acceleration = self.retrieve_scaled_acceleration()
         self._scaled_angular_acceleration = self.retrieve_scaled_angular_acceleration()
         self._scaled_magnetometer = self.retrieve_scaled_magnetometer()
+        print('[SparkfunIcm20948Adapter] finished initialisation')
 
     @property
     def is_calibrated(self) -> bool:

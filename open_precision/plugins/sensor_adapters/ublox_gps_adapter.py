@@ -26,14 +26,16 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         return True
 
     def __init__(self, config: yaml):
+        print('[UbloxGPSAdapter] starting initialisation')
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
         self.gps = ublox_gps.UbloxGps(self._port)
         self.config = config
         self._last_update = None
-        self._message = self.gps.hp_geo_coords()
+        self._message: any = None
         # reset correction
         self._correction_is_active = None
-        self.stop_rtk_correction()
+        # self.stop_rtk_correction()
+        print('[UbloxGPSAdapter] finished initialisation')
 
     def __del__(self):
         self.stop_rtk_correction()
