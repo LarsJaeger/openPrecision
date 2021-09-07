@@ -68,7 +68,7 @@ def _get_classes_in_package(package, classes: list) -> list:
             found_classes = inspect.getmembers(plugin_module, inspect.isclass)
             for name, cls in found_classes:
                 if str(cls.__module__) == plugin_name:
-                    classes.append((name, cls))
+                    classes.append(cls)
 
     # Now that we have looked at all the modules in the current package, start looking
     # recursively for additional modules in sub packages
