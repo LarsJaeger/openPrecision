@@ -3,19 +3,12 @@ from open_precision.core.interfaces.sensor_types.inertial_measurement_unit impor
 import qwiic_icm20948
 import yaml
 from open_precision import utils
+from open_precision.core.exceptions import SensorNotConnectedError
 
-shortest_update_dt = 10 # in ms
+shortest_update_dt = 10  # in ms
 
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
-
-    def __del__(self):
-        pass
-
-    @property
-    def is_available(self):
-        """returns wether sensor is connected and can be accessed"""
-        return self.imu.connected
 
     def __init__(self, config: yaml):
         print('[SparkfunIcm20948Adapter] started initialisation')
@@ -23,7 +16,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         self.imu = qwiic_icm20948.QwiicIcm20948()
         if not self.imu.connected:
             print("The Qwiic ICM20948 device isn't connected to the system. Please check your connection")
-            raise SystemError("The Qwiic ICM20948 device isn't connected to the system. Please check your connection")
+            raise SensorNotConnectedError("Qwiic ICM20948")
 
         if self.config is None:
             self.calibrated_magnetometer_correction = np.array([0., 0., 0.])
@@ -36,6 +29,14 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         self._scaled_angular_acceleration = self.retrieve_scaled_angular_acceleration()
         self._scaled_magnetometer = self.retrieve_scaled_magnetometer()
         print('[SparkfunIcm20948Adapter] finished initialisation')
+
+    def __del__(self):
+        pass
+
+    @property
+    def is_available(self):
+        """returns wether sensor is connected and can be accessed"""
+        return self.imu.connected
 
     @property
     def is_calibrated(self) -> bool:

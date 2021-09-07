@@ -6,7 +6,7 @@ import time
 import yaml
 from yaml import SafeLoader
 
-from open_precision.plugins.sensor_adapters import sparkfun_icm20948_imu_adapter
+from open_precision.plugins.sensor_wrappers import sparkfun_icm20948_imu_adapter
 
 
 class Main:
