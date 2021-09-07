@@ -19,12 +19,6 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # todo
         pass
 
-    @property
-    def is_available(self):
-        """returns wether sensor is connected and can be accessed"""
-        # TODO
-        return True
-
     def __init__(self, config: yaml):
         print('[UbloxGPSAdapter] starting initialisation')
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)

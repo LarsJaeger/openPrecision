@@ -28,12 +28,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         pass
 
     @property
-    def is_available(self):
-        """returns wether sensor is connected and can be accessed"""
-        # TODO
-        return True
-
-    @property
     def scaled_acceleration(self) -> np.ndarray:
         return np.array(self.sensor.acceleration)
 

@@ -34,11 +34,6 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         pass
 
     @property
-    def is_available(self):
-        """returns wether sensor is connected and can be accessed"""
-        return self.imu.connected
-
-    @property
     def is_calibrated(self) -> bool:
         return self.config['magnetometer_bias'] is not None
 

@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 
 class WorldMagneticModelCalculater(ABC):
 
+    @abstractmethod
+    def __init__(self):
+        pass
+
     @property
     @abstractmethod
     def declination(self) -> float:
@@ -48,5 +52,5 @@ class WorldMagneticModelCalculater(ABC):
     @property
     @abstractmethod
     def quaternion(self) -> float:
-        """returns the north component in nT"""
+        """returns the quaternion describing the rotation from north to the magnetic vector"""
         pass

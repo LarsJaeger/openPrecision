@@ -22,9 +22,3 @@ class BasicSensor(ABC):
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
          return True if calibration succeeded """
         pass
-
-    @property
-    @abstractmethod
-    def is_available(self):
-        """returns wether sensor is connected and can be accessed"""
-        pass
