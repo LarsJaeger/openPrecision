@@ -16,6 +16,7 @@ def _group_plugins(plugin_types, plugins):
 
 def _initialise_plugins(plugin_types, plugins, config) -> dict:
     grouped_plugins = _group_plugins(plugin_types, plugins)
+    print("A: " + str(grouped_plugins))
     initialised_plugins = {}
     for plugin_type in grouped_plugins[0]:
         # initialises first initialisable class in plugin_adapter list of available_plugins

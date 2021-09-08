@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 import numpy as np
 from pyquaternion import Quaternion
 
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+from open_precision.core.interfaces.basic_sensor import BasicSensor
 
 
 class AbsoluteOrientationSensor(BasicSensor, ABC):

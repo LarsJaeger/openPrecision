@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+from open_precision.core.interfaces.basic_sensor import BasicSensor
 
 
 class GlobalPositioningSystem(BasicSensor, ABC):
