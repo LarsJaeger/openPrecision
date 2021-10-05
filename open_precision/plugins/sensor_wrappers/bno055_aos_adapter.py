@@ -12,6 +12,8 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         print('[Bno055AosAdapter] starting initialisation')
         i2c = busio.I2C(board.SCL, board.SDA)
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
+        self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
+        self.sensor.accel_range = adafruit_bno055.ACCEL_2G
         print('[Bno055AosAdapter] finished initialisation')
 
     def __del__(self):
@@ -24,7 +26,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
     def calibrate(self) -> bool:
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
          return True if calibration succeeded"""
-        # TODO
         pass
 
     @property

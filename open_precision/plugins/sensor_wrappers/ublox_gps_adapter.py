@@ -5,6 +5,7 @@ import yaml
 import externalTools.ublox_gps_fixed as ublox_gps
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
+from open_precision.core.model.position import Location
 
 shortest_update_dt = 100  # in ms
 
@@ -13,7 +14,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
     @property
     def is_calibrated(self) -> bool:
         # todo
-        pass
+        return True
 
     def calibrate(self) -> bool:
         # todo
@@ -69,6 +70,15 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self.update_values()
         # returns height above sea level in mm
         return self._message.hMSL + self._message.hMSLHp
+
+    @property
+    def location(self) -> Location:
+        location: Location = Location(lon=self.longitude,
+                                      lat=self.latitude,
+                                      height=self.height_above_sea_level,
+                                      horizontal_accuracy=self.vertical_accuracy,
+                                      vertical_accuracy=self.vertical_accuracy)
+        return location
 
     def start_rtk_correction(self):
         command = 'screen -dmS rtk_correction bash ' + self.config['rtk_correction_start_script_path']

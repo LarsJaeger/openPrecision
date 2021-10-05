@@ -4,9 +4,11 @@ import pyquaternion
 
 @dataclass
 class Location:
-    lon: float
-    lat: float
-    height: float
+    lon: float  # longitude in deg
+    lat: float  # latitude in deg
+    height: int  # returns height above sea level in mm
+    horizontal_accuracy: int  # horizontal accuracy in mm
+    vertical_accuracy: int  # vertical accuracy in mm
 
 
 @dataclass
@@ -16,6 +18,7 @@ class Orientation:
 
 @dataclass
 class Position:
-    """position of vehicle: location describes the location of the center of the rear axle; orientation is quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, z+ = up"""
+    """position of vehicle: location describes the location of the center of the rear axle; orientation is a
+    quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, z+ = up """
     location: Location
     orientation: Orientation

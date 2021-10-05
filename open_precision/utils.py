@@ -2,8 +2,10 @@ import inspect
 import os
 import pkgutil
 import time as time_
+from cmath import cos
 
 import numpy as np
+import numpy.linalg as la
 
 
 def millis():
@@ -90,3 +92,10 @@ def _get_classes_in_package(package, classes: list) -> list:
             for child_pkg in child_pkgs:
                 _get_classes_in_package(package + '.' + child_pkg, classes)
     return classes
+
+
+def angle_between_vectors(vector_a: np.ndarray, vector_b: np.ndarray):
+    """returns angle between vector_a and vector_b as radian"""
+    inner = np.inner(vector_a, vector_b)
+    norms = la.norm(vector_a) * la.norm(vector_b)
+    return np.arccos(np.divide(inner, norms))

@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from open_precision.core.interfaces.basic_sensor import BasicSensor
+from open_precision.core.model.position import Location
 
 
 class GlobalPositioningSystem(BasicSensor, ABC):
@@ -17,18 +18,24 @@ class GlobalPositioningSystem(BasicSensor, ABC):
 
     @property
     @abstractmethod
-    def horizontal_accuracy(self):
+    def horizontal_accuracy(self) -> int:
         """returns horizontal accuracy in mm"""
         pass
 
     @property
     @abstractmethod
-    def vertical_accuracy(self):
+    def vertical_accuracy(self) -> int:
         """returns vertical accuracy in mm"""
         pass
 
     @property
     @abstractmethod
-    def height_above_sea_level(self):
+    def height_above_sea_level(self) -> int:
         """returns height above sea level in mm"""
+        pass
+
+    @property
+    @abstractmethod
+    def location(self) -> Location:
+        """returns a Location object"""
         pass
