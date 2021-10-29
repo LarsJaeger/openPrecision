@@ -21,8 +21,18 @@ class GpsCompassPositionBuilder(PositionBuilder):
     def current_position(self) -> Position:
         uncorrected_location: Location = self.sensor_manager.plugin_instance_pool[self.gps_class].location
         gravity_vector: np.ndarray = self.sensor_manager.plugin_instance_pool[self.aos_class].gravity
-        corrected_magnetic_vector = .rotate(gravity_vector)
-        orientation: Quaternion = Quaternion()<
+        mag_real_vector: np.ndarray = self.sensor_manager.plugin_instance_pool[self.aos_class].scaled_magnetometer
+        mag_wmm_vector: np.ndarray = np.ndarray([1, 0, 0])  # TODO
+        gravity_model_vector = np.ndarray([0, 0, -1])
+        norm_source = np.cross((-1 * gravity_vector[1]), (-1 * mag_real_vector))
+        norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
+        source_to_target_angle = np.arccos(
+            np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target)))
+        quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
+        v1 = quat1 * (-1 * gravity_vector)
+        v1_to_gravity_model_angle = np.arccos(np.dot(v1 / (-1 * gravity_vector), gravity_model_vector))
+        quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
+        orientation: Quaternion = quat1 * quat2
         corrected_location: Location = Location(lon=uncorrected_location.lon - (math.sin(angle)))
         corrected_position: Position = None
         return corrected_position
