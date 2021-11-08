@@ -1,7 +1,4 @@
-import ruamel.yaml
 from ruamel.yaml import YAML
-
-import open_precision
 from open_precision import utils
 
 
