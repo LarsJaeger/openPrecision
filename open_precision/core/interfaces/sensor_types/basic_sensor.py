@@ -1,11 +1,9 @@
 from abc import abstractmethod, ABC
 
-import yaml
-
 
 class BasicSensor(ABC):
     @abstractmethod
-    def __init__(self, config: yaml):
+    def __init__(self, config):
         pass
 
     @abstractmethod

@@ -1,14 +1,11 @@
 from abc import abstractmethod, ABC
-
-import yaml
-
 from open_precision.core.model.position import Position
 from open_precision.core.plugin_manager import PluginManager
 
 
 class PositionBuilder(ABC):
     @abstractmethod
-    def __init__(self, sensor_manager: PluginManager, config: yaml):
+    def __init__(self, sensor_manager: PluginManager, config):
         self.sensor_manager = sensor_manager
 
     @property

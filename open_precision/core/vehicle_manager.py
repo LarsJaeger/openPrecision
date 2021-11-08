@@ -1,13 +1,11 @@
 from pickle import Unpickler, Pickler
 
-import yaml
-
 from open_precision.core.model.vehicle import Vehicle
 
 
 class VehicleManager:
 
-    def __init__(self, config: yaml):
+    def __init__(self, config):
         self.config = config
         self._current_vehicle = None
         self._vehicles = []

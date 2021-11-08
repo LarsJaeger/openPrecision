@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
-class WorldMagneticModelCalculater(ABC):
+
+class WorldMagneticModelCalculater(BasicSensor, ABC):
 
     @abstractmethod
     def __init__(self):

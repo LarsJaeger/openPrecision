@@ -1,7 +1,6 @@
 import numpy as np
 from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
 import qwiic_icm20948
-import yaml
 from open_precision import utils
 from open_precision.core.exceptions import SensorNotConnectedError
 
@@ -10,7 +9,7 @@ shortest_update_dt = 10  # in ms
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
-    def __init__(self, config: yaml):
+    def __init__(self, config):
         print('[SparkfunIcm20948Adapter] started initialisation')
         self.config = config
         self.imu = qwiic_icm20948.QwiicIcm20948()

@@ -3,8 +3,7 @@ from __future__ import print_function
 import sys
 import time
 
-import yaml
-from yaml import SafeLoader
+import ruamel.yaml
 
 from open_precision.plugins.sensor_wrappers import sparkfun_icm20948_imu_adapter
 
@@ -14,22 +13,20 @@ class Main:
     lcd = None
     position = None
     keyboard = None
-    with open('config.yml') as f:
-        config = yaml.load(f, Loader=SafeLoader)
-    print(config)
 
     def init_hardware(self):
         # init LCD
         # self.lcd = lcd.LCD()
 
         # init IMU
-        self.imu = sparkfun_icm20948_imu_adapter.IMU(self.config)
+        # self.imu = sparkfun_icm20948_imu_adapter.IMU(self.config)
 
         # init KeyBoard
         # self.keyboard = FoilKeyboard([["1", "2", "3", "A"],
         #                              ["4", "5", "6", "B"],
         #                              ["7", "8", "9", "C"],
         #                              ["*", "0", "#", "D"]], [[21, 20, 16, 26], [19, 13, 6, 5]])
+        pass
 
     def run(self):
         try:
