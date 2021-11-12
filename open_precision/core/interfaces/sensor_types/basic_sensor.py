@@ -1,13 +1,15 @@
+import atexit
 from abc import abstractmethod, ABC
 
 
 class BasicSensor(ABC):
     @abstractmethod
     def __init__(self, config):
+        atexit.register(self._cleanup())
         pass
 
     @abstractmethod
-    def __del__(self):
+    def _cleanup(self):
         pass
 
     @property

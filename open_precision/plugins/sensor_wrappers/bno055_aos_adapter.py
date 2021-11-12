@@ -1,6 +1,11 @@
+import atexit
+
 import adafruit_bno055
 import busio
-import board
+# TODO !!!
+debug = True
+if not debug:
+    import board
 import numpy as np
 from pyquaternion import Quaternion
 from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
@@ -13,9 +18,10 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
         self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
         self.sensor.accel_range = adafruit_bno055.ACCEL_2G
+        atexit.register(self._cleanup())
         print('[Bno055AosAdapter] finished initialisation')
 
-    def __del__(self):
+    def _cleanup(self):
         pass
 
     @property

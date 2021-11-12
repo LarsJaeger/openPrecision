@@ -1,2 +1,23 @@
-a: 0
-b: 3
+Main:
+GpsCompassPositionBuilder.some_config_value: 3  # should normally be equal to the sqrt of nine
+ConfigManager:
+PluginException:
+SensorNotConnectedError:
+PluginManager:
+VehicleManager:
+PositionBuilder:
+InputDevice:
+AbsoluteOrientationSensor:
+BasicSensor:
+GlobalPositioningSystem:
+InertialMeasurementUnit:
+WorldMagneticModelCalculater:
+Location:
+Orientation:
+Position:
+Vehicle:
+GpsCompassPositionBuilder:
+Bno055AosAdapter:
+SparkfunIcm20948Adapter:
+UbloxGPSAdapter:
+WmmWrapper:

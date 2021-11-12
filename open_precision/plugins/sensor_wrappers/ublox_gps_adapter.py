@@ -1,6 +1,6 @@
+import atexit
 import os
 import serial
-import yaml
 
 import externalTools.ublox_gps_fixed as ublox_gps
 from open_precision import utils
@@ -20,7 +20,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # todo
         pass
 
-    def __init__(self, config: yaml):
+    def __init__(self, config):
         print('[UbloxGPSAdapter] starting initialisation')
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
         self.gps = ublox_gps.UbloxGps(self._port)
@@ -30,9 +30,11 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # reset correction
         self._correction_is_active = None
         # self.stop_rtk_correction()
+
+        atexit.register(self._cleanup())
         print('[UbloxGPSAdapter] finished initialisation')
 
-    def __del__(self):
+    def _cleanup(self):
         self.stop_rtk_correction()
         self._port.close()
 

@@ -1,3 +1,4 @@
+import atexit
 from pickle import Unpickler, Pickler
 
 from open_precision.core.model.vehicle import Vehicle
@@ -10,8 +11,9 @@ class VehicleManager:
         self._current_vehicle = None
         self._vehicles = []
         self.load_data()
+        atexit.register(self._cleanup())
 
-    def __del__(self):
+    def _cleanup(self):
         self.save_data()
 
     def load_data(self):

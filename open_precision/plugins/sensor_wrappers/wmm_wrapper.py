@@ -1,3 +1,4 @@
+import atexit
 import os
 from datetime import datetime
 
@@ -25,8 +26,9 @@ class WmmWrapper:
         self.config = config
         self._last_update = None
         self._current_datapoint: any = None
+        atexit.register(self._cleanup())
 
-    def __del__(self):
+    def _cleanup(self):
         pass
 
     def _get_data_point(self, longitude: float, latitude: float, altitude_msl):
