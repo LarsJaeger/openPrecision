@@ -1,3 +1,6 @@
 ConfigManagerTest:
   depend:
     some_config_value: 3
+    some_config_val:
+      blup:
+        ble: 5

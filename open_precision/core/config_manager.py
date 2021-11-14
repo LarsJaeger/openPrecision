@@ -1,33 +1,35 @@
 import atexit
 
-from pydotdict import DotDict
-from ruamel import yaml
-from ruamel.yaml import YAML, CommentedMap, RoundTripLoader, RoundTripDumper
+from flatten_dict import flatten, unflatten
+from ruamel.yaml import YAML, CommentedMap
 from open_precision import utils
 
 
-# noinspection PyTypeChecker
 class ConfigManager:
     def __init__(self, config_path: str):
-        self._config: CommentedMap = None
+        self._config: CommentedMap = CommentedMap()
         self._config_path = config_path
         self._load_config_file()
         self.classes = utils.get_classes_in_package('open_precision')
-        """
-        # check for new classes without config
-        for any_class in self.classes:
-            if any_class.__name__ not in self._config.keys():
-                self._config[any_class.__name__] = None """
         atexit.register(self._cleanup)
 
     def _cleanup(self):
         self._save_config_file()
 
-    def register_value(self, origin_object: object, value_name: str, value: any, comment: str = None):
-        self._config[type(origin_object).__name__].insert(-1, value_name, value, comment=comment)
+    def register_value(self, origin_object: object, value_name: str, value: any):
+        address = type(origin_object).__name__
+        if value_name is not None:
+            address += '.' + value_name
+        flat_conf = flatten(self._config, reducer='dot')
+        flat_conf[address] = value
+        self._config = CommentedMap(unflatten(flat_conf, splitter='dot'))
 
-    def get_config(self, origin_object: object):
-        return DotDict(self._config[type(origin_object).__name__])
+    def get_value(self, origin_object: object, value_name: str):
+        address = type(origin_object).__name__
+        if value_name is not None:
+            address += '.' + value_name
+        flat_conf = flatten(self._config, reducer='dot')
+        return flat_conf[address]
 
     def _load_config_file(self):
         print('[LOG]: loading config file')
