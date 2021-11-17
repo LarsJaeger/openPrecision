@@ -1,6 +1,8 @@
 import atexit
 
 import numpy as np
+
+from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
 import qwiic_icm20948
 from open_precision import utils
@@ -11,9 +13,9 @@ shortest_update_dt = 10  # in ms
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
-    def __init__(self, config):
+    def __init__(self, config_manager: ConfigManager):
         print('[SparkfunIcm20948Adapter] started initialisation')
-        self.config = config
+        self._config_manager = config_manager.register_value(self, 'magnetometer_bias', None)
         self.imu = qwiic_icm20948.QwiicIcm20948()
         if not self.imu.connected:
             print("The Qwiic ICM20948 device isn't connected to the system. Please check your connection")
@@ -38,7 +40,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
     @property
     def is_calibrated(self) -> bool:
-        return self.config['magnetometer_bias'] is not None
+        return self._config_manager.get_value(self, 'magnetometer_bias') is not None
 
     def calibrate(self) -> bool:
         print("Please enter calibration data in config.yml and retry!")

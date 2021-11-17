@@ -20,11 +20,11 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # todo
         pass
 
-    def __init__(self, config):
+    def __init__(self, config_manager):
+        self._config_manager = config_manager.register_value(self, 'rtk_correction_start_script_path', 'start_rtk.sh')
         print('[UbloxGPSAdapter] starting initialisation')
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
         self.gps = ublox_gps.UbloxGps(self._port)
-        self.config = config
         self._last_update = None
         self._message: any = None
         # reset correction
@@ -83,7 +83,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         return location
 
     def start_rtk_correction(self):
-        command = 'screen -dmS rtk_correction bash ' + self.config['rtk_correction_start_script_path']
+        command = 'screen -dmS rtk_correction bash ' + self._config_manager.get_value(self, 'rtk_correction_start_script_path')
         os.system(command)
         self._correction_is_active = True
 

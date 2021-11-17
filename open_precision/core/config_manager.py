@@ -16,20 +16,31 @@ class ConfigManager:
     def _cleanup(self):
         self._save_config_file()
 
-    def register_value(self, origin_object: object, value_name: str, value: any):
+    def register_value(self, origin_object: object, value_name: str, value: any) -> ConfigManager:
+        address = type(origin_object).__name__
+        if value_name is not None:
+            address += '.' + value_name
+        flat_conf = flatten(self._config, reducer='dot')
+        if address not in flat_conf.keys():
+            flat_conf[address] = value
+        self._config = CommentedMap(unflatten(flat_conf, splitter='dot'))
+        return self
+
+    def set_value(self, origin_object: object, value_name: str, value: any) -> ConfigManager:
         address = type(origin_object).__name__
         if value_name is not None:
             address += '.' + value_name
         flat_conf = flatten(self._config, reducer='dot')
         flat_conf[address] = value
         self._config = CommentedMap(unflatten(flat_conf, splitter='dot'))
+        return self
 
     def get_value(self, origin_object: object, value_name: str):
         address = type(origin_object).__name__
         if value_name is not None:
             address += '.' + value_name
         flat_conf = flatten(self._config, reducer='dot')
-        return flat_conf[address]
+        return unflatten(flat_conf[address]) if type(flat_conf[address]) is dict else flat_conf
 
     def _load_config_file(self):
         print('[LOG]: loading config file')

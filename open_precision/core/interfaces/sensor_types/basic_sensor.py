@@ -1,10 +1,13 @@
 import atexit
 from abc import abstractmethod, ABC
 
+from open_precision.core.config_manager import ConfigManager
+
 
 class BasicSensor(ABC):
     @abstractmethod
-    def __init__(self, config):
+    def __init__(self, config_manager: ConfigManager):
+        self._config_manager = config_manager
         atexit.register(self._cleanup())
         pass
 

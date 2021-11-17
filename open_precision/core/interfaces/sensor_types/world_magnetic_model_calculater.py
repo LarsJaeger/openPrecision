@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 
+from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
 class WorldMagneticModelCalculater(BasicSensor, ABC):
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self, config_manager: ConfigManager):
+        self._config_manager = config_manager
         pass
 
     @property

@@ -22,8 +22,8 @@ shortest_update_dt = 100  # in ms
 
 class WmmWrapper:
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, config_manager):
+        self._config_manager = config_manager.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
         self._last_update = None
         self._current_datapoint: any = None
         atexit.register(self._cleanup())

@@ -4,6 +4,7 @@ import numpy as np
 from pyquaternion import Quaternion
 
 import open_precision
+from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.model.position import Position, Location
 from open_precision.core.plugin_manager import PluginManager
@@ -11,7 +12,8 @@ from open_precision.core.plugin_manager import PluginManager
 
 class GpsCompassPositionBuilder(PositionBuilder):
 
-    def __init__(self, sensor_manager: PluginManager, config):
+    def __init__(self, sensor_manager: PluginManager, config_manager: ConfigManager):
+        self._config_manager = config_manager
         """get available sensors"""
         self.gps_class = open_precision.core.interfaces.sensor_types.global_positioning_system
         self.aos_class = 'open_precision.core.interfaces.sensor_types.absolute_orientation_system'
