@@ -6,6 +6,7 @@ import externalTools.ublox_gps_fixed as ublox_gps
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
 from open_precision.core.model.position import Location
+from open_precision.core.plugin_manager import PluginManager
 
 shortest_update_dt = 100  # in ms
 
@@ -20,7 +21,8 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # todo
         pass
 
-    def __init__(self, config_manager):
+    def __init__(self, config_manager, plugin_manager: PluginManager):
+        self._plugin_manager = plugin_manager
         self._config_manager = config_manager.register_value(self, 'rtk_correction_start_script_path', 'start_rtk.sh')
         print('[UbloxGPSAdapter] starting initialisation')
         self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)

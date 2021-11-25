@@ -38,5 +38,10 @@ class VehicleManager:
     def current_vehicle(self, new_vehicle_id: int):
         self._current_vehicle_id = new_vehicle_id
 
-    def add_vehicle(self, vehicle: Vehicle):
-        self._vehicles.append(vehicle)
+    @property
+    def vehicles(self) -> list:
+        return self._vehicles
+
+    @vehicles.setter
+    def vehicles(self, new_vehicles):
+        self._vehicles = new_vehicles

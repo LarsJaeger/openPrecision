@@ -14,23 +14,6 @@ def _group_plugins(plugin_types, plugins) -> tuple:
     return grouped_plugins
 
 
-def _initialise_plugins(plugin_types, plugins, config_manager) -> dict:
-    grouped_plugins = _group_plugins(plugin_types, plugins)
-    print("A: " + str(grouped_plugins))
-    initialised_plugins = {}
-    for plugin_type in grouped_plugins[0]:
-        # initialises first initialisable class in plugin_adapter list of available_plugins
-        possible_plugins_list = grouped_plugins[1][grouped_plugins[0].index(plugin_type)]
-        for possible_plugin in possible_plugins_list:
-            try:
-                initialised_plugins.update(
-                    {plugin_type: possible_plugin(config_manager)})
-                break
-            except PluginException:
-                print(f'[ERROR] An error occurred while enabling {str(possible_plugin)}: {str(PluginException)}')
-    return initialised_plugins
-
-
 class PluginManager:
     def __init__(self, config_manager, plugin_type_package: str, plugin_package: str):
         self._config_manager = config_manager
@@ -38,7 +21,23 @@ class PluginManager:
         self._plugin_types = utils.get_classes_in_package(self._plugin_type_package)
         self._plugin_package = plugin_package
         self._plugins = utils.get_classes_in_package(self._plugin_package)
-        self._plugin_instance_pool = _initialise_plugins(self._plugin_types, self._plugins, self._config_manager)
+        self._plugin_instance_pool = self._initialise_plugins(self._plugin_types, self._plugins, self._config_manager)
+
+    def _initialise_plugins(self, plugin_types, plugins, config_manager) -> dict:
+        grouped_plugins = _group_plugins(plugin_types, plugins)
+        print("A: " + str(grouped_plugins))
+        initialised_plugins = {}
+        for plugin_type in grouped_plugins[0]:
+            # initialises first initialisable class in plugin_adapter list of available_plugins
+            possible_plugins_list = grouped_plugins[1][grouped_plugins[0].index(plugin_type)]
+            for possible_plugin in possible_plugins_list:
+                try:
+                    initialised_plugins.update(
+                        {plugin_type: possible_plugin(config_manager, self)})
+                    break
+                except PluginException:
+                    print(f'[ERROR] An error occurred while enabling {str(possible_plugin)}: {str(PluginException)}')
+        return initialised_plugins
 
     @property
     def plugin_instance_pool(self):
