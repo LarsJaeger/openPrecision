@@ -2,6 +2,7 @@ import atexit
 import os
 from datetime import datetime
 
+from pyquaternion import Quaternion
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types import global_positioning_system
 from open_precision.core.plugin_manager import PluginManager
@@ -72,39 +73,34 @@ class WmmWrapper:
     @property
     def declination(self) -> float:
         """returns the locational magnetic declination (magnetic variation) in degrees"""
-        pass
+        self.update_values()
+        return float(self._current_datapoint['D_deg']) + (float(self._current_datapoint['D_min']) / 60)
 
     @property
     def inclination(self) -> float:
         """returns the locational magnetic inclination in degrees"""
-        pass
+        self.update_values()
+        return float(self._current_datapoint['I_deg']) + (float(self._current_datapoint['I_min']) / 60)
 
     @property
     def total_intensity(self) -> float:
         """returns the total intensity in nT"""
-        pass
+        self.update_values()
+        return self._current_datapoint['F_nT']
 
     @property
     def horizontal_intensity(self) -> float:
         """returns the horizontal intensity in nT"""
-        pass
+        self.update_values()
+        return self._current_datapoint['H_nT']
 
     @property
-    def north_component(self) -> float:
-        """returns the north (X) component in nT"""
-        pass
+    def field_vector(self) -> np.ndarray:
+        """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
+        return np.ndarray([self._current_datapoint['X_nt'], self._current_datapoint['Y_nt'], self._current_datapoint['Z_nt']])
 
     @property
-    def east_component(self) -> float:
-        """returns the east (Y) component in nT"""
-        pass
-
-    @property
-    def vertical_component(self) -> float:
-        """returns the vertical (Z) component in nT"""
-        pass
-
-    @property
-    def quaternion(self) -> float:
+    def quaternion(self) -> Quaternion:
         """returns the quaternion describing the rotation from north to the magnetic vector"""
-        pass
+        self.update_values()
+        return Quaternion()
