@@ -4,7 +4,7 @@ from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
-class WorldMagneticModelCalculater(BasicSensor, ABC):
+class WorldMagneticModelCalculator(BasicSensor, ABC):
     
     @property
     @abstractmethod
