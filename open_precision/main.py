@@ -2,8 +2,6 @@ from __future__ import print_function
 
 import sys
 import time
-from open_precision.core.config_manager import ConfigManager
-from open_precision.plugins.sensor_wrappers import sparkfun_icm20948_imu_adapter
 
 
 class Main:
@@ -44,7 +42,6 @@ class Main:
             self.keyboard.disable()
 
     def __init__(self):
-        self.config_manager = ConfigManager('../config.yml')
         self.init_hardware()
         self.run()
 
