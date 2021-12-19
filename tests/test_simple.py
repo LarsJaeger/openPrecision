@@ -1,10 +1,7 @@
-import importlib
-
-from context import open_precision
 import unittest
 
 # simple unit test for file structure
-from open_precision.core.plugin_manager import PluginManager
+from open_precision.core.managers.plugin_manager import PluginManager
 
 
 class MyTestCase(unittest.TestCase):

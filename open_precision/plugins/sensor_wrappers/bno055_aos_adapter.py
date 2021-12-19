@@ -1,21 +1,18 @@
 import atexit
-
 import adafruit_bno055
 import busio
-from open_precision.core.config_manager import ConfigManager
-
 import numpy as np
 from pyquaternion import Quaternion
 from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
-from open_precision.core.plugin_manager import PluginManager
+from open_precision.core.managers.manager import Manager
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
-    def __init__(self, config_manager: ConfigManager, plugin_manager: PluginManager):
-        self._plugin_manager = plugin_manager
-        self._config_manager = config_manager.register_value(self, 'debug', False)
+    def __init__(self, manager: Manager):
+        self._manager = manager
+        self._manager.config.register_value(self, 'debug', False)
         print('[Bno055AosAdapter] starting initialisation')
-        if not self._config_manager.get_value(self, 'debug'):
+        if not self._manager.config.get_value(self, 'debug'):
             import board
             i2c = busio.I2C(board.SCL, board.SDA)
         else:

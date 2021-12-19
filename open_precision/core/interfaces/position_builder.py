@@ -1,15 +1,12 @@
 from abc import abstractmethod, ABC
-
-from open_precision.core.config_manager import ConfigManager
+from open_precision.core.managers.manager import Manager
 from open_precision.core.model.position import Position
-from open_precision.core.plugin_manager import PluginManager
 
 
 class PositionBuilder(ABC):
     @abstractmethod
-    def __init__(self, sensor_manager: PluginManager, config_manager: ConfigManager):
-        self._sensor_manager = sensor_manager
-        self._config_manager = config_manager
+    def __init__(self, manager: Manager):
+        self._manager = manager
 
     @property
     @abstractmethod

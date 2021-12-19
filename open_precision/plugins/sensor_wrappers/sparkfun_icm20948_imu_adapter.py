@@ -1,32 +1,29 @@
 import atexit
-
 import numpy as np
-
-from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
 import qwiic_icm20948
 from open_precision import utils
 from open_precision.core.exceptions import SensorNotConnectedError
-from open_precision.core.plugin_manager import PluginManager
+from open_precision.core.managers.manager import Manager
 
 shortest_update_dt = 10  # in ms
 
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
-    def __init__(self, config_manager: ConfigManager, plugin_manager: PluginManager):
-        self._plugin_manager = plugin_manager
+    def __init__(self, manager: Manager):
+        self._manager = manager
         print('[SparkfunIcm20948Adapter] started initialisation')
-        self._config_manager = config_manager.register_value(self, 'magnetometer_bias', None)
+        manager.config.register_value(self, 'magnetometer_bias', None)
         self.imu = qwiic_icm20948.QwiicIcm20948()
         if not self.imu.connected:
             print("The Qwiic ICM20948 device isn't connected to the system. Please check your connection")
             raise SensorNotConnectedError("Qwiic ICM20948")
 
-        if self.config is None:
+        if self._manager.config.get_value(self, 'magnetometer_bias') is None:
             self.calibrated_magnetometer_correction = np.array([0., 0., 0.])
         else:
-            self.calibrated_magnetometer_correction = self.config['magnetometer_bias']
+            self.calibrated_magnetometer_correction = self._manager.config.get_value(self, 'magnetometer_bias')
         self.imu.begin()
         self._last_update = None
         self.update_values()
@@ -36,13 +33,12 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         atexit.register(self._cleanup())
         print('[SparkfunIcm20948Adapter] finished initialisation')
 
-
     def _cleanup(self):
         pass
 
     @property
     def is_calibrated(self) -> bool:
-        return self._config_manager.get_value(self, 'magnetometer_bias') is not None
+        return self._manager.config.get_value(self, 'magnetometer_bias') is not None
 
     def calibrate(self) -> bool:
         print("Please enter calibration data in config.yml and retry!")

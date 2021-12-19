@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from open_precision.core.config_manager import ConfigManager
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 

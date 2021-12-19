@@ -1,7 +1,6 @@
 import unittest
 
-from open_precision.plugins.position_builders.gps_compass import GpsCompassPositionBuilder
-from open_precision.core.config_manager import ConfigManager
+from open_precision.core.managers.config_manager import ConfigManager
 
 
 class ConfigManagerTest(unittest.TestCase):

@@ -2,10 +2,12 @@ import atexit
 import os
 from datetime import datetime
 
+import numpy as np
 from pyquaternion import Quaternion
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types import global_positioning_system
-from open_precision.core.plugin_manager import PluginManager
+from open_precision.core.managers.manager import Manager
+from open_precision.core.managers.plugin_manager import PluginManager
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
@@ -25,12 +27,12 @@ shortest_update_dt = 100  # in ms
 
 class WmmWrapper:
 
-    def __init__(self, config_manager, plugin_manager: PluginManager):
-        self._plugin_manager = plugin_manager
-        self._config_manager = config_manager.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
+    def __init__(self, manager: Manager):
+        self._manager = manager
+        self._manager.config.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
         self._last_update = None
         self._current_datapoint: any = None
-        self.gps = self._plugin_manager.plugin_instance_pool[global_positioning_system]
+        self.gps = self._manager.sensors.plugin_instance_pool[global_positioning_system]
         atexit.register(self._cleanup())
 
     def _cleanup(self):
@@ -39,7 +41,7 @@ class WmmWrapper:
     def _get_data_point(self, longitude: float, latitude: float, altitude_msl):
         with open("wmmInput.txt", "w") as wmm_input:
             wmm_input.write(wmm_input_builder(longitude, latitude, altitude_msl))
-        command = "cd " + self._config_manager.get_value(self, "wmm_bin_path") + " && ./wmm_file f " \
+        command = "cd " + self._manager.config.get_value(self, "wmm_bin_path") + " && ./wmm_file f " \
                   + str(os.getcwd()) + "/wmmInput.txt " + str(os.getcwd()) + "/wmmOutput.txt"
         print(command)
         os.system(command)
@@ -57,7 +59,8 @@ class WmmWrapper:
 
     def update_values(self):
         if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
-            self._current_datapoint = self._get_data_point(self.gps.longitude, self.gps.latitude,
+            self._current_datapoint = self._get_data_point(self.gps.longitude,
+                                                           self.gps.latitude,
                                                            self.gps.height_above_sea_level)
             self._last_update = utils.millis()
 
@@ -97,7 +100,9 @@ class WmmWrapper:
     @property
     def field_vector(self) -> np.ndarray:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
-        return np.ndarray([self._current_datapoint['X_nt'], self._current_datapoint['Y_nt'], self._current_datapoint['Z_nt']])
+        return np.ndarray([self._current_datapoint['X_nt'],
+                           self._current_datapoint['Y_nt'],
+                           self._current_datapoint['Z_nt']])
 
     @property
     def quaternion(self) -> Quaternion:

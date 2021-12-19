@@ -13,10 +13,7 @@ class ConfigManager:
         self.classes = utils.get_classes_in_package('open_precision')
         atexit.register(self._cleanup)
 
-    def _cleanup(self):
-        self._save_config_file()
-
-    def register_value(self, origin_object: object, value_name: str, value: any) -> ConfigManager:
+    def register_value(self, origin_object: object, value_name: str, value: any) -> object:
         address = type(origin_object).__name__
         if value_name is not None:
             address += '.' + value_name
@@ -26,7 +23,7 @@ class ConfigManager:
         self._config = CommentedMap(unflatten(flat_conf, splitter='dot'))
         return self
 
-    def set_value(self, origin_object: object, value_name: str, value: any) -> ConfigManager:
+    def set_value(self, origin_object: object, value_name: str, value: any) -> object:
         address = type(origin_object).__name__
         if value_name is not None:
             address += '.' + value_name
@@ -41,6 +38,9 @@ class ConfigManager:
             address += '.' + value_name
         flat_conf = flatten(self._config, reducer='dot')
         return unflatten(flat_conf[address]) if type(flat_conf[address]) is dict else flat_conf
+
+    def _cleanup(self):
+        self._save_config_file()
 
     def _load_config_file(self):
         print('[LOG]: loading config file')
