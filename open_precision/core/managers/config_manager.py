@@ -37,7 +37,7 @@ class ConfigManager:
         if value_name is not None:
             address += '.' + value_name
         flat_conf = flatten(self._config, reducer='dot')
-        return unflatten(flat_conf[address]) if type(flat_conf[address]) is dict else flat_conf
+        return unflatten(flat_conf[address]) if type(flat_conf[address]) is dict else flat_conf[address]
 
     def _cleanup(self):
         self._save_config_file()
