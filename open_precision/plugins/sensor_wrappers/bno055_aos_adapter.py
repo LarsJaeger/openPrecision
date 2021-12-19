@@ -16,6 +16,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
             import board
             i2c = busio.I2C(board.SCL, board.SDA)
         else:
+            print('[Bno055AosAdapter] debug mode active')
             i2c = None
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
         self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
