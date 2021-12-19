@@ -21,7 +21,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
             i2c = None
         self.sensor = adafruit_bno055.BNO055_I2C(i2c)
         self.sensor.mode = adafruit_bno055.NDOF_MODE
-        self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
+        # self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
         self.sensor.accel_range = adafruit_bno055.ACCEL_2G
         atexit.register(self._cleanup())
         print('[Bno055AosAdapter] finished initialisation')
