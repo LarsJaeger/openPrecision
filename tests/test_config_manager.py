@@ -1,5 +1,6 @@
 import unittest
 
+import context
 from open_precision.core.managers.config_manager import ConfigManager
 
 

@@ -1,6 +1,7 @@
 # test_template.py
 # change 'template' to python file name of file to be tested
 import unittest
+import context
 
 from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.manager import Manager

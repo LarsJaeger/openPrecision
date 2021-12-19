@@ -1,6 +1,6 @@
 import unittest
 
-# simple unit test for file structure
+import context
 from open_precision.core.managers.plugin_manager import PluginManager
 
 
