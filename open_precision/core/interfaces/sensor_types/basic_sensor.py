@@ -8,7 +8,7 @@ class BasicSensor(ABC):
     @abstractmethod
     def __init__(self, manager: Manager):
         self._manager = manager
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
         pass
 
     @abstractmethod

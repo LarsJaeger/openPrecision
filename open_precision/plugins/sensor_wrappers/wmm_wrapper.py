@@ -33,7 +33,7 @@ class WmmWrapper:
         self._last_update = None
         self._current_datapoint: any = None
         self.gps = self._manager.sensors.plugin_instance_pool[global_positioning_system]
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
 
     def _cleanup(self):
         pass

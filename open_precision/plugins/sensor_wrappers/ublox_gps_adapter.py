@@ -35,7 +35,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._correction_is_active = None
         # self.stop_rtk_correction()
 
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
         print('[UbloxGPSAdapter] finished initialisation')
 
     def _cleanup(self):

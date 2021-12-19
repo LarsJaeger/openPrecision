@@ -30,7 +30,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         self._scaled_acceleration = self.retrieve_scaled_acceleration()
         self._scaled_angular_acceleration = self.retrieve_scaled_angular_acceleration()
         self._scaled_magnetometer = self.retrieve_scaled_magnetometer()
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
         print('[SparkfunIcm20948Adapter] finished initialisation')
 
     def _cleanup(self):

@@ -15,7 +15,7 @@ class VehicleManager:
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
         self._vehicles = []
         self.load_data()
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
 
     def _cleanup(self):
         self.save_data()
