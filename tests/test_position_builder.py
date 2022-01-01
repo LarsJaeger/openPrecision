@@ -24,10 +24,10 @@ class TestPositionBuilder(unittest.TestCase):
         """This teardown will only be executed once after all tests are done"""
 
     def test_method(self):
-        pb = PositionBuilder(Manager())
+        man = Manager()
         try:
             while True:
-                print(pb.current_position)
+                print(man.position_builder.current_position)
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
 
