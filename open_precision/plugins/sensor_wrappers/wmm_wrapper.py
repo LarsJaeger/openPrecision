@@ -7,7 +7,7 @@ from pyquaternion import Quaternion
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types import global_positioning_system
 from open_precision.core.managers.manager import Manager
-from open_precision.core.managers.plugin_manager import PluginManager
+from open_precision.core.managers.package_plugin_manager import PackagePluginManager
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):

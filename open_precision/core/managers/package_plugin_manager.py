@@ -14,7 +14,7 @@ def _group_plugins(plugin_types, plugins) -> tuple:
     return grouped_plugins
 
 
-class PluginManager:
+class PackagePluginManager:
     def __init__(self, manager, plugin_type_package: str, plugin_package: str):
         self._manager = manager
         self._plugin_type_package = plugin_type_package

@@ -55,12 +55,12 @@ def inclination_from_vector(vector: np.array) -> float:
 
 
 def get_classes_in_package(package: str) -> list:
-    """returns a dict with classes as key and class names as value"""
+    # returns a dict with classes as key and class names as value
     return _get_classes_in_package(package, [])
 
 
 def _get_classes_in_package(package, classes: list) -> list:
-    """recursively walk the supplied package to retrieve all classes"""
+    # recursively walk the supplied package to retrieve all classes
     imported_package = __import__(package, fromlist=['a'])
 
     for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__,
