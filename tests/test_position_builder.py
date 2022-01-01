@@ -3,7 +3,6 @@
 import unittest
 import context
 
-from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.manager import Manager
 
 
