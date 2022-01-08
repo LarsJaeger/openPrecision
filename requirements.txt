@@ -5,3 +5,8 @@ board~=1.0
 spidev~=3.5
 pyquaternion~=0.9.9
 flatten_dict
+ruamel.yaml
+adafruit-circuitpython-bno055
+adafruit-circuitpython-bno055
+Adafruit-Blinka
+sparkfun-qwiic-icm20948

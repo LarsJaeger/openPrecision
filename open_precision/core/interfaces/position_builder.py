@@ -1,11 +1,10 @@
 from abc import abstractmethod, ABC
-from open_precision.core.managers.manager import Manager
 from open_precision.core.model.position import Position
 
 
 class PositionBuilder(ABC):
     @abstractmethod
-    def __init__(self, manager: Manager):
+    def __init__(self, manager):
         self._manager = manager
 
     @property
