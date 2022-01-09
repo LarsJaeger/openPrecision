@@ -6,6 +6,7 @@ import numpy as np
 from pyquaternion import Quaternion
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types import global_positioning_system
+from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import WorldMagneticModelCalculator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.managers.package_plugin_manager import PackagePluginManager
 
@@ -25,7 +26,9 @@ def degrees_and_minutes_to_decimal_degree(degrees, minutes):
 shortest_update_dt = 100  # in ms
 
 
-class WmmWrapper:
+class WmmWrapper(WorldMagneticModelCalculator):
+
+
 
     def __init__(self, manager: Manager):
         self._manager = manager
@@ -109,3 +112,15 @@ class WmmWrapper:
         """returns the quaternion describing the rotation from north to the magnetic vector"""
         self.update_values()
         return Quaternion()
+
+    @property
+    def north_component(self) -> float:
+        return self._current_datapoint['X_nt']
+
+    @property
+    def east_component(self) -> float:
+        return self._current_datapoint['Y_nt']
+
+    @property
+    def vertical_component(self) -> float:
+        return self._current_datapoint['Z_nt']
