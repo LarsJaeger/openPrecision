@@ -8,12 +8,12 @@ from open_precision.core.managers.vehicle_manager import VehicleManager
 class Manager:
     def __init__(self):
         self._config = ConfigManager('../config.yml')
-        self._sensors = PackagePluginManager(self,
+        self._sensor_manager = PackagePluginManager(self,
                                              'open_precision.core.interfaces.sensor_types',
                                              'open_precision.plugins.sensor_wrappers')
-        self._position_builder = ClassPluginManager(self,
-                                                    PositionBuilder,
-                                                    'open_precision.plugins.position_builders')
+        self._position_builder_manager = ClassPluginManager(self,
+                                                     PositionBuilder,
+                                                     'open_precision.plugins.position_builders')
         self._vehicles = VehicleManager(self)
 
     @property
@@ -21,12 +21,12 @@ class Manager:
         return self._config
 
     @property
-    def sensors(self):
-        return self._sensors
+    def sensors(self) -> dict:
+        return self._sensor_manager.plugin_instance_pool
 
     @property
     def position_builder(self):
-        return self._position_builder
+        return self._position_builder_manager.instance
 
     @property
     def vehicles(self):

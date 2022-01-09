@@ -32,7 +32,7 @@ class WmmWrapper:
         self._manager.config.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
         self._last_update = None
         self._current_datapoint: any = None
-        self.gps = self._manager.sensors.plugin_instance_pool[global_positioning_system]
+        self.gps = self._manager.sensors[global_positioning_system]
         atexit.register(self._cleanup)
 
     def _cleanup(self):
