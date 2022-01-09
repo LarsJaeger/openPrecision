@@ -17,11 +17,13 @@ class ClassPluginManager:
         self._manager = manager
         self._plugin_type_class = plugin_type_class
         self._plugin_package = plugin_package
+        print("[ClassPluginManager] loading plugin_type: " + str(self._plugin_type_class.__name__))
         self._plugins = utils.get_classes_in_package(self._plugin_package)
-        self._plugin_instance_pool = self._initialise_plugin()
+        self._plugin_instance = self._initialise_plugin()
+        print("[ClassPluginManager] initialised plugin: " + str(self._plugin_instance.__name__))
+        print("[ClassPluginManager] finished loading plugin_type: " + str(self.plugin_type_class.__name__))
 
     def _initialise_plugin(self) -> object:
-        print("loading plugin_type: " + str(self._plugin_type_class.__name__))
         # initialises first initialisable class in plugin_adapter list of available_plugins
         possible_plugins_list = check_plugins_for_class(self._plugin_type_class, self._plugins)
         if possible_plugins_list is None:
@@ -35,7 +37,7 @@ class ClassPluginManager:
 
     @property
     def instance(self):
-        return self._plugin_instance_pool
+        return self._plugin_instance
 
     @property
     def plugin_type_class(self):
