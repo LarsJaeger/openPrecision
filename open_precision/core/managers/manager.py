@@ -9,11 +9,11 @@ class Manager:
     def __init__(self):
         self._config = ConfigManager('../config.yml')
         self._sensor_manager = PackagePluginManager(self,
-                                             'open_precision.core.interfaces.sensor_types',
-                                             'open_precision.plugins.sensor_wrappers')
+                                                    'open_precision.core.interfaces.sensor_types',
+                                                    'open_precision.plugins.sensor_wrappers')
         self._position_builder_manager = ClassPluginManager(self,
-                                                     PositionBuilder,
-                                                     'open_precision.plugins.position_builders')
+                                                            PositionBuilder,
+                                                            'open_precision.plugins.position_builders')
         self._vehicles = VehicleManager(self)
 
     @property
