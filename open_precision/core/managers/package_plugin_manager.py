@@ -23,7 +23,8 @@ class PackagePluginManager:
         self._plugins = utils.get_classes_in_package(self._plugin_package)
         self._plugin_instance_pool = self._initialise_plugins(self._plugin_types, self._plugins, self._manager)
 
-    def _initialise_plugins(self, plugin_types, plugins, manager) -> dict:
+    @staticmethod
+    def _initialise_plugins(plugin_types, plugins, manager) -> dict:
         grouped_plugins = _group_plugins(plugin_types, plugins)
         print("loading plugin_types: " + str(grouped_plugins))
         initialised_plugins = {}
