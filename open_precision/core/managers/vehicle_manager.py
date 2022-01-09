@@ -25,8 +25,8 @@ class VehicleManager:
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
 
     def save_data(self):
-        self._manager.config.update_value(self, 'current_vehicle_id', self._current_vehicle_id) \
-            .update_value(self, 'vehicles', self._vehicles)
+        self._manager.config.set_value(self, 'current_vehicle_id', self._current_vehicle_id) \
+            .set_value(self, 'vehicles', self._vehicles)
 
     @property
     def current_vehicle(self) -> Vehicle:
