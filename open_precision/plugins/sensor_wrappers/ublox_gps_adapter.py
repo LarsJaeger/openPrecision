@@ -79,20 +79,24 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
     @property
     def location(self) -> Location:
+        print(".location A")
         location: Location = Location(lon=self.longitude,
                                       lat=self.latitude,
                                       height=self.height_above_sea_level,
                                       horizontal_accuracy=self.vertical_accuracy,
                                       vertical_accuracy=self.vertical_accuracy)
+        print(".location B")
         return location
 
     def start_rtk_correction(self):
+        print("[UBloxGpsAdapter] starting RTK correction stream")
         command = 'screen -dmS rtk_correction bash ' + \
                   self._manager.config.get_value(self, 'rtk_correction_start_script_path')
         os.system(command)
         self._correction_is_active = True
 
     def stop_rtk_correction(self):
+        print("[UBloxGpsAdapter] stopping RTK correction stream")
         command = 'screen -r rtk_correction -X quit'
         os.system(command)
         self._correction_is_active = False
