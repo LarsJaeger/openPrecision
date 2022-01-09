@@ -10,4 +10,3 @@ class Vehicle:
     # axle a tractor) at ground height
     turn_radius_left: float
     turn_radius_right: float
-    

@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 from pyquaternion import Quaternion
 from open_precision import utils
-from open_precision.core.interfaces.sensor_types import global_positioning_system
+from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
 from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import WorldMagneticModelCalculator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.managers.package_plugin_manager import PackagePluginManager
@@ -28,14 +28,12 @@ shortest_update_dt = 100  # in ms
 
 class WmmWrapper(WorldMagneticModelCalculator):
 
-
-
     def __init__(self, manager: Manager):
         self._manager = manager
         self._manager.config.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
         self._last_update = None
         self._current_datapoint: any = None
-        self.gps = self._manager.sensors[global_positioning_system]
+        self.gps_class = GlobalPositioningSystem
         atexit.register(self._cleanup)
 
     def _cleanup(self):
@@ -62,9 +60,9 @@ class WmmWrapper(WorldMagneticModelCalculator):
 
     def update_values(self):
         if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
-            self._current_datapoint = self._get_data_point(self.gps.longitude,
-                                                           self.gps.latitude,
-                                                           self.gps.height_above_sea_level)
+            self._current_datapoint = self._get_data_point(self._manager.sensors[self.gps_class].longitude,
+                                                           self._manager.sensors[self.gps_class].latitude,
+                                                           self._manager.sensors[self.gps_class].height_above_sea_level)
             self._last_update = utils.millis()
 
     def calibrate(self) -> bool:
