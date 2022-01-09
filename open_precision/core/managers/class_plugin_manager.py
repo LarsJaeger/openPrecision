@@ -20,7 +20,7 @@ class ClassPluginManager:
         print("[ClassPluginManager] loading plugin_type: " + str(self._plugin_type_class.__name__))
         self._plugins = utils.get_classes_in_package(self._plugin_package)
         self._plugin_instance = self._initialise_plugin()
-        print("[ClassPluginManager] initialised plugin: " + str(self._plugin_instance.__name__))
+        print("[ClassPluginManager] initialised plugin: " + str(self._plugin_instance.__class__))
         print("[ClassPluginManager] finished loading plugin_type: " + str(self.plugin_type_class.__name__))
 
     def _initialise_plugin(self) -> object:
