@@ -43,37 +43,51 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._port.close()
 
     def update_values(self):
+        print(".update_values A")
         if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
+            print(".update_values B")
             self._message = self.gps.hp_geo_coords()
+            print(".update_values C")
             self._last_update = utils.millis()
+        print(".update_values D")
 
     @property
     def longitude(self):
+        print(".longitude A")
         self.update_values()
+        print(".longitude B")
         # returns longitude in deg
         return self._message.lon + self._message.lonHp
 
     @property
     def latitude(self):
+        print(".latitude A")
         self.update_values()
+        print(".latitude B")
         # returns latitude in deg
         return self._message.lat + self._message.latHp
 
     @property
     def horizontal_accuracy(self):
+        print(".hor_acc A")
         self.update_values()
+        print(".horr_acc B")
         # returns horizontal accuracy in mm
         return self._message.hAcc
 
     @property
     def vertical_accuracy(self):
+        print(".vert_acc A")
         self.update_values()
+        print(".vert_acc B")
         # returns vertical accuracy in mm
         return self._message.vAcc
 
     @property
     def height_above_sea_level(self):
+        print(".hasl A")
         self.update_values()
+        print(".hasl B")
         # returns height above sea level in mm
         return self._message.hMSL + self._message.hMSLHp
 
