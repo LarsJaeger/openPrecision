@@ -11,7 +11,7 @@ class ConfigManager:
         self._config_path = config_path
         self._load_config_file()
         self.classes = utils.get_classes_in_package('open_precision')
-        for cls in classes:
+        for cls in self.classes:
             YAML().register_class(cls)  # register class
         atexit.register(self._cleanup)
 
