@@ -8,7 +8,7 @@ class VehicleManager:
     def __init__(self, manager):
         self._manager = manager
         self._manager.config.register_value(self, 'vehicles', [
-            Vehicle(name='example_vehicle', gps_receiver_offset=np.ndarray([1, 2, 3]),
+            Vehicle(name='example_vehicle', gps_receiver_offset=[1, 2, 3],
                     turn_radius_right=70.3, turn_radius_left=69.1)]) \
             .register_value(self, 'current_vehicle_id', 0)
 
