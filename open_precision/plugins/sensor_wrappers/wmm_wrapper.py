@@ -101,8 +101,8 @@ class WmmWrapper(WorldMagneticModelCalculator):
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
         return [float(self._current_datapoint['X_nT']),
-                           float(self._current_datapoint['Y_nT']),
-                           float(self._current_datapoint['Z_nT'])]
+                float(self._current_datapoint['Y_nT']),
+                float(self._current_datapoint['Z_nT'])]
 
     @property
     def quaternion(self) -> Quaternion:
