@@ -8,7 +8,6 @@ from open_precision import utils
 from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
 from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import WorldMagneticModelCalculator
 from open_precision.core.managers.manager import Manager
-from open_precision.core.managers.package_plugin_manager import PackagePluginManager
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
@@ -101,6 +100,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
     @property
     def field_vector(self) -> np.ndarray:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
+        self.update_values()
         return np.ndarray([self._current_datapoint['X_nt'],
                            self._current_datapoint['Y_nt'],
                            self._current_datapoint['Z_nt']])
@@ -113,12 +113,15 @@ class WmmWrapper(WorldMagneticModelCalculator):
 
     @property
     def north_component(self) -> float:
+        self.update_values()
         return self._current_datapoint['X_nt']
 
     @property
     def east_component(self) -> float:
+        self.update_values()
         return self._current_datapoint['Y_nt']
 
     @property
     def vertical_component(self) -> float:
+        self.update_values()
         return self._current_datapoint['Z_nt']

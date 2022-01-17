@@ -52,7 +52,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         print(".update_values D")
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         print(".longitude A")
         self.update_values()
         print(".longitude B")
@@ -60,7 +60,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         return self._message.lon + self._message.lonHp
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         print(".latitude A")
         self.update_values()
         print(".latitude B")

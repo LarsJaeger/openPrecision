@@ -20,6 +20,7 @@ class TestTemplate(unittest.TestCase):
         """This teardown will only be executed once after all tests are done"""
 
     def test_method(self):
+
         pass
 
 
