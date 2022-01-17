@@ -11,6 +11,8 @@ class ConfigManager:
         self._config_path = config_path
         self._load_config_file()
         self.classes = utils.get_classes_in_package('open_precision')
+        for cls in utils.get_classes_in_package('open_precision.core.model'):
+            YAML().register_class(cls)
         atexit.register(self._cleanup)
 
     def register_value(self, origin_object: object, value_name: str, value: any) -> object:
