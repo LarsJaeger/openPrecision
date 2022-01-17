@@ -13,13 +13,8 @@ class ConfigManager:
         self.classes = utils.get_classes_in_package('open_precision')
         atexit.register(self._cleanup)
 
-    def register_value(self, origin_object: object, value_name: str, value: any, value_type: object = None) -> object:
-        if value is None and value_type is None:
-            raise ValueError
-
-        if value is not None:
-            value_type = type(value)
-        YAML().register_class(value_type) #register class
+    def register_value(self, origin_object: object, value_name: str, value: any) -> object:
+        YAML().register_class(type(value)) #register class
 
         address = type(origin_object).__name__
         if value_name is not None:
@@ -31,6 +26,8 @@ class ConfigManager:
         return self
 
     def set_value(self, origin_object: object, value_name: str, value: any) -> object:
+        YAML().register_class(type(value)) #register class
+
         address = type(origin_object).__name__
         if value_name is not None:
             address += '.' + value_name
