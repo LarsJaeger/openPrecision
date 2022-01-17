@@ -101,9 +101,9 @@ class WmmWrapper(WorldMagneticModelCalculator):
     def field_vector(self) -> np.ndarray:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
-        return np.ndarray([self._current_datapoint['X_nt'],
-                           self._current_datapoint['Y_nt'],
-                           self._current_datapoint['Z_nt']])
+        return np.ndarray([self._current_datapoint['X_nT'],
+                           self._current_datapoint['Y_nT'],
+                           self._current_datapoint['Z_nT']])
 
     @property
     def quaternion(self) -> Quaternion:
@@ -114,14 +114,14 @@ class WmmWrapper(WorldMagneticModelCalculator):
     @property
     def north_component(self) -> float:
         self.update_values()
-        return self._current_datapoint['X_nt']
+        return self._current_datapoint['X_nT']
 
     @property
     def east_component(self) -> float:
         self.update_values()
-        return self._current_datapoint['Y_nt']
+        return self._current_datapoint['Y_nT']
 
     @property
     def vertical_component(self) -> float:
         self.update_values()
-        return self._current_datapoint['Z_nt']
+        return self._current_datapoint['Z_nT']
