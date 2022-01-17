@@ -27,8 +27,6 @@ class ConfigManager:
         flat_conf = flatten(self._config, reducer='dot')
         if address not in flat_conf.keys():
             flat_conf[address] = value
-        else:
-            raise ValueError
         self._config = CommentedMap(unflatten(flat_conf, splitter='dot'))  # update config
         return self
 
