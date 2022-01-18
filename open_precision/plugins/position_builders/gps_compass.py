@@ -34,7 +34,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
         source_to_target_angle = np.arccos(
             np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target)))
         quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
-        v1 = quat1 * np.dot(-1, gravity_vector)
+        v1 = quat1.rotate(np.dot(-1, gravity_vector))
         v1_to_gravity_model_angle = np.arccos(np.dot(v1 / np.dot(-1, gravity_vector), gravity_model_vector))
         quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
         orientation: Quaternion = quat1 * quat2
