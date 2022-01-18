@@ -1,6 +1,8 @@
 import atexit
 import os
 from datetime import datetime
+
+import numpy as np
 from pyquaternion import Quaternion
 from typing import List
 from open_precision import utils
@@ -97,12 +99,12 @@ class WmmWrapper(WorldMagneticModelCalculator):
         return self._current_datapoint['H_nT']
 
     @property
-    def field_vector(self) -> List[float]:
+    def field_vector(self) -> np.array:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
-        return [float(self._current_datapoint['X_nT']),
+        return np.array([float(self._current_datapoint['X_nT']),
                 float(self._current_datapoint['Y_nT']),
-                float(self._current_datapoint['Z_nT'])]
+                float(self._current_datapoint['Z_nT'])])
 
     @property
     def quaternion(self) -> Quaternion:

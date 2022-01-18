@@ -30,7 +30,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
         print(type(gravity_vector))
         print(type(mag_real_vector))
         norm_source = np.cross(
-            np.multiply(-1, gravity_vector[1]),
+            np.multiply(-1, gravity_vector),
             np.multiply(-1, mag_real_vector)
         )
         norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
