@@ -26,7 +26,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
         gravity_vector: np.ndarray = self._manager.sensors[self.aos_class].gravity
         mag_real_vector: np.ndarray = self._manager.sensors[self.aos_class].scaled_magnetometer
         mag_wmm_vector: np.ndarray = self._manager.sensors[self.wmm_class].field_vector
-        gravity_model_vector = [0, 0, -1]
+        gravity_model_vector = np.ndarray([0, 0, -1])
         norm_source = np.cross((-1 * gravity_vector[1]), (-1 * mag_real_vector))
         norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
         source_to_target_angle = np.arccos(
