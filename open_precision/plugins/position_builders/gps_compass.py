@@ -29,16 +29,13 @@ class GpsCompassPositionBuilder(PositionBuilder):
         gravity_model_vector = np.array([0., 0., -1.])
         print(type(gravity_vector))
         print(type(mag_real_vector))
-        norm_source = np.cross(
-            np.multiply(-1, gravity_vector),
-            np.multiply(-1, mag_real_vector)
-        )
+        norm_source = np.cross(np.multiply(-1, gravity_vector),np.multiply(-1, mag_real_vector))
         norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
         source_to_target_angle = np.arccos(
             np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target)))
         quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
-        v1 = quat1 * (-1 * gravity_vector)
-        v1_to_gravity_model_angle = np.arccos(np.dot(v1 / (-1 * gravity_vector), gravity_model_vector))
+        v1 = quat1 * np.dot(-1, gravity_vector)
+        v1_to_gravity_model_angle = np.arccos(np.dot(v1 / np.dot(-1, gravity_vector), gravity_model_vector))
         quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
         orientation: Quaternion = quat1 * quat2
         correction_vector = orientation.rotate(
