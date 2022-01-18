@@ -28,7 +28,7 @@ def get_rotation_matrix_ypr(y, p, r):
     return ry * rp * rr
 
 
-def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.ndarray:
+def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.array:
     """
     Rotationsmatrix für y=yaw, p=pitch, r=roll in degrees
     """
@@ -94,7 +94,7 @@ def _get_classes_in_package(package, classes: list) -> list:
     return classes
 
 
-def angle_between_vectors(vector_a: np.ndarray, vector_b: np.ndarray):
+def angle_between_vectors(vector_a: np.array, vector_b: np.array):
     """returns angle between vector_a and vector_b as radian"""
     inner = np.inner(vector_a, vector_b)
     norms = la.norm(vector_a) * la.norm(vector_b)
