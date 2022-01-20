@@ -43,11 +43,11 @@ class GpsCompassPositionBuilder(PositionBuilder):
         correction_vector = orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
         corrected_location: Location = Location(lon=uncorrected_location.lon -
                                                     (math.tan(correction_vector[0] /
-                                                              (uncorrected_location.height - correction_vector[3]))),
+                                                              (uncorrected_location.height - correction_vector[2]))),
                                                 lat=uncorrected_location.lat -
                                                     (math.tan(correction_vector[1] /
-                                                              (uncorrected_location.height - correction_vector[3]))),
-                                                height=math.sqrt((uncorrected_location.height - correction_vector[3])
+                                                              (uncorrected_location.height - correction_vector[2]))),
+                                                height=math.sqrt((uncorrected_location.height - correction_vector[2])
                                                                  ** 2 + math.sqrt(
                                                     correction_vector[0] ** 2 + correction_vector[1])) ** 2,
                                                 horizontal_accuracy=0,  # TODO
