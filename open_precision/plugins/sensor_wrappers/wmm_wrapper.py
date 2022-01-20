@@ -44,7 +44,6 @@ class WmmWrapper(WorldMagneticModelCalculator):
             wmm_input.write(wmm_input_builder(longitude, latitude, altitude_msl))
         command = "cd " + self._manager.config.get_value(self, "wmm_bin_path") + " && ./wmm_file f " \
                   + str(os.getcwd()) + "/wmmInput.txt " + str(os.getcwd()) + "/wmmOutput.txt"
-        print(command)
         os.system(command)
         with open("wmmOutput.txt", "r") as wwm_output:
             # read output and clean from whitespace
@@ -55,7 +54,6 @@ class WmmWrapper(WorldMagneticModelCalculator):
                                   'I_deg', 'I_min', 'H_nT', 'X_nT', 'Y_nT', 'Z_nT', 'F_nT', 'dD_min', 'dI_min', 'dH_nT',
                                   'dX_nT', 'dY_nT', 'dZ_nT', 'dF_nT']
         result_dict = dict(zip(result_definition_list, result_list))
-        print(result_dict)
         return result_dict
 
     def update_values(self):
