@@ -1,4 +1,6 @@
 import atexit
+from dataclasses import asdict
+
 import numpy as np
 from open_precision.core.model.vehicle import Vehicle
 
@@ -23,14 +25,14 @@ class VehicleManager:
         self.save_data()
 
     def load_data(self):
-        self._vehicles = self._manager.config.get_value(self, 'vehicles')
-        print('alülülülülülü' + str(type(self._vehicles)))
-        print('alülülülülülü' + str(self._vehicles))
+        # init objects from config data
+        self._vehicles = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, 'vehicles')]
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
 
     def save_data(self):
+        # Vehicle objects are converted to a dict before storing
         self._manager.config.set_value(self, 'current_vehicle_id', self._current_vehicle_id) \
-            .set_value(self, 'vehicles', self._vehicles)
+            .set_value(self, 'vehicles', [asdict(vehicle) for vehicle in self._vehicles])
 
     @property
     def current_vehicle(self) -> Vehicle:
