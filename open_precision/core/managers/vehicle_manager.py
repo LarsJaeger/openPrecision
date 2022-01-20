@@ -7,9 +7,11 @@ class VehicleManager:
 
     def __init__(self, manager):
         self._manager = manager
-        self._manager.config.register_value(self, 'vehicles', [
-            Vehicle(name='example_vehicle', gps_receiver_offset=[1, 2, 3],
-                    turn_radius_right=70.3, turn_radius_left=69.1)]) \
+        self._manager.config.register_value(self, 'vehicles',
+                                            [{'name': 'example_vehicle',
+                                              'gps_receiver_offset': [1, 2, 3],
+                                              'turn_radius_right': 70.3,
+                                              'turn_radius_left': 69.1}])\
             .register_value(self, 'current_vehicle_id', 0)
 
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
@@ -21,7 +23,7 @@ class VehicleManager:
         self.save_data()
 
     def load_data(self):
-        self._vehicles = [eval(str(vehicle)) for vehicle in self._manager.config.get_value(self, 'vehicles')]
+        self._vehicles = self._manager.config.get_value(self, 'vehicles')
         print('alülülülülülü' + str(type(self._vehicles)))
         print('alülülülülülü' + str(self._vehicles))
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
