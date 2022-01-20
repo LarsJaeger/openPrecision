@@ -22,6 +22,7 @@ class VehicleManager:
 
     def load_data(self):
         self._vehicles = self._manager.config.get_value(self, 'vehicles')
+        print('alülülülülülü1' + str(type(self._vehicles)))
         print('alülülülülülü' + str(self._vehicles))
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
 
