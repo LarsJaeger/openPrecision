@@ -21,7 +21,7 @@ class VehicleManager:
         self.save_data()
 
     def load_data(self):
-        self._vehicles = [eval(vehicle) for vehicle in self._manager.config.get_value(self, 'vehicles')]
+        self._vehicles = [eval(str(vehicle)) for vehicle in self._manager.config.get_value(self, 'vehicles')]
         print('alülülülülülü' + str(type(self._vehicles)))
         print('alülülülülülü' + str(self._vehicles))
         self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
