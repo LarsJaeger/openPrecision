@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
@@ -51,4 +52,9 @@ class WorldMagneticModelCalculator(BasicSensor, ABC):
     @abstractmethod
     def quaternion(self) -> float:
         """returns the quaternion describing the rotation from north to the magnetic vector"""
+        pass
+
+    @property
+    @abstractmethod
+    def field_vector(self) -> List[float]:
         pass

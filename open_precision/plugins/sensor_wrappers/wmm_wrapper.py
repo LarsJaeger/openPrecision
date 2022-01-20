@@ -4,10 +4,11 @@ from datetime import datetime
 
 import numpy as np
 from pyquaternion import Quaternion
+from typing import List
 from open_precision import utils
-from open_precision.core.interfaces.sensor_types import global_positioning_system
+from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
+from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import WorldMagneticModelCalculator
 from open_precision.core.managers.manager import Manager
-from open_precision.core.managers.package_plugin_manager import PackagePluginManager
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
@@ -25,14 +26,14 @@ def degrees_and_minutes_to_decimal_degree(degrees, minutes):
 shortest_update_dt = 100  # in ms
 
 
-class WmmWrapper:
+class WmmWrapper(WorldMagneticModelCalculator):
 
     def __init__(self, manager: Manager):
         self._manager = manager
         self._manager.config.register_value(self, 'wmm_bin_path', 'example/wmm/bin/path')
         self._last_update = None
         self._current_datapoint: any = None
-        self.gps = self._manager.sensors[global_positioning_system]
+        self.gps_class = GlobalPositioningSystem
         atexit.register(self._cleanup)
 
     def _cleanup(self):
@@ -43,7 +44,6 @@ class WmmWrapper:
             wmm_input.write(wmm_input_builder(longitude, latitude, altitude_msl))
         command = "cd " + self._manager.config.get_value(self, "wmm_bin_path") + " && ./wmm_file f " \
                   + str(os.getcwd()) + "/wmmInput.txt " + str(os.getcwd()) + "/wmmOutput.txt"
-        print(command)
         os.system(command)
         with open("wmmOutput.txt", "r") as wwm_output:
             # read output and clean from whitespace
@@ -54,14 +54,13 @@ class WmmWrapper:
                                   'I_deg', 'I_min', 'H_nT', 'X_nT', 'Y_nT', 'Z_nT', 'F_nT', 'dD_min', 'dI_min', 'dH_nT',
                                   'dX_nT', 'dY_nT', 'dZ_nT', 'dF_nT']
         result_dict = dict(zip(result_definition_list, result_list))
-        print(result_dict)
         return result_dict
 
     def update_values(self):
         if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
-            self._current_datapoint = self._get_data_point(self.gps.longitude,
-                                                           self.gps.latitude,
-                                                           self.gps.height_above_sea_level)
+            self._current_datapoint = self._get_data_point(self._manager.sensors[self.gps_class].longitude,
+                                                           self._manager.sensors[self.gps_class].latitude,
+                                                           self._manager.sensors[self.gps_class].height_above_sea_level)
             self._last_update = utils.millis()
 
     def calibrate(self) -> bool:
@@ -98,14 +97,30 @@ class WmmWrapper:
         return self._current_datapoint['H_nT']
 
     @property
-    def field_vector(self) -> np.ndarray:
+    def field_vector(self) -> np.array:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
-        return np.ndarray([self._current_datapoint['X_nt'],
-                           self._current_datapoint['Y_nt'],
-                           self._current_datapoint['Z_nt']])
+        self.update_values()
+        return np.array([float(self._current_datapoint['X_nT']),
+                float(self._current_datapoint['Y_nT']),
+                float(self._current_datapoint['Z_nT'])])
 
     @property
     def quaternion(self) -> Quaternion:
         """returns the quaternion describing the rotation from north to the magnetic vector"""
         self.update_values()
         return Quaternion()
+
+    @property
+    def north_component(self) -> float:
+        self.update_values()
+        return self._current_datapoint['X_nT']
+
+    @property
+    def east_component(self) -> float:
+        self.update_values()
+        return self._current_datapoint['Y_nT']
+
+    @property
+    def vertical_component(self) -> float:
+        self.update_values()
+        return self._current_datapoint['Z_nT']

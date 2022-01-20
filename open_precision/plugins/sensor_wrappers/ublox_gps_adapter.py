@@ -48,13 +48,13 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
             self._last_update = utils.millis()
 
     @property
-    def longitude(self):
+    def longitude(self) -> float:
         self.update_values()
         # returns longitude in deg
         return self._message.lon + self._message.lonHp
 
     @property
-    def latitude(self):
+    def latitude(self) -> float:
         self.update_values()
         # returns latitude in deg
         return self._message.lat + self._message.latHp
@@ -87,12 +87,14 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         return location
 
     def start_rtk_correction(self):
+        print("[UBloxGpsAdapter] starting RTK correction stream")
         command = 'screen -dmS rtk_correction bash ' + \
                   self._manager.config.get_value(self, 'rtk_correction_start_script_path')
         os.system(command)
         self._correction_is_active = True
 
     def stop_rtk_correction(self):
+        print("[UBloxGpsAdapter] stopping RTK correction stream")
         command = 'screen -r rtk_correction -X quit'
         os.system(command)
         self._correction_is_active = False

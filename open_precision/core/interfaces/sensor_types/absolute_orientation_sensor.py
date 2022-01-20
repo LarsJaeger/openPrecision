@@ -14,6 +14,6 @@ class AbsoluteOrientationSensor(BasicSensor, ABC):
 
     @property
     @abstractmethod
-    def gravity(self) -> np.ndarray:
+    def gravity(self) -> np.array:
         """returns an gravity vector"""
         pass
