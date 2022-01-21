@@ -47,7 +47,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
                                                               (uncorrected_location.height - correction_vector[2]))),
                                                 height=math.sqrt((uncorrected_location.height - correction_vector[2])
                                                                  ** 2 + math.sqrt(
-                                                    correction_vector[0] ** 2 + correction_vector[1])) ** 2,
+                                                    correction_vector[0] ** 2 + correction_vector[1] ** 2)),
                                                 horizontal_accuracy=0,  # TODO
                                                 vertical_accuracy=0)  # TODO
         corrected_position: Position = Position(location=corrected_location, orientation=orientation)
