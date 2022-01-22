@@ -4,8 +4,8 @@ from pyquaternion import Quaternion
 
 @dataclass
 class Location:
-    lon: float  # longitude in deg
     lat: float  # latitude in deg
+    lon: float  # longitude in deg
     height: float  # returns height above sea level in mm
     horizontal_accuracy: int  # horizontal accuracy in mm
     vertical_accuracy: int  # vertical accuracy in mm

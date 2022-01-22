@@ -28,6 +28,11 @@ class GpsCompassPositionBuilder(PositionBuilder):
         mag_wmm_vector: np.array = self._manager.sensors[self.wmm_class].field_vector
         gravity_model_vector = np.array([0., 0., -1.])
 
+        print(f"uncorrected_locaction {uncorrected_location}")
+        print(f"gravity_vector {gravity_vector}")
+        print(f"mag_real_vector {mag_real_vector}")
+        print(f"mag_wmm_vector {mag_wmm_vector}")
+
         norm_source = np.cross(np.dot(-1, gravity_vector),np.dot(-1, mag_real_vector))
         norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
         source_to_target_angle = np.arccos(
@@ -39,11 +44,11 @@ class GpsCompassPositionBuilder(PositionBuilder):
         quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
         orientation: Quaternion = quat1 * quat2
         correction_vector = orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
-        corrected_location: Location = Location(lon=uncorrected_location.lon -
-                                                    (math.tan(correction_vector[0] /
-                                                              (uncorrected_location.height - correction_vector[2]))),
-                                                lat=uncorrected_location.lat -
+        corrected_location: Location = Location(lat=uncorrected_location.lat -
                                                     (math.tan(correction_vector[1] /
+                                                              (uncorrected_location.height - correction_vector[2]))),
+                                                lon=uncorrected_location.lon -
+                                                    (math.tan(correction_vector[0] /
                                                               (uncorrected_location.height - correction_vector[2]))),
                                                 height=math.sqrt((uncorrected_location.height - correction_vector[2])
                                                                  ** 2 + math.sqrt(
