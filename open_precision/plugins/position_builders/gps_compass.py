@@ -50,6 +50,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
         orientation: Quaternion = quat1 * quat2
         correction_vector = orientation.rotate(
             self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
+        print(f"correction_vector {correction_vector}")
         corrected_location: Location = Location(lat=uncorrected_location.lat -
                                                     (math.tan(correction_vector[1] /
                                                               (uncorrected_location.height - correction_vector[2]))),
