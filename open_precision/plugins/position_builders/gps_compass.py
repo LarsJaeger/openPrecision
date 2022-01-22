@@ -33,17 +33,23 @@ class GpsCompassPositionBuilder(PositionBuilder):
         print(f"mag_real_vector {mag_real_vector}")
         print(f"mag_wmm_vector {mag_wmm_vector}")
 
-        norm_source = np.cross(np.dot(-1, gravity_vector),np.dot(-1, mag_real_vector))
-        norm_target = np.cross(-1 * gravity_model_vector, -1 * mag_wmm_vector)
+        norm_source = np.cross(np.dot(-1, gravity_vector), np.dot(-1, mag_real_vector))
+        norm_target = np.cross(np.dot(-1, gravity_model_vector), np.dot(-1, mag_wmm_vector))
         source_to_target_angle = np.arccos(
-            np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target)))
+            np.clip(
+                np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target))
+            , -1.0, 1.0))
         quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
         v1 = quat1.rotate(np.dot(-1, gravity_vector))
-        v1_to_gravity_model_angle = np.arccos(np.dot(v1 / np.dot(-1, gravity_vector), gravity_model_vector))
+        v1_to_gravity_model_angle = np.arccos(
+            np.clip(
+                np.dot(v1 / np.dot(-1, gravity_vector), gravity_model_vector)
+            , -1.0, 1.0))
 
         quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
         orientation: Quaternion = quat1 * quat2
-        correction_vector = orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
+        correction_vector = orientation.rotate(
+            self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
         corrected_location: Location = Location(lat=uncorrected_location.lat -
                                                     (math.tan(correction_vector[1] /
                                                               (uncorrected_location.height - correction_vector[2]))),
