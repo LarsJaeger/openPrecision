@@ -33,18 +33,35 @@ class GpsCompassPositionBuilder(PositionBuilder):
         print(f"mag_real_vector {mag_real_vector}")
         print(f"mag_wmm_vector {mag_wmm_vector}")
 
-        norm_source = np.cross(np.dot(-1, gravity_vector), np.dot(-1, mag_real_vector))
-        norm_target = np.cross(np.dot(-1, gravity_model_vector), np.dot(-1, mag_wmm_vector))
+        anti_gravity_vector = np.dot(-1, gravity_vector)  # for simplicity
+        anti_gravity_model_vector = np.dot(-1, gravity_model_vector)  # for simplicity
+        norm_source = np.cross(anti_gravity_vector, np.dot(-1, mag_real_vector))
+        norm_target = np.cross(anti_gravity_model_vector, np.dot(-1, mag_wmm_vector))
+
         source_to_target_angle = np.arccos(
             np.clip(
-                np.dot(norm_source / np.linalg.norm(norm_source), norm_target / np.linalg.norm(norm_target))
-            , -1.0, 1.0))
+                np.dot(
+                    np.divide(norm_source,
+                              np.linalg.norm(norm_source),
+                              out=np.zeros_like(norm_source),
+                              where=np.linalg.norm(norm_source) != 0),
+                    np.divide(norm_target,
+                              np.linalg.norm(norm_target),
+                              out=np.zeros_like(norm_target),
+                              where=np.linalg.norm(norm_target) != 0))
+                , -1.0, 1.0))
+
         quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
-        v1 = quat1.rotate(np.dot(-1, gravity_vector))
+        v1 = quat1.rotate(anti_gravity_vector)
         v1_to_gravity_model_angle = np.arccos(
             np.clip(
-                np.dot(v1 / np.dot(-1, gravity_vector), gravity_model_vector)
-            , -1.0, 1.0))
+                np.dot(
+                    np.divide(v1,
+                              anti_gravity_vector,
+                              out=np.zeros_like(v1),
+                              where=anti_gravity_vector != 0),
+                    gravity_model_vector)
+                , -1.0, 1.0))
 
         quat2: Quaternion = Quaternion(axis=np.cross(v1, gravity_model_vector), radians=v1_to_gravity_model_angle)
         orientation: Quaternion = quat1 * quat2
@@ -52,14 +69,25 @@ class GpsCompassPositionBuilder(PositionBuilder):
             self._manager.vehicles.current_vehicle.gps_receiver_offset)  # TODO: check if it is a unit vector
         print(f"correction_vector {correction_vector}")
         corrected_location: Location = Location(lat=uncorrected_location.lat -
-                                                    (math.tan(correction_vector[1] /
-                                                              (uncorrected_location.height - correction_vector[2]))),
+                                                    math.tan(
+                                                        np.divide(
+                                                            correction_vector[1],
+                                                            uncorrected_location.height - correction_vector[2],
+                                                            out=np.zeros_like(correction_vector[1]),
+                                                            where=(uncorrected_location.height
+                                                                   - correction_vector[2]) != 0)),
                                                 lon=uncorrected_location.lon -
-                                                    (math.tan(correction_vector[0] /
-                                                              (uncorrected_location.height - correction_vector[2]))),
-                                                height=math.sqrt((uncorrected_location.height - correction_vector[2])
-                                                                 ** 2 + math.sqrt(
-                                                    correction_vector[0] ** 2 + correction_vector[1] ** 2)),
+                                                    math.tan(
+                                                        np.divide(
+                                                            correction_vector[0],
+                                                            uncorrected_location.height - correction_vector[2],
+                                                            out=np.zeros_like(correction_vector[0]),
+                                                            where=(uncorrected_location.height
+                                                                   - correction_vector[2]) != 0)),
+                                                height=math.sqrt(
+                                                    (uncorrected_location.height - correction_vector[2]) ** 2
+                                                    + math.sqrt(
+                                                        correction_vector[0] ** 2 + correction_vector[1] ** 2)),
                                                 horizontal_accuracy=0,  # TODO
                                                 vertical_accuracy=0)  # TODO
         corrected_position: Position = Position(location=corrected_location, orientation=orientation)
