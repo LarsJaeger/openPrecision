@@ -2,6 +2,7 @@
 # change 'template' to python file name of file to be tested
 import unittest
 import context
+import time
 
 from open_precision.core.managers.manager import Manager
 
@@ -24,10 +25,13 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = Manager()
+        counter = 0
         try:
             while True:
+                counter += 1
                 print("a")
-                print(man.position_builder.current_position)
+                print(f"pos {counter}: {man.position_builder.current_position}")
+                time.sleep(5)
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
 
