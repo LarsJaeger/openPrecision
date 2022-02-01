@@ -7,6 +7,5 @@ pyquaternion
 flatten_dict
 ruamel.yaml
 adafruit-circuitpython-bno055
-adafruit-circuitpython-bno055
 Adafruit-Blinka
 sparkfun-qwiic-icm20948

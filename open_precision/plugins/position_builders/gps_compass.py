@@ -29,9 +29,9 @@ class GpsCompassPositionBuilder(PositionBuilder):
         gravity_model_vector = np.array([0., 0., -1.])
 
         print(f"uncorrected_locaction {uncorrected_location}")
-        print(f"gravity_vector {gravity_vector}")
-        print(f"mag_real_vector {mag_real_vector}")
-        print(f"mag_wmm_vector {mag_wmm_vector}")
+        print(f"gravity_vector {np.linalg.norm(gravity_vector)}")
+        print(f"mag_real_vector {np.linalg.norm(mag_real_vector)}")
+        print(f"mag_wmm_vector {np.linalg.norm(mag_wmm_vector)}")
 
         anti_gravity_vector = np.dot(-1, gravity_vector)  # for simplicity
         anti_gravity_model_vector = np.dot(-1, gravity_model_vector)  # for simplicity
