@@ -8,6 +8,7 @@ from open_precision.core.interfaces.sensor_types.global_positioning_system impor
 from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import WorldMagneticModelCalculator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.position import Position, Location
+from open_precision.utils import norm_vector
 
 
 class GpsCompassPositionBuilder(PositionBuilder):
@@ -29,9 +30,9 @@ class GpsCompassPositionBuilder(PositionBuilder):
         gravity_model_vector = np.array([0., 0., -1.])
 
         print(f"uncorrected_locaction {uncorrected_location}")
-        print(f"gravity_vector {gravity_vector / np.linalg.norm(gravity_vector)}")
-        print(f"mag_real_vector {mag_real_vector / np.linalg.norm(mag_real_vector)}")
-        print(f"mag_wmm_vector {mag_wmm_vector / np.linalg.norm(mag_wmm_vector)}")
+        print(f"gravity_vector {norm_vector(gravity_vector)}")
+        print(f"mag_real_vector {norm_vector(mag_real_vector)}")
+        print(f"mag_wmm_vector {norm_vector(mag_wmm_vector)}")
 
         anti_gravity_vector = np.dot(-1, gravity_vector)  # for simplicity
         anti_gravity_model_vector = np.dot(-1, gravity_model_vector)  # for simplicity
@@ -40,15 +41,8 @@ class GpsCompassPositionBuilder(PositionBuilder):
 
         source_to_target_angle = np.arccos(
             np.clip(
-                np.dot(
-                    np.divide(norm_source,
-                              np.linalg.norm(norm_source),
-                              out=np.zeros_like(norm_source),
-                              where=np.linalg.norm(norm_source) != 0),
-                    np.divide(norm_target,
-                              np.linalg.norm(norm_target),
-                              out=np.zeros_like(norm_target),
-                              where=np.linalg.norm(norm_target) != 0))
+                np.dot(norm_vector(norm_source),
+                       norm_vector(norm_target))
                 , -1.0, 1.0))
 
         quat1: Quaternion = Quaternion(axis=np.cross(norm_source, norm_target), radians=source_to_target_angle)
