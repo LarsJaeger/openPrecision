@@ -34,6 +34,9 @@ class GpsCompassPositionBuilder(PositionBuilder):
         print(f"mag_real_vector {norm_vector(mag_real_vector)}")
         print(f"mag_wmm_vector {norm_vector(mag_wmm_vector)}")
 
+        if any(x is None for x in [gravity_vector, mag_real_vector, mag_wmm_vector, gravity_model_vector]):
+            return None
+
         anti_gravity_vector = np.dot(-1, gravity_vector)  # for simplicity
         anti_gravity_model_vector = np.dot(-1, gravity_model_vector)  # for simplicity
         norm_source = np.cross(anti_gravity_vector, np.dot(-1, mag_real_vector))
