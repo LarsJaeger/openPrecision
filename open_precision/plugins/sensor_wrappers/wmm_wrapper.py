@@ -23,7 +23,7 @@ def degrees_and_minutes_to_decimal_degree(degrees, minutes):
     return degrees + (minutes * (1 / 60))
 
 
-shortest_update_dt = 100  # in ms
+shortest_update_dt = 100000  # in ms
 
 
 class WmmWrapper(WorldMagneticModelCalculator):
