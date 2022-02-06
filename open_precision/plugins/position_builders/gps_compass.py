@@ -29,13 +29,13 @@ class GpsCompassPositionBuilder(PositionBuilder):
         mag_wmm_vector: np.array = self._manager.sensors[self.wmm_class].field_vector
         gravity_model_vector = np.array([0., 0., -1.])
 
+        if any(x is None for x in [gravity_vector, mag_real_vector, mag_wmm_vector, gravity_model_vector]):
+            return None
+
         print(f"uncorrected_locaction {uncorrected_location}")
         print(f"gravity_vector {norm_vector(gravity_vector)}")
         print(f"mag_real_vector {norm_vector(mag_real_vector)}")
         print(f"mag_wmm_vector {norm_vector(mag_wmm_vector)}")
-
-        if any(x is None for x in [gravity_vector, mag_real_vector, mag_wmm_vector, gravity_model_vector]):
-            return None
 
         anti_gravity_vector = np.dot(-1, gravity_vector)  # for simplicity
         anti_gravity_model_vector = np.dot(-1, gravity_model_vector)  # for simplicity
