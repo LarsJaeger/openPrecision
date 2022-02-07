@@ -33,6 +33,11 @@ class GpsCompassPositionBuilder(PositionBuilder):
             return None
 
         print(f"uncorrected_locaction {uncorrected_location}")
+        print(f"gravity_vector {gravity_vector}")
+        print(f"mag_real_vector {mag_real_vector}")
+        print(f"mag_wmm_vector {mag_wmm_vector}")
+
+        print(f"uncorrected_locaction {uncorrected_location}")
         print(f"gravity_vector {norm_vector(gravity_vector)}")
         print(f"mag_real_vector {norm_vector(mag_real_vector)}")
         print(f"mag_wmm_vector {norm_vector(mag_wmm_vector)}")
