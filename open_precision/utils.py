@@ -99,3 +99,10 @@ def angle_between_vectors(vector_a: np.array, vector_b: np.array):
     inner = np.inner(vector_a, vector_b)
     norms = la.norm(vector_a) * la.norm(vector_b)
     return np.arccos(np.divide(inner, norms))
+
+
+def norm_vector(vec):
+    return np.divide(vec,
+                     np.linalg.norm(vec),
+                     out=np.zeros_like(vec),
+                     where=np.linalg.norm(vec) != 0)

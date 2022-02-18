@@ -31,7 +31,6 @@ class TestPositionBuilder(unittest.TestCase):
                 counter += 1
                 print("a")
                 print(f"pos {counter}: {man.position_builder.current_position}")
-                time.sleep(5)
         except KeyboardInterrupt:
             print('KeyboardInterrupt')
 
