@@ -19,13 +19,13 @@ class AHeadingParallelPlanner(CoursePlanner):
         # TODO get user input or read from config
         self.working_width: float = 3.0
         self.lookahead_distance: float = 10.0
-        
+
     def check_waypoint(self, waypoint: Waypoint):
         pass
 
     def get_waypoint(self, position: Position) -> Waypoint:
         # generate waypoint 50m in front of vehicle on working line
         # decide which multiple of working width is closest to position
-            # check which multiple of working width is closest to lookahead location
+        # check which multiple of working width is closest to lookahead location
 
         pass
