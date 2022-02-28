@@ -9,7 +9,9 @@ def calibrate():
     m_min = my_imu.scaled_magnetometer
     m_max = my_imu.scaled_magnetometer
     try:
-        print("Rotiere die IMU langsam nacheinander um alle drei Achsen und drücke anschließen STRG + C !")
+        print(
+            "Rotiere die IMU langsam nacheinander um alle drei Achsen und drücke anschließen STRG + C !"
+        )
         magnetometer_values = my_imu.scaled_magnetometer
         while True:
             if magnetometer_values is not my_imu.scaled_magnetometer:

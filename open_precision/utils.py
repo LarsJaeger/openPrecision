@@ -21,9 +21,15 @@ def get_rotation_matrix_ypr(y, p, r):
     p = p * np.pi / 180.0
     r = r * np.pi / 180.0
 
-    rr = np.array([[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]])
-    rp = np.array([[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]])
-    ry = np.array([[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]])
+    rr = np.array(
+        [[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]]
+    )
+    rp = np.array(
+        [[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]]
+    )
+    ry = np.array(
+        [[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]]
+    )
 
     return ry * rp * rr
 
@@ -37,9 +43,15 @@ def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.array:
     p = rotation_array[1] * np.pi / 180.0
     r = rotation_array[0] * np.pi / 180.0
 
-    rr = np.array([[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]])
-    rp = np.array([[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]])
-    ry = np.array([[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]])
+    rr = np.array(
+        [[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]]
+    )
+    rp = np.array(
+        [[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]]
+    )
+    ry = np.array(
+        [[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]]
+    )
 
     return np.dot(np.dot(ry, rp), rr)
 
@@ -61,12 +73,13 @@ def get_classes_in_package(package: str) -> list:
 
 def _get_classes_in_package(package, classes: list) -> list:
     # recursively walk the supplied package to retrieve all classes
-    imported_package = __import__(package, fromlist=['a'])
+    imported_package = __import__(package, fromlist=["a"])
 
-    for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__,
-                                                           imported_package.__name__ + '.'):
+    for _, plugin_name, is_package in pkgutil.iter_modules(
+        imported_package.__path__, imported_package.__name__ + "."
+    ):
         if not is_package:
-            plugin_module = __import__(plugin_name, fromlist=['a'])
+            plugin_module = __import__(plugin_name, fromlist=["a"])
             found_classes = inspect.getmembers(plugin_module, inspect.isclass)
             for name, cls in found_classes:
                 if str(cls.__module__) == plugin_name:
@@ -86,11 +99,15 @@ def _get_classes_in_package(package, classes: list) -> list:
             seen_paths.append(pkg_path)
 
             # Get all sub directory of the current package path directory
-            child_pkgs = [p for p in os.listdir(pkg_path) if os.path.isdir(os.path.join(pkg_path, p))]
+            child_pkgs = [
+                p
+                for p in os.listdir(pkg_path)
+                if os.path.isdir(os.path.join(pkg_path, p))
+            ]
 
             # For each sub directory, apply the walk_package method recursively
             for child_pkg in child_pkgs:
-                _get_classes_in_package(package + '.' + child_pkg, classes)
+                _get_classes_in_package(package + "." + child_pkg, classes)
     return classes
 
 
@@ -102,7 +119,6 @@ def angle_between_vectors(vector_a: np.array, vector_b: np.array):
 
 
 def norm_vector(vec):
-    return np.divide(vec,
-                     np.linalg.norm(vec),
-                     out=np.zeros_like(vec),
-                     where=np.linalg.norm(vec) != 0)
+    return np.divide(
+        vec, np.linalg.norm(vec), out=np.zeros_like(vec), where=np.linalg.norm(vec) != 0
+    )

@@ -4,7 +4,6 @@ import unittest
 
 
 class TestTemplate(unittest.TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -13,7 +12,7 @@ class TestTemplate(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        """ This setup will only be executed once before the first tests"""
+        """This setup will only be executed once before the first tests"""
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -28,5 +27,5 @@ def main():
     unittest.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

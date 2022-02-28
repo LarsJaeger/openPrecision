@@ -6,17 +6,24 @@ from open_precision.core.model.vehicle import Vehicle
 
 
 class VehicleManager:
-
     def __init__(self, manager):
         self._manager = manager
-        self._manager.config.register_value(self, 'vehicles',
-                                            [{'name': 'example_vehicle',
-                                              'gps_receiver_offset': [1, 2, 3],
-                                              'turn_radius_right': 70.3,
-                                              'turn_radius_left': 69.1}])\
-            .register_value(self, 'current_vehicle_id', 0)
+        self._manager.config.register_value(
+            self,
+            "vehicles",
+            [
+                {
+                    "name": "example_vehicle",
+                    "gps_receiver_offset": [1, 2, 3],
+                    "turn_radius_right": 70.3,
+                    "turn_radius_left": 69.1,
+                }
+            ],
+        ).register_value(self, "current_vehicle_id", 0)
 
-        self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
+        self._current_vehicle_id = self._manager.config.get_value(
+            self, "current_vehicle_id"
+        )
         self._vehicles = []
         self.load_data()
         atexit.register(self._cleanup)
@@ -26,13 +33,19 @@ class VehicleManager:
 
     def load_data(self):
         # init objects from config data
-        self._vehicles = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, 'vehicles')]
-        self._current_vehicle_id = self._manager.config.get_value(self, 'current_vehicle_id')
+        self._vehicles = [
+            Vehicle(**kwargs)
+            for kwargs in self._manager.config.get_value(self, "vehicles")
+        ]
+        self._current_vehicle_id = self._manager.config.get_value(
+            self, "current_vehicle_id"
+        )
 
     def save_data(self):
         # Vehicle objects are converted to a dict before storing
-        self._manager.config.set_value(self, 'current_vehicle_id', self._current_vehicle_id) \
-            .set_value(self, 'vehicles', [asdict(vehicle) for vehicle in self._vehicles])
+        self._manager.config.set_value(
+            self, "current_vehicle_id", self._current_vehicle_id
+        ).set_value(self, "vehicles", [asdict(vehicle) for vehicle in self._vehicles])
 
     @property
     def current_vehicle(self) -> Vehicle:

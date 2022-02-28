@@ -49,7 +49,7 @@ class Main:
         self.keyboard.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         Main()
     except (KeyboardInterrupt, SystemExit) as exErr:

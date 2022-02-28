@@ -5,7 +5,6 @@ from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 
 
 class WorldMagneticModelCalculator(BasicSensor, ABC):
-    
     @property
     @abstractmethod
     def declination(self) -> float:

@@ -3,7 +3,9 @@ import os
 import serial
 import externalTools.ublox_gps_fixed as ublox_gps
 from open_precision import utils
-from open_precision.core.interfaces.sensor_types.global_positioning_system import GlobalPositioningSystem
+from open_precision.core.interfaces.sensor_types.global_positioning_system import (
+    GlobalPositioningSystem,
+)
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.position import Location
 
@@ -22,12 +24,14 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
     def __init__(self, manager: Manager):
         self._manager = manager
-        self._manager.config.register_value(self, 'enable_rtk_correction', True)
-        self._manager.config.register_value(self, 'rtk_correction_start_script_path', 'start_rtk.sh')
-        print('[UbloxGPSAdapter] starting initialisation')
-        self._port = serial.Serial('/dev/serial0', baudrate=115200, timeout=1)
+        self._manager.config.register_value(self, "enable_rtk_correction", True)
+        self._manager.config.register_value(
+            self, "rtk_correction_start_script_path", "start_rtk.sh"
+        )
+        print("[UbloxGPSAdapter] starting initialisation")
+        self._port = serial.Serial("/dev/serial0", baudrate=115200, timeout=1)
         self.gps = ublox_gps.UbloxGps(self._port)
-        if self._manager.config.get_value(self, 'enable_rtk_correction') is True:
+        if self._manager.config.get_value(self, "enable_rtk_correction") is True:
             self.start_rtk_correction()
         self._last_update = None
         self._message: any = None
@@ -36,14 +40,17 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         # self.stop_rtk_correction()
 
         atexit.register(self._cleanup)
-        print('[UbloxGPSAdapter] finished initialisation')
+        print("[UbloxGPSAdapter] finished initialisation")
 
     def _cleanup(self):
         self.stop_rtk_correction()
         self._port.close()
 
     def update_values(self):
-        if self._last_update is None or utils.millis() - self._last_update >= shortest_update_dt:
+        if (
+            self._last_update is None
+            or utils.millis() - self._last_update >= shortest_update_dt
+        ):
             self._message = self.gps.hp_geo_coords()
             self._last_update = utils.millis()
 
@@ -79,22 +86,25 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
     @property
     def location(self) -> Location:
-        location: Location = Location(lon=self.longitude,
-                                      lat=self.latitude,
-                                      height=self.height_above_sea_level,
-                                      horizontal_accuracy=self.vertical_accuracy,
-                                      vertical_accuracy=self.vertical_accuracy)
+        location: Location = Location(
+            lon=self.longitude,
+            lat=self.latitude,
+            height=self.height_above_sea_level,
+            horizontal_accuracy=self.vertical_accuracy,
+            vertical_accuracy=self.vertical_accuracy,
+        )
         return location
 
     def start_rtk_correction(self):
         print("[UBloxGpsAdapter] starting RTK correction stream")
-        command = 'screen -dmS rtk_correction bash ' + \
-                  self._manager.config.get_value(self, 'rtk_correction_start_script_path')
+        command = "screen -dmS rtk_correction bash " + self._manager.config.get_value(
+            self, "rtk_correction_start_script_path"
+        )
         os.system(command)
         self._correction_is_active = True
 
     def stop_rtk_correction(self):
         print("[UBloxGpsAdapter] stopping RTK correction stream")
-        command = 'screen -r rtk_correction -X quit'
+        command = "screen -r rtk_correction -X quit"
         os.system(command)
         self._correction_is_active = False

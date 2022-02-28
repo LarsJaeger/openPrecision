@@ -9,7 +9,7 @@ class MissingPluginException(Exception):
         self._plugin_package = plugin_package
 
     def __str__(self):
-        return f'no plugin of class \'{self._missing_plugin}\' found in package \'{self._plugin_package}\''
+        return f"no plugin of class '{self._missing_plugin}' found in package '{self._plugin_package}'"
 
 
 class PluginException(Exception, ABC):
@@ -23,4 +23,4 @@ class SensorNotConnectedError(PluginException):
         self.sensor = sensor
 
     def __str__(self):
-        return str(self.sensor) + 'is not connected'
+        return str(self.sensor) + "is not connected"

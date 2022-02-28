@@ -8,7 +8,6 @@ from open_precision.core.managers.manager import Manager
 
 
 class TestPositionBuilder(unittest.TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -17,7 +16,7 @@ class TestPositionBuilder(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        """ This setup will only be executed once before the first tests"""
+        """This setup will only be executed once before the first tests"""
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -32,12 +31,12 @@ class TestPositionBuilder(unittest.TestCase):
                 print("a")
                 print(f"pos {counter}: {man.position_builder.current_position}")
         except KeyboardInterrupt:
-            print('KeyboardInterrupt')
+            print("KeyboardInterrupt")
 
 
 def main():
     unittest.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

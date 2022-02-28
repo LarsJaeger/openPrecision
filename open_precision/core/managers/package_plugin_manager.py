@@ -21,7 +21,9 @@ class PackagePluginManager:
         self._plugin_types = utils.get_classes_in_package(self._plugin_type_package)
         self._plugin_package = plugin_package
         self._plugins = utils.get_classes_in_package(self._plugin_package)
-        self._plugin_instance_pool = self._initialise_plugins(self._plugin_types, self._plugins, self._manager)
+        self._plugin_instance_pool = self._initialise_plugins(
+            self._plugin_types, self._plugins, self._manager
+        )
 
     @staticmethod
     def _initialise_plugins(plugin_types, plugins, manager) -> dict:
@@ -30,14 +32,17 @@ class PackagePluginManager:
         initialised_plugins = {}
         for plugin_type in grouped_plugins[0]:
             # initialises first initialisable class in plugin_adapter list of available_plugins
-            possible_plugins_list = grouped_plugins[1][grouped_plugins[0].index(plugin_type)]
+            possible_plugins_list = grouped_plugins[1][
+                grouped_plugins[0].index(plugin_type)
+            ]
             for possible_plugin in possible_plugins_list:
                 try:
-                    initialised_plugins.update(
-                        {plugin_type: possible_plugin(manager)})
+                    initialised_plugins.update({plugin_type: possible_plugin(manager)})
                     break
                 except PluginException:
-                    print(f'[ERROR] An error occurred while enabling {str(possible_plugin)}: {str(PluginException)}')
+                    print(
+                        f"[ERROR] An error occurred while enabling {str(possible_plugin)}: {str(PluginException)}"
+                    )
         return initialised_plugins
 
     @property

@@ -14,6 +14,7 @@ class Location:
 @dataclass
 class Position:
     """position of vehicle: location describes the location of the center of the rear axle; orientation is a
-    quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, z+ = up """
+    quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, z+ = up"""
+
     location: Location
     orientation: Quaternion
