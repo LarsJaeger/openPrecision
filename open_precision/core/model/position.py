@@ -1,14 +1,15 @@
 from dataclasses import dataclass
+
+from numpy import double
 from pyquaternion import Quaternion
 
 
 @dataclass
 class Location:
-    lat: float  # latitude in deg
-    lon: float  # longitude in deg
-    height: float  # returns height above sea level in mm
-    horizontal_accuracy: int  # horizontal accuracy in mm
-    vertical_accuracy: int  # vertical accuracy in mm
+    x: float  # ECEF X coordinate in meters
+    y: float  # ECEF Y coordinate in meters
+    z: float  # ECEF Z coordinate in meters
+    accuracy: float  # position accuracy in meters
 
 
 @dataclass

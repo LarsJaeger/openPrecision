@@ -30,41 +30,9 @@ class GpsAosPositionBuilder(PositionBuilder):
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
-
         print(f"uncorrected_locaction {uncorrected_location}")
-
-        correction_vector = orientation.rotate(
-            self._manager.vehicles.current_vehicle.gps_receiver_offset
-        )  # TODO: check if it is a unit vector
-        print(f"correction_vector {correction_vector}")
-        corrected_location: Location = Location(
-            lat=uncorrected_location.lat
-            - math.tan(
-                np.divide(
-                    correction_vector[1],
-                    uncorrected_location.height - correction_vector[2],
-                    out=np.zeros_like(correction_vector[1]),
-                    where=(uncorrected_location.height - correction_vector[2]) != 0,
-                )
-            ),
-            lon=uncorrected_location.lon
-            - math.tan(
-                np.divide(
-                    correction_vector[0],
-                    uncorrected_location.height - correction_vector[2],
-                    out=np.zeros_like(correction_vector[0]),
-                    where=(uncorrected_location.height - correction_vector[2]) != 0,
-                )
-            ),
-            height=math.sqrt(
-                (uncorrected_location.height - correction_vector[2]) ** 2
-                + math.sqrt(correction_vector[0] ** 2 + correction_vector[1] ** 2)
-            ),
-            horizontal_accuracy=0,  # TODO
-            vertical_accuracy=0,
-        )  # TODO
         corrected_position: Position = Position(
-            location=corrected_location, orientation=orientation
+            location=uncorrected_location, orientation=orientation
         )
         return corrected_position
 
