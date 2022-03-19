@@ -58,9 +58,9 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         if self._message is None:
             return None
         location: Location = Location(
-            x=self._message.ecefX * (10 ^ -2) + self._message.ecefXHp * (10 ^ -5),
-            y=self._message.ecefY * (10 ^ -2) + self._message.ecefYHp * (10 ^ -5),
-            z=self._message.ecefZ * (10 ^ -2) + self._message.ecefZHp * (10 ^ -5),
+            x=self._message.ecefX + self._message.ecefXHp * (10 ^ -2),
+            y=self._message.ecefY + self._message.ecefYHp * (10 ^ -2),
+            z=self._message.ecefZ + self._message.ecefZHp * (10 ^ -2),
             accuracy=self._message.pAcc * (10 ^ -3)
         )
         return location
