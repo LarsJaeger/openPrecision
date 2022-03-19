@@ -48,7 +48,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
     def update_values(self):
         if (self._last_update is None
                 or utils.millis() - self._last_update >= shortest_update_dt):
-            self._message = self.gps.hp_geo_coords_ecef()
+            self._message = self.gps.hp_geo_coords()
             print("message: " + str(self._message))
             self._last_update = utils.millis()
 
