@@ -55,11 +55,13 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
     @property
     def location(self) -> Location:
         self.update_values()
+        if self._message is None:
+            return None
         location: Location = Location(
-            x=self._message.ecefX if self._message is not None else None,
-            y=self._message.ecefY if self._message is not None else None,
-            z=self._message.ecefZ if self._message is not None else None,
-            accuracy=self._message.pAcc if self._message is not None else None
+            x=self._message.ecefX * (10 ^ -2) + self._message.ecefXHp * (10 ^ -5),
+            y=self._message.ecefY * (10 ^ -2) + self._message.ecefYHp * (10 ^ -5),
+            z=self._message.ecefZ * (10 ^ -2) + self._message.ecefZHp * (10 ^ -5),
+            accuracy=self._message.pAcc * (10 ^ -3)
         )
         return location
 
