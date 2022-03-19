@@ -294,7 +294,13 @@ class UbloxGps(object):
         self.send_message(sp.NAV_CLS, self.nav_ms.get("HPPOSECEF"))
         parse_tool = core.Parser([sp.NAV_CLS])
         cls_name, msg_name, payload = parse_tool.receive_from(self.hard_port)
-        # s_payload = self.scale_NAV_HPPOSECEF(payload)
+        print("hilfe: " + str(type(payload)))
+        print("hilfea: " + str(payload))
+        print("hilfe1: " + str(type(msg_name)))
+        print("hilfea1: " + str(msg_name))
+        print("hilfe2: " + str(type(cls_name)))
+        print("hilfea2: " + str(cls_name))
+        #s_payload = self.scale_NAV_HPPOSECEF(payload)
         return payload
 
     def date_time(self):
