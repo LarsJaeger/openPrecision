@@ -297,7 +297,7 @@ class UbloxGps(object):
         if str(type(payload)) is not "HPPOSECEF":
             return None
         s_payload = self.scale_NAV_HPPOSECEF(payload)
-        return payload
+        return s_ payload
 
     def date_time(self):
         """
