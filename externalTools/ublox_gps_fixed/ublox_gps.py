@@ -294,8 +294,8 @@ class UbloxGps(object):
         self.send_message(sp.NAV_CLS, self.nav_ms.get("HPPOSECEF"))
         parse_tool = core.Parser([sp.NAV_CLS])
         cls_name, msg_name, payload = parse_tool.receive_from(self.hard_port)
-        if str(type(payload)) is not "HPPOSECEF":
-            print("wrong message")
+        if str(type(payload)) != "HPPOSECEF":
+            print("wrong message type: " + str(type(payload)))
             return None
         s_payload = self.scale_NAV_HPPOSECEF(payload)
         return s_payload
