@@ -173,7 +173,7 @@ class UbloxGps(object):
         :param ubx_id:      The message id under the ublox class with which
                             to send or receive the message to/from.
         :param ubx_payload: The payload to send to the class/id specified. If
-                            none is given than a "poll request" is
+                            none is given then a "poll request" is
                             initiated.
         :return: True on completion
         :rtype: boolean
