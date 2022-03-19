@@ -659,7 +659,7 @@ class UbloxGps(object):
     def scale_NAV_HPPOSECEF(self, nav_payload):
         """
         This takes the UBX-NAV-HPPOSECEF payload and scales the relevant fields
-        as it's described in the datasheet.
+        as it's described in the datasheet .
 
         :return: Scaled verasion of the given payload.
         :rtype: namedtuple
