@@ -669,9 +669,9 @@ class UbloxGps(object):
         ecef_z_hp = nav_payload.ecefZHp
         pos_acc = nav_payload.pAcc
 
-        nav_payload = nav_payload._replace(ecefX=ecef_x_hp * 0.1)
-        nav_payload = nav_payload._replace(ecefY=ecef_y_hp * 0.1)
-        nav_payload = nav_payload._replace(ecefZ=ecef_z_hp * 0.1)
+        nav_payload = nav_payload._replace(ecefXHp=ecef_x_hp * 0.1)
+        nav_payload = nav_payload._replace(ecefYHp=ecef_y_hp * 0.1)
+        nav_payload = nav_payload._replace(ecefZHp=ecef_z_hp * 0.1)
         nav_payload = nav_payload._replace(pAcc=pos_acc * 0.1)
 
         return nav_payload
