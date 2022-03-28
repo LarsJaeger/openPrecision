@@ -55,6 +55,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
     @property
     def orientation(self) -> Quaternion:
         """returns an orientation quaternion"""
+        print("quat:: " + str(self.sensor.quaternion))
         return Quaternion(self.sensor.quaternion) if self.sensor.quaternion is not (None, None, None, None) else None
 
     @property
