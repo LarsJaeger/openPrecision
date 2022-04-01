@@ -56,7 +56,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
     def orientation(self) -> Quaternion:
         """returns an orientation quaternion"""
         current_quat = self.sensor.quaternion
-        print("quat:: " + str(current_quat))
         if current_quat == (None, None, None, None):
             return None
         quat = Quaternion(current_quat)
