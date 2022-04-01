@@ -59,15 +59,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         print("quat:: " + str(current_quat))
         if current_quat == (None, None, None, None):
             return None
-        try:
-            [float(e) for e in current_quat]
-        except ValueError:
-            print("aahhh Fehler")
-            return None
-        return Quaternion(w=current_quat[0],
-                          x=current_quat[1],
-                          y=current_quat[2],
-                          z=current_quat[3])
+        quat = Quaternion(current_quat)
 
     @property
     def gravity(self) -> np.array:
