@@ -31,14 +31,18 @@ class GpsAosPositionBuilder(PositionBuilder):
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
         print(f"uncorrected_locaction {uncorrected_location}")
+
+        corrected_location = uncorrected_location \
+                             + orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset)
+
         corrected_position: Position = Position(
-            location=uncorrected_location, orientation=orientation
+            location=corrected_location, orientation=orientation
         )
         return corrected_position
 
     @property
     def is_ready(self):
         return (
-            self._manager.sensors[self.gps_class].is_calibrated()
-            and self._manager.sensors[self.aos_class].is_calibrated()
+                self._manager.sensors[self.gps_class].is_calibrated()
+                and self._manager.sensors[self.aos_class].is_calibrated()
         )

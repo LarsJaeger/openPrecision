@@ -61,7 +61,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
             x=(self._message.ecefX + self._message.ecefXHp * 0.1) * 0.01,
             y=(self._message.ecefY + self._message.ecefYHp * 0.1) * 0.01,
             z=(self._message.ecefZ + self._message.ecefZHp * 0.1) * 0.01,
-            accuracy=self._message.pAcc * (10 ^ -3)
+            error=self._message.pAcc * (10 ^ -3)
         )
         return location
 
