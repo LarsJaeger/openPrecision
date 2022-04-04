@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from numpy import double
 from pyquaternion import Quaternion
@@ -9,7 +9,7 @@ class Location:
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
     z: float  # ECEF Z coordinate in meters
-    error: float  # position accuracy in meters
+    error: float # position accuracy in meters
 
     def __add__(self, other):
         if isinstance(other, Location):
