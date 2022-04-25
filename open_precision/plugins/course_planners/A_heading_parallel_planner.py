@@ -44,12 +44,3 @@ class AHeadingParallelPlanner(CoursePlanner):
             current_path.add_waypoint(Waypoint(location=waypoint))
 
             self.course.add_path(current_path)
-
-    def check_waypoint(self, waypoint: Waypoint):
-        pass
-
-    def get_waypoint(self, position: Position) -> Waypoint:
-        # generate waypoint 50m in front of vehicle on working line
-        # decide which multiple of working width is closest to position
-        # check which multiple of working width is closest to lookahead location
-        pass
