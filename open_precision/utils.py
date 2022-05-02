@@ -7,6 +7,8 @@ from cmath import cos
 import numpy as np
 import numpy.linalg as la
 
+from open_precision.core.model.position import Location
+
 
 def millis():
     return int(round(time_.time() * 1000))
@@ -76,7 +78,7 @@ def _get_classes_in_package(package, classes: list) -> list:
     imported_package = __import__(package, fromlist=["a"])
 
     for _, plugin_name, is_package in pkgutil.iter_modules(
-        imported_package.__path__, imported_package.__name__ + "."
+            imported_package.__path__, imported_package.__name__ + "."
     ):
         if not is_package:
             plugin_module = __import__(plugin_name, fromlist=["a"])

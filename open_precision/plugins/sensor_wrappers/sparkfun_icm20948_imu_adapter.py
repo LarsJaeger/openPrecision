@@ -5,7 +5,7 @@ from open_precision.core.interfaces.sensor_types.inertial_measurement_unit impor
 )
 import qwiic_icm20948
 from open_precision import utils
-from open_precision.core.exceptions import SensorNotConnectedError
+from open_precision.core.exceptions import SensorNotConnectedException
 from open_precision.core.managers.manager import Manager
 
 shortest_update_dt = 10  # in ms
@@ -21,7 +21,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
             print(
                 "The Qwiic ICM20948 device isn't connected to the system. Please check your connection"
             )
-            raise SensorNotConnectedError("Qwiic ICM20948")
+            raise SensorNotConnectedException("Qwiic ICM20948")
 
         if self._manager.config.get_value(self, "magnetometer_bias") is None:
             self.calibrated_magnetometer_correction = np.array([0.0, 0.0, 0.0])

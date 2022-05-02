@@ -38,7 +38,6 @@ class AHeadingParallelPlanner(CoursePlanner):
             waypoint = self.base_position.location \
                        + (1000 * self.base_position.orientation.rotate(np.ndarray([1, 0, 0])))
             current_path.add_waypoint(Waypoint(location=waypoint))
-
             waypoint = self.base_position.location \
                        + (1000 * self.base_position.orientation.rotate(np.ndarray([1, 0, 0])))
             current_path.add_waypoint(Waypoint(location=waypoint))

@@ -8,7 +8,8 @@ class Navigator(ABC):
     order to the target point (or line)"""
 
     def __init__(self, manager: Manager):
-        self.manager = manager
-
-    def get_steering_angle(self):
         pass
+
+    @property
+    def steering_angle(self):
+        return None

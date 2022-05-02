@@ -1,5 +1,7 @@
 from abc import ABC
 
+from open_precision.core.model.path import Path
+
 
 class MissingPluginException(Exception):
     """missing plugin"""
@@ -16,7 +18,7 @@ class PluginException(Exception, ABC):
     """subclasses can be raised by plugins"""
 
 
-class SensorNotConnectedError(PluginException):
+class SensorNotConnectedException(PluginException):
     """raised when trying to access a sensor that is not connected"""
 
     def __init__(self, sensor):
@@ -24,3 +26,12 @@ class SensorNotConnectedError(PluginException):
 
     def __str__(self):
         return str(self.sensor) + "is not connected"
+
+
+class NotAPathException(PluginException):
+
+    def __init__(self, path: Path):
+        self.path = path
+
+    def __str__(self):
+        return f'Path has too few waypoints, at least 2 are required'

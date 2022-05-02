@@ -19,7 +19,7 @@ class Manager:
         self._vehicles = VehicleManager(self)
 
     @property
-    def config(self):
+    def config(self) -> ConfigManager:
         return self._config
 
     @property
@@ -27,9 +27,9 @@ class Manager:
         return self._sensor_manager.plugin_instance_pool
 
     @property
-    def position_builder(self):
+    def position_builder(self) -> PositionBuilder:
         return self._position_builder_manager.instance
 
     @property
-    def vehicles(self):
+    def vehicles(self) -> VehicleManager:
         return self._vehicles
