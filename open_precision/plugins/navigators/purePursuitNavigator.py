@@ -1,3 +1,5 @@
+import numpy as np
+
 from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.course import Course
@@ -8,19 +10,25 @@ from open_precision.core.model.position import Location, Position
 def calc_distance(loc1: Location, loc2: Location):
     return abs(loc2 - loc1)
 
-def calc_position_error(pos1: Position, pos2: Position):
+
+def calc_position_error(pos1: Position, target_location: Location, target_direction_vector: np.ndarray):
     # returns a value that becomes bigger the more effort it takes to reach a certain position.
-    # wheight of errors: 1. location 2. heading TODO: think of exact balancing of both
+    # weight of errors: 1. location 2. heading TODO: think of exact balancing of both
     # calc offset:
-    offset_error = calc_distance(pos1.location, pos2.location)
+    offset_error = calc_distance(pos1.location, target_location)
     # calc *horizontal* heading error; horizon is a plane that has the vector of pos1 as a normal vector
-    heading_error = pos1.orientation * pos2.orientation.inverse
-    # TODO convert heading_error (Quaternion) to a scalar that describes the error
+    relativ_orientation_vector = pos1.orientation.inverse.rotate(target_direction_vector)
+    heading_error = relativ_orientation_vector[1] * (1 if relativ_orientation_vector[0] < 0 else -1)
+    # TODO balance and return
+    # take direction vector of current waypoints, rotate it by the inverse of vehicle orientation and compare components
+
+
 
 
 def calc_error_optimization_operation():
     # TODO
     pass
+
 
 class PurePursuitNavigator(Navigator):
     def __init__(self, manager: Manager):
