@@ -11,25 +11,6 @@ def calc_distance(loc1: Location, loc2: Location):
     return abs(loc2 - loc1)
 
 
-def calc_position_error(pos1: Position, target_location: Location, target_direction_vector: np.ndarray):
-    # returns a value that becomes bigger the more effort it takes to reach a certain position.
-    # weight of errors: 1. location 2. heading TODO: think of exact balancing of both
-    # calc offset:
-    offset_error = calc_distance(pos1.location, target_location)
-    # calc *horizontal* heading error; horizon is a plane that has the vector of pos1 as a normal vector
-    relativ_orientation_vector = pos1.orientation.inverse.rotate(target_direction_vector)
-    heading_error = relativ_orientation_vector[1] * (1 if relativ_orientation_vector[0] < 0 else -1)
-    # TODO balance and return
-    # take direction vector of current waypoints, rotate it by the inverse of vehicle orientation and compare components
-
-
-
-
-def calc_error_optimization_operation():
-    # TODO
-    pass
-
-
 class PurePursuitNavigator(Navigator):
     def __init__(self, manager: Manager):
         super().__init__(manager)
@@ -78,8 +59,39 @@ class PurePursuitNavigator(Navigator):
             elif nearest_waypoint == len(current_path_waypoints) - 1:
                 second_waypoint = len(current_path_waypoints) - 2
             else:
-                # test if line from waypoint_id - 1 to waypoint_id or from waypoint_id to waypoint_id + 1 is the one to follow
+                # test if line from waypoint_id - 1 to waypoint_id or from waypoint_id to waypoint_id + 1 is the one
+                # to follow
+                if self.calc_position_error(current_position, ) # TODO determine location on path that is closest to current_position
+
                 pass
         # get next waypoint
         # return result of formula (2*|gy|) / L²
         return None
+
+    def calc_position_error(self, pos1: Position, target_location: Location, target_direction_vector: np.ndarray) -> float:
+        """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
+        # calculate offset:
+        offset_error = calc_distance(pos1.location, target_location)
+
+        # norm target_direction_vector
+        target_direction_vector = np.linalg.norm(target_direction_vector)
+        # calc *horizontal* heading error; horizon is a plane that has the vector of pos1 as a normal vector
+        relative_orientation_vector = pos1.orientation.inverse.rotate(np.linalg.norm(target_direction_vector))
+
+        """decide which turning radius to use (left or right):
+        take direction vector of current waypoints, rotate it by the inverse of vehicle orientation and compare
+        components to determine which way to turn"""
+        heading_error = relative_orientation_vector[1] * (1 if relative_orientation_vector[0] < 0 else -1)
+        if heading_error < 0:
+            turning_radius = self._manager.vehicles.current_vehicle.turn_radius_right
+        else:
+            turning_radius = self._manager.vehicles.current_vehicle.turn_radius_left
+
+        # factor that describes the change of radius TODO make dependent on current speed
+        speed_turning_radius_factor = 1.1
+        # calculate angle between vehicle direction and line direction
+        heading_error_angle = np.arccos(np.clip(np.dot(relative_orientation_vector, np.ndarray([1, 0, 0])), -1.0, 1.0))
+        # final_error = e_o + 1XX% r_min * (2 * e_h / pi)
+        final_error = offset_error + np.multiply(np.multiply(speed_turning_radius_factor, turning_radius),
+                                                 np.divide(heading_error_angle, np.pi))
+        return final_error
