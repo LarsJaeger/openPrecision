@@ -20,8 +20,6 @@ class AHeadingParallelPlanner(CoursePlanner):
         # TODO get user input or read from config
         self.working_width: float = 3.0
 
-
-
     def check_waypoint(self, waypoint: Waypoint):
         pass
 

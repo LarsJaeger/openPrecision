@@ -29,7 +29,9 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
             self, "rtk_correction_start_script_path", "start_rtk.sh"
         )
         print("[UbloxGPSAdapter] starting initialisation")
-        self._port = serial.Serial("/dev/serial0", baudrate=115200, timeout=1)  # TODO add to config
+        self._port = serial.Serial(
+            "/dev/serial0", baudrate=115200, timeout=1
+        )  # TODO add to config
         self.gps = ublox_gps.UbloxGps(self._port)
         self._correction_is_active = None
         if self._manager.config.get_value(self, "enable_rtk_correction") is True:
@@ -46,8 +48,10 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._port.close()
 
     def update_values(self):
-        if (self._last_update is None
-                or utils.millis() - self._last_update >= shortest_update_dt):
+        if (
+            self._last_update is None
+            or utils.millis() - self._last_update >= shortest_update_dt
+        ):
             self._message = self.gps.hp_geo_coords_ecef()
             print("message: " + str(self._message))
             self._last_update = utils.millis()
@@ -61,7 +65,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
             x=(self._message.ecefX + self._message.ecefXHp * 0.1) * 0.01,
             y=(self._message.ecefY + self._message.ecefYHp * 0.1) * 0.01,
             z=(self._message.ecefZ + self._message.ecefZHp * 0.1) * 0.01,
-            error=self._message.pAcc * (10 ^ -3)
+            error=self._message.pAcc * (10 ^ -3),
         )
         return location
 
