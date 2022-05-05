@@ -55,7 +55,11 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
     @property
     def orientation(self) -> Quaternion:
         """returns an orientation quaternion"""
-        return Quaternion(self.sensor.quaternion)
+        current_quat = self.sensor.quaternion
+        if current_quat == (None, None, None, None):
+            return None
+        quat = Quaternion(current_quat)
+        return quat
 
     @property
     def gravity(self) -> np.array:
