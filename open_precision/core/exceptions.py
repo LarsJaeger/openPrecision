@@ -6,7 +6,7 @@ from open_precision.core.model.path import Path
 class MissingPluginException(Exception):
     """missing plugin"""
 
-    def __init__(self, missing_plugin, plugin_package):
+    def __init__(self, missing_plugin: str, plugin_package: str):
         self._missing_plugin = missing_plugin
         self._plugin_package = plugin_package
 

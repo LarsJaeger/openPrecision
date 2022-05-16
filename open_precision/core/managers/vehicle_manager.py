@@ -17,6 +17,7 @@ class VehicleManager:
                     "gps_receiver_offset": [1, 2, 3],
                     "turn_radius_right": 70.3,
                     "turn_radius_left": 69.1,
+                    "wheelbase": 3.2,
                 }
             ],
         ).register_value(self, "current_vehicle_id", 0)
