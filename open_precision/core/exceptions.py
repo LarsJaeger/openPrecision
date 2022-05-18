@@ -1,5 +1,6 @@
 from abc import ABC
 
+from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.model.path import Path
 
 
@@ -35,3 +36,13 @@ class NotAPathException(PluginException):
 
     def __str__(self):
         return f'Path has too few waypoints, at least 2 are required'
+
+
+class CourseNotSetException(PluginException):
+    """raised when there is no course set in navigator"""
+
+    def __init__(self, navigator: Navigator):
+        self.navigator = navigator
+
+    def __str__(self):
+        return f'Course of navigator {self.navigator} is None / has not been set'

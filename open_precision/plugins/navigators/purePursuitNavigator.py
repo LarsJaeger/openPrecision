@@ -3,6 +3,7 @@ from math import sqrt
 import numpy as np
 
 from open_precision import utils
+from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.course import Course
@@ -32,10 +33,11 @@ class PurePursuitNavigator(Navigator):
         return 10
 
     def get_steering_angle(self):
+        # now follows a lot of spaghetti code
+        if self._course is None:
+            raise CourseNotSetException(self)
         current_position = self._manager.position_builder.current_position
         waypoint_base_id = None
-        path_direction_is_positive = None
-        current_path_waypoints = None
 
         if self._current_path_id is None:
             # look for closest

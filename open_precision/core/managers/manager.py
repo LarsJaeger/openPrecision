@@ -1,3 +1,5 @@
+from open_precision.core.interfaces.course_planner import CoursePlanner
+from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.class_plugin_manager import ClassPluginManager
 from open_precision.core.managers.config_manager import ConfigManager
@@ -13,6 +15,10 @@ class Manager:
         self._position_builder_manager = ClassPluginManager(self, PositionBuilder,
                                                             "open_precision.plugins.position_builders")
         self._vehicles = VehicleManager(self)
+        self._course_planner = ClassPluginManager(self, CoursePlanner,
+                                                  "open_precision.plugins.course_planners")
+        self._navigator = ClassPluginManager(self, Navigator,
+                                             "open_precision.plugins.navigators")
 
     @property
     def config(self) -> ConfigManager:
@@ -29,3 +35,11 @@ class Manager:
     @property
     def vehicles(self) -> VehicleManager:
         return self._vehicles
+
+    @property
+    def course_planner(self) -> CoursePlanner:
+        return self._course_planner.instance
+
+    @property
+    def navigator(self) -> Navigator:
+        return self._navigator.instance
