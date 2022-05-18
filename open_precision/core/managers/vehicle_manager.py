@@ -2,12 +2,14 @@ import atexit
 from dataclasses import asdict
 
 import numpy as np
+
+from open_precision.core.managers.manager import Manager
 from open_precision.core.model.vehicle import Vehicle
 
 
 class VehicleManager:
-    def __init__(self, manager):
-        self._manager = manager
+    def __init__(self, manager: Manager):
+        self._manager: Manager = manager
         self._manager.config.register_value(
             self,
             "vehicles",

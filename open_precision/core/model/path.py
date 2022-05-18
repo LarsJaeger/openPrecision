@@ -18,3 +18,8 @@ class Path:
         waypoint.path = self
         self.waypoints.append(waypoint)
         return self
+
+    @property
+    def id(self) -> int:
+        """ Attention: Very Ressource intensive; gets index from search of current course's path list"""
+        return self.course.paths.index(self)

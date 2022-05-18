@@ -13,9 +13,9 @@ from open_precision.utils import intersections_of_circle_and_line_segment
 class PurePursuitNavigator(Navigator):
     def __init__(self, manager: Manager):
         super().__init__(manager)
-        self._manager = manager
-        self._course: Course = None
-        self._current_path_id = None
+        self._manager: Manager = manager
+        self._course: Course | None = None
+        self._current_path_id: int | None = None
 
     @property
     def course(self):
@@ -33,47 +33,78 @@ class PurePursuitNavigator(Navigator):
     def get_steering_angle(self):
         current_position = self._manager.position_builder.current_position
         if self._current_path_id is None:
-            # TODO get next(current) path
-            # check priority
             # look for closest
-            pass
-
-        # get next waypoint of current path
-        current_path_waypoints = self._course.paths[self._current_path_id].waypoints
-        waypoint_base_id = None
-        nearest_waypoint_distance = None
-        for waypoint_id, waypoint in enumerate(current_path_waypoints):
-            # check for the waypoint closest to lookahead
-            if waypoint_base_id is None:
-                waypoint_base_id = waypoint_id
-                nearest_waypoint_distance = utils.calc_distance(current_position.location,
-                                                                waypoint.location)
-            else:
-                waypoint_distance = utils.calc_distance(current_position.location,
-                                                        waypoint.location)
-                if waypoint_distance < nearest_waypoint_distance:
-                    waypoint_base_id = waypoint_id
-                    nearest_waypoint_distance = waypoint_distance
-
-        # calculate which direction to go from waypoint_base (index positive changes, or index negative changes)
-        if waypoint_base_id == 0:
-            waypoint_target_id = 1
-        elif waypoint_base_id == len(current_path_waypoints) - 1:
-            waypoint_target_id = waypoint_base_id - 1
+            best_segment_base_waypoint = None
+            best_segment_target_waypoint = None
+            smallest_loss = float('inf')
+            for path in self.course.paths:
+                nr_of_waypoints = len(path.waypoints)
+                for waypoint_id in range(nr_of_waypoints):
+                    if waypoint_id == 0:
+                        # check from wp_id 0 to wp_id 1
+                        loss = self.calc_line_error(current_position, path.waypoints[0], path.waypoints[1])
+                        if smallest_loss > loss:
+                            smallest_loss = loss
+                            best_segment_base_waypoint = path.waypoints[0]
+                            best_segment_target_waypoint = path.waypoints[1]
+                    elif waypoint_id == nr_of_waypoints - 1:
+                        # check from wp_id nr_of_waypoints - 1 to previous wp
+                        loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
+                                                    path.waypoints[nr_of_waypoints -2])
+                        if smallest_loss > loss:
+                            smallest_loss = loss
+                            best_segment_base_waypoint = path.waypoints[nr_of_waypoints - 1]
+                            best_segment_target_waypoint = path.waypoints[nr_of_waypoints - 2]
+                    else:
+                        # check both directions
+                        loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
+                                                    path.waypoints[waypoint_id + 1])
+                        if smallest_loss > loss:
+                            smallest_loss = loss
+                            best_segment_base_waypoint = path.waypoints[waypoint_id]
+                            best_segment_target_waypoint = path.waypoints[waypoint_id + 1]
+                        loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
+                                                    path.waypoints[waypoint_id - 1])
+                        if smallest_loss > loss:
+                            smallest_loss = loss
+                            best_segment_base_waypoint = path.waypoints[waypoint_id]
+                            best_segment_target_waypoint = path.waypoints[waypoint_id - 1]
         else:
-            # test if line from waypoint_id - 1 to waypoint_id or from waypoint_id to waypoint_id + 1 is the one
-            # to follow
-            if self.calc_line_error(current_position,
-                                    current_path_waypoints[waypoint_base_id],
-                                    current_path_waypoints[waypoint_base_id + 1]) \
-                    > self.calc_line_error(current_position,
-                                           current_path_waypoints[waypoint_base_id],
-                                           current_path_waypoints[waypoint_base_id - 1]):
-                waypoint_target_id = waypoint_base_id + 1
-            else:
-                waypoint_target_id = waypoint_base_id - 1
-        path_direction_is_positive = True if (waypoint_target_id - waypoint_base_id) > 0 else False
+            # get next waypoint of current path
+            current_path_waypoints = self._course.paths[self._current_path_id].waypoints
+            waypoint_base_id = None
+            nearest_waypoint_distance = None
+            for waypoint_id, waypoint in enumerate(current_path_waypoints):
+                # check for the waypoint closest to lookahead
+                if waypoint_base_id is None:
+                    waypoint_base_id = waypoint_id
+                    nearest_waypoint_distance = utils.calc_distance(current_position.location,
+                                                                    waypoint.location)
+                else:
+                    waypoint_distance = utils.calc_distance(current_position.location,
+                                                            waypoint.location)
+                    if waypoint_distance < nearest_waypoint_distance:
+                        waypoint_base_id = waypoint_id
+                        nearest_waypoint_distance = waypoint_distance
 
+            # calculate which direction to go from waypoint_base (index positive changes, or index negative changes)
+            if waypoint_base_id == 0:
+                waypoint_target_id = 1
+            elif waypoint_base_id == len(current_path_waypoints) - 1:
+                waypoint_target_id = waypoint_base_id - 1
+            else:
+                """test if line from waypoint_id - 1 to waypoint_id or from waypoint_id to waypoint_id + 1 is the one
+                to follow"""
+                if self.calc_line_error(current_position,
+                                        current_path_waypoints[waypoint_base_id],
+                                        current_path_waypoints[waypoint_base_id + 1]) \
+                        > self.calc_line_error(current_position,
+                                               current_path_waypoints[waypoint_base_id],
+                                               current_path_waypoints[waypoint_base_id - 1]):
+                    waypoint_target_id = waypoint_base_id + 1
+                else:
+                    waypoint_target_id = waypoint_base_id - 1
+            path_direction_is_positive = True if (waypoint_target_id - waypoint_base_id) > 0 else False
 
         lookahead_distance = self._lookahead_distance
         # back rotation to rotate the important points from global to vehicle coordinate system
@@ -115,7 +146,10 @@ class PurePursuitNavigator(Navigator):
         # based on https://www.youtube.com/watch?v=qYR7mmcwT2w and http://www.davdata.nl/math/turning_radius.html
         # return result of formula arctan(W / (L² / (2*|gy|)))
         wheelbase = self._manager.vehicles.current_vehicle.wheelbase
-        return np.arctan(wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1]))))
+        angle = np.arctan(wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1]))))
+        # set sign of angle dependent on turning direction
+        angle = angle * 1 if target_point[1] < 0 else -1
+        return angle
 
     def _calc_combined_error(self, offset_error: float, pos1, waypoint_base: Waypoint, waypoint_target: Waypoint):
         # rotation from global to vehicle reference system
