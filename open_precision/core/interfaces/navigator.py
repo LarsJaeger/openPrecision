@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from open_precision.core.managers.manager import Manager
+from open_precision.core.model.course import Course
 
 
 class Navigator(ABC):
@@ -13,5 +14,15 @@ class Navigator(ABC):
 
     @property
     @abstractmethod
-    def steering_angle(self):
-        return None
+    def course(self) -> Course:
+        pass
+
+    @course.setter
+    @abstractmethod
+    def course(self, course: Course):
+        pass
+
+    @property
+    @abstractmethod
+    def steering_angle(self) -> float:
+        pass

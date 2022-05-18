@@ -32,8 +32,9 @@ class PurePursuitNavigator(Navigator):
         # TODO make dynamic
         return 10
 
-    def get_steering_angle(self):
-        # now follows a lot of spaghetti code
+    @property
+    def steering_angle(self):
+        # what's following now is a lot of spaghetti code
         if self._course is None:
             raise CourseNotSetException(self)
         current_position = self._manager.position_builder.current_position
