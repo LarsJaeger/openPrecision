@@ -26,7 +26,7 @@ class TestPositionBuilder(unittest.TestCase):
         man = Manager()
         try:
             while True:
-                Manager.course_planner.
+                Manager.
                 print(f"pos {counter}: {man.position_builder.current_position}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
