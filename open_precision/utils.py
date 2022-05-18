@@ -3,9 +3,12 @@ import os
 import pkgutil
 import time as time_
 from cmath import cos
+from math import sqrt
 
 import numpy as np
 import numpy.linalg as la
+
+from open_precision.core.model.position import Location
 
 
 def millis():
@@ -76,7 +79,7 @@ def _get_classes_in_package(package, classes: list) -> list:
     imported_package = __import__(package, fromlist=["a"])
 
     for _, plugin_name, is_package in pkgutil.iter_modules(
-        imported_package.__path__, imported_package.__name__ + "."
+            imported_package.__path__, imported_package.__name__ + "."
     ):
         if not is_package:
             plugin_module = __import__(plugin_name, fromlist=["a"])
@@ -122,3 +125,51 @@ def norm_vector(vec):
     return np.divide(
         vec, np.linalg.norm(vec), out=np.zeros_like(vec), where=np.linalg.norm(vec) != 0
     )
+
+
+def calc_distance(loc1: Location, loc2: Location):
+    return abs(loc2 - loc1)
+
+
+def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.ndarray):
+    return np.divide(np.abs(np.cross(np.dot((loc1 - line_base_point).to_numpy())), line_direction),
+                     np.abs(line_direction))
+
+
+def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list[float],
+                                             point_on_line2: tuple[float] | list[float],
+                                             circle_radius: float) -> list[tuple[float]]:
+    # circle center is at (0,0)
+    # calculation according to https://mathworld.wolfram.com/Circle-LineIntersection.html
+    d_x = point_on_line2[0] - point_on_line1[0]  # delta x of line points
+    d_y = point_on_line2[1] - point_on_line1[1]  # delta y of line points
+    d_r = sqrt(d_x ** 2 + d_y ** 2)
+    # here my understanding of the calculation stops
+    d = point_on_line1[0] * point_on_line2[1] - point_on_line2[0] * point_on_line1[1]
+    discriminant = (circle_radius ** 2) * (d_r ** 2) - (d ** 2)
+    if discriminant < 0:
+        return []
+    # there is an intersection or tangent -> calculate points that are on line
+    x_part1 = (d * d_y)
+    x_part2 = ((1 if d_y < 0 else -1) * d_x * sqrt(discriminant))
+    part3 = (d_r ** 2)
+    x1_candidate = (x_part1 + x_part2) / part3
+    x2_candidate = (x_part1 - x_part2) / part3
+    y_part1 = (-d * d_x)
+    y_part2 = (abs(d_y) * sqrt(discriminant))
+    y1_candidate = (y_part1 + y_part2) / part3
+    y2_candidate = (y_part1 - y_part2) / part3
+
+    # check if points are not only on line, but also on line segment and add if point is not already on list
+    result = []
+    if min(point_on_line1[0], point_on_line2[0]) < x1_candidate < max(point_on_line1[0], point_on_line2[0]) \
+            and min(point_on_line1[1], point_on_line2[1]) < y1_candidate < max(point_on_line1[1], point_on_line2[1]):
+        # point 1 is on line -> add to list
+        result.append((x1_candidate, y1_candidate))
+
+    if (min(point_on_line1[0], point_on_line2[0]) < x2_candidate < max(point_on_line1[0], point_on_line2[0])) \
+            and min(point_on_line1[1], point_on_line2[1]) < y2_candidate < max(point_on_line1[1], point_on_line2[1]) \
+            and not all([x1_candidate == x2_candidate, y1_candidate == y2_candidate]):
+        # point 2 is on line and differs from point 1 -> add to list
+        result.append((x2_candidate, y2_candidate))
+    return result

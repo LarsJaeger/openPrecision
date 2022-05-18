@@ -2,12 +2,14 @@ import atexit
 from dataclasses import asdict
 
 import numpy as np
+
+from open_precision.core.managers.manager import Manager
 from open_precision.core.model.vehicle import Vehicle
 
 
 class VehicleManager:
-    def __init__(self, manager):
-        self._manager = manager
+    def __init__(self, manager: Manager):
+        self._manager: Manager = manager
         self._manager.config.register_value(
             self,
             "vehicles",
@@ -17,6 +19,7 @@ class VehicleManager:
                     "gps_receiver_offset": [1, 2, 3],
                     "turn_radius_right": 70.3,
                     "turn_radius_left": 69.1,
+                    "wheelbase": 3.2,
                 }
             ],
         ).register_value(self, "current_vehicle_id", 0)

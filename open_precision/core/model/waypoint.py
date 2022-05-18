@@ -1,10 +1,16 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+from open_precision.core.model.path import Path
 from open_precision.core.model.position import Location
 
 
 @dataclass
-class Waypoint(Location):
-    id: int
-    priority: int  # higher priority = more important and vice versa
-    path_id: int  # id of the corresponding path
+class Waypoint:
+    priority: int = field(init=True, default=0)  # higher priority = more important and vice versa
+    location: Location = field(init=True, default=None)
+    path: Path = field(init=False, default=None)
+
+    @property
+    def id(self) -> int:
+        """ Attention: Very resource intensive; gets index from search of current path's waypoint list"""
+        return self.path.waypoints.index(self)

@@ -5,7 +5,8 @@ from open_precision.core.model.position import Position
 class PositionBuilder(ABC):
     @abstractmethod
     def __init__(self, manager):
-        self._manager = manager
+        # self._manager = manager
+        pass
 
     @property
     @abstractmethod
