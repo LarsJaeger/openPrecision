@@ -1,6 +1,7 @@
 from math import sqrt
 
 import numpy as np
+
 from open_precision import utils
 from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.managers.manager import Manager
@@ -32,6 +33,10 @@ class PurePursuitNavigator(Navigator):
 
     def get_steering_angle(self):
         current_position = self._manager.position_builder.current_position
+        waypoint_base_id = None
+        path_direction_is_positive = None
+        current_path_waypoints = None
+
         if self._current_path_id is None:
             # look for closest
             best_segment_base_waypoint = None
@@ -50,7 +55,7 @@ class PurePursuitNavigator(Navigator):
                     elif waypoint_id == nr_of_waypoints - 1:
                         # check from wp_id nr_of_waypoints - 1 to previous wp
                         loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
-                                                    path.waypoints[nr_of_waypoints -2])
+                                                    path.waypoints[nr_of_waypoints - 2])
                         if smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[nr_of_waypoints - 1]
@@ -69,10 +74,13 @@ class PurePursuitNavigator(Navigator):
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[waypoint_id]
                             best_segment_target_waypoint = path.waypoints[waypoint_id - 1]
+            self._current_path_id = best_segment_base_waypoint.path.id
+            waypoint_base_id = best_segment_base_waypoint.id
+            path_direction_is_positive = best_segment_base_waypoint.id < best_segment_target_waypoint.id
+            current_path_waypoints = best_segment_base_waypoint.path.waypoints
         else:
             # get next waypoint of current path
             current_path_waypoints = self._course.paths[self._current_path_id].waypoints
-            waypoint_base_id = None
             nearest_waypoint_distance = None
             for waypoint_id, waypoint in enumerate(current_path_waypoints):
                 # check for the waypoint closest to lookahead
@@ -104,7 +112,7 @@ class PurePursuitNavigator(Navigator):
                     waypoint_target_id = waypoint_base_id + 1
                 else:
                     waypoint_target_id = waypoint_base_id - 1
-            path_direction_is_positive = True if (waypoint_target_id - waypoint_base_id) > 0 else False
+            path_direction_is_positive = (waypoint_target_id - waypoint_base_id) > 0
 
         lookahead_distance = self._lookahead_distance
         # back rotation to rotate the important points from global to vehicle coordinate system

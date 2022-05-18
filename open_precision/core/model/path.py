@@ -21,5 +21,5 @@ class Path:
 
     @property
     def id(self) -> int:
-        """ Attention: Very Ressource intensive; gets index from search of current course's path list"""
+        """ Attention: Very resource intensive; gets index from search of current course's path list"""
         return self.course.paths.index(self)
