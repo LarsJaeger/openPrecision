@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from open_precision.core.model.course import Course
+import open_precision.core.model.course as course
 from open_precision.core.model.waypoint import Waypoint
 
 
@@ -12,7 +12,7 @@ class Path:
 class Path:
     priority: int = field(init=True, default=0)
     waypoints: list[Waypoint] = field(init=True, default_factory=lambda: [])
-    course: Course = field(init=False, default=None)
+    course: course.Course = field(init=False, default=None)
 
     def add_waypoint(self, waypoint) -> Path:
         waypoint.path = self
