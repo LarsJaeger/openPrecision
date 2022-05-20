@@ -1,4 +1,4 @@
-from dataclasses import dataclass,
+from dataclasses import dataclass
 
 from open_precision.core.exceptions import NotAPathException
 from open_precision.core.model import path
