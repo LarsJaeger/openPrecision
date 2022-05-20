@@ -27,7 +27,7 @@ class TestPositionBuilder(unittest.TestCase):
         try:
             while True:
                 man.navigator.course = man.course_generator.generate_course()
-                print(f"pos {counter}: {man.navigator.steering_angle}")
+                print(f"angle: {man.navigator.steering_angle}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 
