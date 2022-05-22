@@ -1,4 +1,8 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
+
+from open_precision.core.managers.manager import Manager
+from open_precision.core.model import course
 from open_precision.core.model.course import Course
 
 
@@ -7,12 +11,12 @@ class Navigator(ABC):
     order to the target point (or line)"""
 
     @abstractmethod
-    def __init__(self, manager):
+    def __init__(self, manager: Manager):
         pass
 
     @property
     @abstractmethod
-    def course(self) -> Course:
+    def course(self) -> course.Course:
         pass
 
     @course.setter

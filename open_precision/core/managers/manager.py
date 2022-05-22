@@ -1,3 +1,4 @@
+from __future__ import annotations
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.interfaces.position_builder import PositionBuilder

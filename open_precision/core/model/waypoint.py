@@ -1,5 +1,5 @@
+from __future__ import annotations
 from dataclasses import dataclass, field
-
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Location
 

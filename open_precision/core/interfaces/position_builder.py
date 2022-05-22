@@ -1,10 +1,13 @@
+from __future__ import annotations
 from abc import abstractmethod, ABC
+
+from open_precision.core.managers.manager import Manager
 from open_precision.core.model.position import Position
 
 
 class PositionBuilder(ABC):
     @abstractmethod
-    def __init__(self, manager):
+    def __init__(self, manager: Manager):
         # self._manager = manager
         pass
 

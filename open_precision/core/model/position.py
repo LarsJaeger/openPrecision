@@ -1,8 +1,7 @@
-from dataclasses import dataclass, field
+from __future__ import annotations
+from dataclasses import dataclass
 from math import sqrt
-
 import numpy as np
-from numpy import double
 from pyquaternion import Quaternion
 
 
