@@ -13,7 +13,7 @@ from open_precision.utils import intersections_of_circle_and_line_segment
 
 
 class PurePursuitNavigator(Navigator):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: 'Manager'):
         super().__init__(manager)
         self._manager: Manager = manager
         self._course: Course | None = None
@@ -24,7 +24,7 @@ class PurePursuitNavigator(Navigator):
         return self._course
 
     @course.setter
-    def course(self, course: Course):
+    def course(self, course: 'Course'):
         self._course = course
 
     @property
@@ -162,7 +162,7 @@ class PurePursuitNavigator(Navigator):
         angle = angle * 1 if target_point[1] < 0 else -1
         return angle
 
-    def _calc_combined_error(self, offset_error: float, pos1, waypoint_base: Waypoint, waypoint_target: Waypoint):
+    def _calc_combined_error(self, offset_error: float, pos1, waypoint_base: 'Waypoint', waypoint_target: 'Waypoint'):
         # rotation from global to vehicle reference system
         back_rotation = pos1.orientation.inverse
         # norm target_direction_vector

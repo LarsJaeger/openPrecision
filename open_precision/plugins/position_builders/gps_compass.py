@@ -18,7 +18,7 @@ from open_precision.utils import norm_vector
 
 
 class GpsCompassPositionBuilder(PositionBuilder):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: 'Manager'):
         self._manager = manager
 
         """get available sensors"""
@@ -27,7 +27,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
         self.wmm_class = WorldMagneticModelCalculator
 
     @property
-    def current_position(self) -> Position:
+    def current_position(self) -> 'Position':
         uncorrected_location: Location = self._manager.sensors[self.gps_class].location
         gravity_vector: np.array = self._manager.sensors[self.aos_class].gravity
         mag_real_vector: np.array = self._manager.sensors[

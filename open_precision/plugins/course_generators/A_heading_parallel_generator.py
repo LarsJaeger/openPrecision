@@ -9,10 +9,10 @@ from open_precision.core.model.waypoint import Waypoint
 
 
 class AHeadingParallelGenerator(CourseGenerator):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: 'Manager'):
         self.man: Manager = manager
 
-    def generate_course(self) -> Course:
+    def generate_course(self) -> 'Course':
         # get position
         input('press enter to set first position')
         base_position: Position = self.man.position_builder.current_position

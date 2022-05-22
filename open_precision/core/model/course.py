@@ -9,11 +9,11 @@ if TYPE_CHECKING:
 @dataclass
 class Course:
     """ A course consists of paths that contain waypoints"""
-    name: str
-    description: str
-    paths: list[Path]
+    name: 'str'
+    description: 'str'
+    paths: 'list[Path]'
 
-    def add_path(self, path: Path):
+    def add_path(self, path: 'Path'):
         # check if Path has at least two waypoints
         if len(path.waypoints) < 2:
             raise NotAPathException

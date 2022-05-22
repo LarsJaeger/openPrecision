@@ -16,7 +16,7 @@ from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater
 from open_precision.core.managers.manager import Manager
 
 
-def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
+def wmm_input_builder(longitude: 'float', latitude: 'float', altitude_msl):
     converted_input_data_string = (
         str(datetime.now().year) + "." + str(datetime.now().month) + " "
     )
@@ -34,7 +34,7 @@ shortest_update_dt = 100000  # in ms
 
 
 class WmmWrapper(WorldMagneticModelCalculator):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: 'Manager'):
         self._manager = manager
         self._manager.config.register_value(
             self, "wmm_bin_path", "example/wmm/bin/path"
@@ -47,7 +47,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
     def _cleanup(self):
         pass
 
-    def _get_data_point(self, longitude: float, latitude: float, altitude_msl):
+    def _get_data_point(self, longitude: 'float', latitude: 'float', altitude_msl):
         with open("wmmInput.txt", "w") as wmm_input:
             wmm_input.write(wmm_input_builder(longitude, latitude, altitude_msl))
         command = (
@@ -103,17 +103,17 @@ class WmmWrapper(WorldMagneticModelCalculator):
             )
             self._last_update = utils.millis()
 
-    def calibrate(self) -> bool:
+    def calibrate(self) -> 'bool':
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
         return True if calibration succeeded"""
         pass
 
     @property
-    def is_calibrated(self) -> bool:
+    def is_calibrated(self) -> 'bool':
         return True
 
     @property
-    def declination(self) -> float:
+    def declination(self) -> 'float':
         """returns the locational magnetic declination (magnetic variation) in degrees"""
         self.update_values()
         return float(self._current_datapoint["D_deg"]) + (
@@ -121,7 +121,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
         )
 
     @property
-    def inclination(self) -> float:
+    def inclination(self) -> 'float':
         """returns the locational magnetic inclination in degrees"""
         self.update_values()
         return float(self._current_datapoint["I_deg"]) + (
@@ -129,19 +129,19 @@ class WmmWrapper(WorldMagneticModelCalculator):
         )
 
     @property
-    def total_intensity(self) -> float:
+    def total_intensity(self) -> 'float':
         """returns the total intensity in nT"""
         self.update_values()
         return self._current_datapoint["F_nT"]
 
     @property
-    def horizontal_intensity(self) -> float:
+    def horizontal_intensity(self) -> 'float':
         """returns the horizontal intensity in nT"""
         self.update_values()
         return self._current_datapoint["H_nT"]
 
     @property
-    def field_vector(self) -> ndarray:
+    def field_vector(self) -> 'ndarray':
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
         return np.array(
@@ -153,22 +153,22 @@ class WmmWrapper(WorldMagneticModelCalculator):
         )
 
     @property
-    def quaternion(self) -> Quaternion:
+    def quaternion(self) -> 'Quaternion':
         """returns the quaternion describing the rotation from north to the magnetic vector"""
         self.update_values()
         return Quaternion()
 
     @property
-    def north_component(self) -> float:
+    def north_component(self) -> 'float':
         self.update_values()
         return self._current_datapoint["X_nT"]
 
     @property
-    def east_component(self) -> float:
+    def east_component(self) -> 'float':
         self.update_values()
         return self._current_datapoint["Y_nT"]
 
     @property
-    def vertical_component(self) -> float:
+    def vertical_component(self) -> 'float':
         self.update_values()
         return self._current_datapoint["Z_nT"]
