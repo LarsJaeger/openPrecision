@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 from math import sqrt
 import numpy as np

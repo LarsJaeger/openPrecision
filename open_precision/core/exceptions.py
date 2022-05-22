@@ -1,7 +1,9 @@
 from abc import ABC
+from typing import TYPE_CHECKING
 
-from open_precision.core.interfaces.navigator import Navigator
-from open_precision.core.model.path import Path
+if TYPE_CHECKING:
+    from open_precision.core.interfaces.navigator import Navigator
+    from open_precision.core.model.path import Path
 
 
 class MissingPluginException(Exception):

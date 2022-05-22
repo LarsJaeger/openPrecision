@@ -1,7 +1,9 @@
-from __future__ import annotations
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
 from open_precision.core.exceptions import NotAPathException
-from open_precision.core.model.path import Path
+if TYPE_CHECKING:
+    from open_precision.core.model.path import Path
 
 
 @dataclass

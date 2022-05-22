@@ -1,9 +1,9 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
-from open_precision.core.managers.manager import Manager
-from open_precision.core.model import course
-from open_precision.core.model.course import Course
+if TYPE_CHECKING:
+    from open_precision.core.managers.manager import Manager
+    from open_precision.core.model.course import Course
 
 
 class Navigator(ABC):
@@ -16,7 +16,7 @@ class Navigator(ABC):
 
     @property
     @abstractmethod
-    def course(self) -> course.Course:
+    def course(self) -> Course:
         pass
 
     @course.setter

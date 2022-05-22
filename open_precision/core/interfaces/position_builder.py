@@ -1,8 +1,8 @@
-from __future__ import annotations
 from abc import abstractmethod, ABC
-
-from open_precision.core.managers.manager import Manager
-from open_precision.core.model.position import Position
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from open_precision.core.managers.manager import Manager
+    from open_precision.core.model.position import Position
 
 
 class PositionBuilder(ABC):
