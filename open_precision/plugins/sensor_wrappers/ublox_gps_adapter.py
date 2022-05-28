@@ -13,14 +13,6 @@ shortest_update_dt = 100  # in ms
 
 
 class UbloxGPSAdapter(GlobalPositioningSystem):
-    @property
-    def is_calibrated(self) -> 'bool':
-        # todo
-        return True
-
-    def calibrate(self) -> 'bool':
-        # todo
-        pass
 
     def __init__(self, manager: 'Manager'):
         self._manager = manager
