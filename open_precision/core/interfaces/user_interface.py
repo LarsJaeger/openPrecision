@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
 
 
-class InputDevice(ABC):
+class UserInterface(ABC):
     @abstractmethod
     def __init__(self, manager: 'Manager'):
         self._manager = manager
