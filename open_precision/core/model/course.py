@@ -16,7 +16,7 @@ class Course:
     def add_path(self, path: Path):
         # check if Path has at least two waypoints
         if len(path.waypoints) < 2:
-            raise NotAPathException
+            raise NotAPathException(path)
         path.course = self
         self.paths.append(path)
         return self
