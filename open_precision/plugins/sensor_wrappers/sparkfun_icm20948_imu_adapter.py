@@ -12,7 +12,7 @@ shortest_update_dt = 10  # in ms
 
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
-    def __init__(self, manager: 'Manager'):
+    def __init__(self, manager: Manager):
         self._manager = manager
         print("[SparkfunIcm20948Adapter] started initialisation")
         manager.config.register_value(self, "magnetometer_bias", None)
@@ -42,10 +42,10 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
         pass
 
     @property
-    def is_calibrated(self) -> 'bool':
+    def is_calibrated(self) -> bool:
         return self._manager.config.get_value(self, "magnetometer_bias") is not None
 
-    def calibrate(self) -> 'bool':
+    def calibrate(self) -> bool:
         print("Please enter calibration data in config.yml and retry!")
         return False
 

@@ -19,25 +19,25 @@ class Manager:
         self._navigator = ClassPluginManager(self, Navigator, "open_precision.plugins.navigators")
 
     @property
-    def config(self) -> 'ConfigManager':
+    def config(self) -> ConfigManager:
         return self._config
 
     @property
-    def sensors(self) -> 'dict':
+    def sensors(self) -> dict:
         return self._sensor_manager.plugin_instance_pool
 
     @property
-    def position_builder(self) -> 'PositionBuilder':
+    def position_builder(self) -> PositionBuilder:
         return self._position_builder_manager.instance
 
     @property
-    def vehicles(self) -> 'VehicleManager':
+    def vehicles(self) -> VehicleManager:
         return self._vehicles
 
     @property
-    def course_generator(self) -> 'CourseGenerator':
+    def course_generator(self) -> CourseGenerator:
         return self._course_generator.instance
 
     @property
-    def navigator(self) -> 'Navigator':
+    def navigator(self) -> Navigator:
         return self._navigator.instance

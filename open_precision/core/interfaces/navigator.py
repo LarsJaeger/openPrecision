@@ -11,20 +11,20 @@ class Navigator(ABC):
     order to the target point (or line)"""
 
     @abstractmethod
-    def __init__(self, manager: 'Manager'):
+    def __init__(self, manager: Manager):
         pass
 
     @property
     @abstractmethod
-    def course(self) -> 'Course':
+    def course(self) -> Course:
         pass
 
     @course.setter
     @abstractmethod
-    def course(self, course: 'Course'):
+    def course(self, course: Course):
         pass
 
     @property
     @abstractmethod
-    def steering_angle(self) -> 'float':
+    def steering_angle(self) -> float:
         pass

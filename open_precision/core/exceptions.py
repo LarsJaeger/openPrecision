@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class MissingPluginException(Exception):
     """missing plugin"""
 
-    def __init__(self, missing_plugin: 'str', plugin_package: 'str'):
+    def __init__(self, missing_plugin: str, plugin_package: str):
         self._missing_plugin = missing_plugin
         self._plugin_package = plugin_package
 
@@ -33,7 +33,7 @@ class SensorNotConnectedException(PluginException):
 
 class NotAPathException(PluginException):
 
-    def __init__(self, path: 'Path'):
+    def __init__(self, path: Path):
         self.path = path
 
     def __str__(self):
@@ -43,7 +43,7 @@ class NotAPathException(PluginException):
 class CourseNotSetException(PluginException):
     """raised when there is no course set in navigator"""
 
-    def __init__(self, navigator: 'Navigator'):
+    def __init__(self, navigator: Navigator):
         self.navigator = navigator
 
     def __str__(self):

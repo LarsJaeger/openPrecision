@@ -2,7 +2,7 @@ from open_precision import utils
 from open_precision.core.exceptions import PluginException
 
 
-def _group_plugins(plugin_types, plugins) -> 'tuple':
+def _group_plugins(plugin_types, plugins) -> tuple:
     grouped_plugins: tuple = (list(), list())
     for plugin_type in plugin_types:
         plugins_of_type = []

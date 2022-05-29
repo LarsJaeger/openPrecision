@@ -10,7 +10,7 @@ from open_precision.core.managers.manager import Manager
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
-    def __init__(self, manager: 'Manager'):
+    def __init__(self, manager: Manager):
         self._manager = manager
         self._manager.config.register_value(self, "debug", False)
         print("[Bno055AosAdapter] starting initialisation")

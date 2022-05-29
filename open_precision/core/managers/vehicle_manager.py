@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class VehicleManager:
-    def __init__(self, manager: 'Manager'):
+    def __init__(self, manager: Manager):
         self._manager: Manager = manager
         self._manager.config.register_value(
             self,
@@ -47,15 +47,15 @@ class VehicleManager:
         ).set_value(self, "vehicles", [asdict(vehicle) for vehicle in self._vehicles])
 
     @property
-    def current_vehicle(self) -> 'Vehicle':
+    def current_vehicle(self) -> Vehicle:
         return self._vehicles[self._current_vehicle_id]
 
     @current_vehicle.setter
-    def current_vehicle(self, new_vehicle_id: 'int'):
+    def current_vehicle(self, new_vehicle_id: int):
         self._current_vehicle_id = new_vehicle_id
 
     @property
-    def vehicles(self) -> 'list':
+    def vehicles(self) -> list:
         return self._vehicles
 
     @vehicles.setter

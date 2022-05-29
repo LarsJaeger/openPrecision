@@ -5,7 +5,7 @@ from open_precision import utils
 
 
 class ConfigManager:
-    def __init__(self, config_path: 'str'):
+    def __init__(self, config_path: str):
         self._config: CommentedMap = CommentedMap()
         self._config_path = config_path
         self._load_config_file()
@@ -15,7 +15,7 @@ class ConfigManager:
         atexit.register(self._cleanup)
 
     def register_value(
-        self, origin_object: 'object', value_name: 'str', value: 'any'
+        self, origin_object: object, value_name: str, value: any
     ) -> 'object':
         # YAML().register_class(type(value))  #register class
 
@@ -30,7 +30,7 @@ class ConfigManager:
         )  # update config
         return self
 
-    def set_value(self, origin_object: 'object', value_name: 'str', value: 'any') -> 'object':
+    def set_value(self, origin_object: object, value_name: str, value: any) -> any:
         # YAML().register_class(type(value)) #register class
 
         address = type(origin_object).__name__
@@ -41,7 +41,7 @@ class ConfigManager:
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
         return self
 
-    def get_value(self, origin_object: 'object', value_name: 'str'):
+    def get_value(self, origin_object: object, value_name: str):
         address = type(origin_object).__name__
         if value_name is not None:
             address += "." + value_name

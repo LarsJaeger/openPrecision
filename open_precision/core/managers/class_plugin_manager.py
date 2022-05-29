@@ -13,7 +13,7 @@ def check_plugins_for_class(plugin_class, plugins) -> list:
 
 
 class ClassPluginManager:
-    def __init__(self, manager, plugin_type_class: object, plugin_package: str):
+    def __init__(self, manager, plugin_type_class: str, plugin_package: str):
         self._manager = manager
         self._plugin_type_class = plugin_type_class
         self._plugin_package = plugin_package

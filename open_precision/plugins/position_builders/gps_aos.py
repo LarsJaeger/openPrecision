@@ -15,7 +15,7 @@ from open_precision.core.model.position import Position, Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):
-    def __init__(self, manager: 'Manager'):
+    def __init__(self, manager: Manager):
         self._manager = manager
 
         """get available sensors"""
@@ -24,7 +24,7 @@ class GpsAosPositionBuilder(PositionBuilder):
         self.wmm_class = WorldMagneticModelCalculator
 
     @property
-    def current_position(self) -> 'Position':
+    def current_position(self) -> Position:
         uncorrected_location: Location = self._manager.sensors[self.gps_class].location
         orientation: np.array = self._manager.sensors[self.aos_class].orientation
 

@@ -8,11 +8,11 @@ if TYPE_CHECKING:
 
 @dataclass
 class Waypoint:
-    priority: 'int' = field(init=True, default=0)  # higher priority = more important and vice versa
-    location: 'Location' = field(init=True, default=None)
-    path: 'Path' = field(init=False, default=None)
+    priority: int = field(init=True, default=0)  # higher priority = more important and vice versa
+    location: Location = field(init=True, default=None)
+    path: Path = field(init=False, default=None)
 
     @property
-    def id(self) -> 'int':
+    def id(self) -> int:
         """ Attention: Very resource intensive; gets index from search of current path's waypoint list"""
         return self.path.waypoints.index(self)
