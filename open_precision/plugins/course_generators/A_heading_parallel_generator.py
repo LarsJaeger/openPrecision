@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 
 from open_precision.core.interfaces.course_generator import CourseGenerator

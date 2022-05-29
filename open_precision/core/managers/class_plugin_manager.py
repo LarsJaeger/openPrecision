@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from open_precision import utils
 from open_precision.core.exceptions import PluginException, MissingPluginException
 

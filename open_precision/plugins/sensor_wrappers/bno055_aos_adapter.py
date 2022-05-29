@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 import adafruit_bno055
 import busio

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 import numpy as np
 from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import (

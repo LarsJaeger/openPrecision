@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import numpy as np
 from open_precision.core.interfaces.position_builder import PositionBuilder

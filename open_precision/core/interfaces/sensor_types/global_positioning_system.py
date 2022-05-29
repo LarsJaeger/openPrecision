@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import abstractmethod, ABC
 from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
 from open_precision.core.model.position import Location

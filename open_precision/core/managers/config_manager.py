@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap

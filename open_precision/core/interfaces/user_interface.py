@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING

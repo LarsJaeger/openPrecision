@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import atexit
 import os
 import serial
@@ -7,6 +9,7 @@ from open_precision.core.interfaces.sensor_types.global_positioning_system impor
     GlobalPositioningSystem,
 )
 from open_precision.core.managers.manager import Manager
+
 from open_precision.core.model.position import Location
 
 shortest_update_dt = 100  # in ms
