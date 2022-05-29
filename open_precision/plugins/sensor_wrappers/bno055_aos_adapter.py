@@ -16,8 +16,8 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         print("[Bno055AosAdapter] starting initialisation")
         if not self._manager.config.get_value(self, "debug"):
             import board
-
-            i2c = busio.I2C(board.SCL, board.SDA)
+            i2c = busio.I2C(board.SCL,
+                            board.SDA)
         else:
             print("[Bno055AosAdapter] debug mode active")
             i2c = None

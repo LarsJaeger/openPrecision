@@ -2,8 +2,6 @@ import atexit
 from dataclasses import asdict
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
     from open_precision.core.model.vehicle import Vehicle
@@ -38,10 +36,7 @@ class VehicleManager:
 
     def load_data(self):
         # init objects from config data
-        self._vehicles = [
-            Vehicle(**kwargs)
-            for kwargs in self._manager.config.get_value(self, "vehicles")
-        ]
+        self._vehicles = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, "vehicles")]
         self._current_vehicle_id = self._manager.config.get_value(
             self, "current_vehicle_id"
         )
