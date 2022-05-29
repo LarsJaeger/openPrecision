@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from open_precision.core.model.course import Course
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
-    from open_precision.core.model.course import Course
 
 
 class CourseGenerator(ABC):

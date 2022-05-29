@@ -1,10 +1,9 @@
 import atexit
 from dataclasses import asdict
 from typing import TYPE_CHECKING
-
+from open_precision.core.model.vehicle import Vehicle
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
-    from open_precision.core.model.vehicle import Vehicle
 
 
 class VehicleManager:

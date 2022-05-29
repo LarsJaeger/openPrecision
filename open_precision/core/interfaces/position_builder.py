@@ -1,8 +1,8 @@
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
+from open_precision.core.model.position import Position
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
-    from open_precision.core.model.position import Position
 
 
 class PositionBuilder(ABC):
