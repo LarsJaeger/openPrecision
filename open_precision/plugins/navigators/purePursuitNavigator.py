@@ -46,19 +46,14 @@ class PurePursuitNavigator(Navigator):
             # look for closest
             best_segment_base_waypoint = None
             best_segment_target_waypoint = None
-            smallest_loss = None
+            smallest_loss = float('inf')
             for path in self.course.paths:
                 nr_of_waypoints = len(path.waypoints)
                 for waypoint_id in range(nr_of_waypoints):
                     if waypoint_id == 0:
                         # check from wp_id 0 to wp_id 1
                         loss = self.calc_line_error(current_position, path.waypoints[0], path.waypoints[1])
-                        print(f"1{current_position is None}")
-                        print(f"2{path.waypoints[0] is None}")
-                        print(f"3{path.waypoints[1] is None}")
-                        print(f"a{type(smallest_loss)}")
-                        print(f"a{type(loss)}")
-                        if smallest_loss is None or smallest_loss > loss:
+                        if smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[0]
                             best_segment_target_waypoint = path.waypoints[1]
@@ -66,7 +61,7 @@ class PurePursuitNavigator(Navigator):
                         # check from wp_id nr_of_waypoints - 1 to previous wp
                         loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
                                                     path.waypoints[nr_of_waypoints - 2])
-                        if smallest_loss is None or smallest_loss > loss:
+                        if smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[nr_of_waypoints - 1]
                             best_segment_target_waypoint = path.waypoints[nr_of_waypoints - 2]
@@ -74,13 +69,13 @@ class PurePursuitNavigator(Navigator):
                         # check both directions
                         loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
                                                     path.waypoints[waypoint_id + 1])
-                        if smallest_loss is None or smallest_loss > loss:
+                        if smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[waypoint_id]
                             best_segment_target_waypoint = path.waypoints[waypoint_id + 1]
                         loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
                                                     path.waypoints[waypoint_id - 1])
-                        if smallest_loss is None or smallest_loss > loss:
+                        if smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[waypoint_id]
                             best_segment_target_waypoint = path.waypoints[waypoint_id - 1]
@@ -193,6 +188,8 @@ class PurePursuitNavigator(Navigator):
         # final_error = e_o + 1XX% r_min * (2 * e_h / pi)
         final_error = offset_error + np.multiply(np.multiply(speed_turning_radius_factor, turning_radius),
                                                  np.divide(heading_error_angle, np.pi))
+
+        print(f"{type(final_error)}")
         return final_error
 
     def calc_position_error(self, pos1: Position, target_location: Location,
@@ -207,5 +204,6 @@ class PurePursuitNavigator(Navigator):
         # calculate offset:
         offset_error = utils.calc_distance_to_line(pos1.location, waypoint_base.location,
                                                    waypoint_target.location.to_numpy())
+        print(f"{type(offset_error)}")
 
         return self._calc_combined_error(offset_error, pos1, waypoint_base, waypoint_target)
