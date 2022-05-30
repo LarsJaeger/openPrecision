@@ -49,7 +49,7 @@ class Location:
         return sqrt(self.x ** 2 + self.y ** 2 + self.y ** 2)
 
     def to_numpy(self) -> np.array:
-        return np.array([self.x, self.y, self.z])
+        return np.array([self.x, self.y, self.z], dtype=np.float64)
 
 
 @dataclass
