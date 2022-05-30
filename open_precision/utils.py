@@ -129,13 +129,13 @@ def norm_vector(vec):
     )
 
 
-def calc_distance(loc1: Location, loc2: Location):
-    return abs(loc2 - loc1)
+def calc_distance(loc1: Location, loc2: Location) -> float:
+    return np.linalg.norm(loc2.to_numpy() - loc1.to_numpy())
 
 
 def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.array) -> float:
-    return np.divide(np.abs(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
-                     np.abs(line_direction))
+    return np.divide(np.linalg.norm(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
+                     np.linalg.norm(line_direction))
 
 
 def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list[float],
