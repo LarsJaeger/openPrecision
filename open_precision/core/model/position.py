@@ -48,8 +48,8 @@ class Location:
     def __abs__(self) -> float:
         return sqrt(self.x ** 2 + self.y ** 2 + self.y ** 2)
 
-    def to_numpy(self) -> np.ndarray:
-        return np.ndarray([self.x, self.y, self.z])
+    def to_numpy(self) -> np.array:
+        return np.array([self.x, self.y, self.z])
 
 
 @dataclass
