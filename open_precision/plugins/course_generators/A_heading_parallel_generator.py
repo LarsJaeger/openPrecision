@@ -28,6 +28,7 @@ class AHeadingParallelGenerator(CourseGenerator):
 
         course = Course(name=name, description=description, paths=[])
         for i in range(0, 20):
+            print(f"bp: {base_position}, i: {i}")
             current_path = Path()
             waypoint = base_position.location \
                        + (1000 * base_position.orientation.rotate(np.ndarray([1, 0, 0])))
