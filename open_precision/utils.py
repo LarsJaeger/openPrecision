@@ -134,7 +134,7 @@ def calc_distance(loc1: Location, loc2: Location):
 
 
 def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.array):
-    return np.divide(np.abs(np.cross(np.dot((loc1 - line_base_point).to_numpy())), line_direction),
+    return np.divide(np.abs(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
                      np.abs(line_direction))
 
 
