@@ -31,10 +31,10 @@ class AHeadingParallelGenerator(CourseGenerator):
             print(f"bp: {base_position}, i: {i}")
             current_path = Path()
             waypoint = base_position.location \
-                       + (1000 * base_position.orientation.rotate(np.ndarray([1, 0, 0])))
+                       + (1000 * base_position.orientation.rotate(np.array([1, 0, 0])))
             current_path.add_waypoint(Waypoint(location=waypoint))
             waypoint = base_position.location \
-                       + (1000 * base_position.orientation.rotate(np.ndarray([1, 0, 0])))
+                       + (1000 * base_position.orientation.rotate(np.array([1, 0, 0])))
             current_path.add_waypoint(Waypoint(location=waypoint))
 
             course.add_path(current_path)
