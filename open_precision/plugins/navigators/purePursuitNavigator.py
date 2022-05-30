@@ -168,7 +168,7 @@ class PurePursuitNavigator(Navigator):
         # rotation from global to vehicle reference system
         back_rotation = pos1.orientation.inverse
         # norm target_direction_vector
-        target_direction_vector = utils.norm_vector(waypoint_target.location - waypoint_base.location)
+        target_direction_vector = utils.norm_vector((waypoint_target.location - waypoint_base.location).to_numpy())
         # calc *horizontal* heading error; horizon is a plane that has the vector of pos1 as a normal vector
         relative_orientation_vector = back_rotation.rotate(waypoint_target.location.to_numpy()) \
                                       - back_rotation.rotate(waypoint_base.location.to_numpy())
