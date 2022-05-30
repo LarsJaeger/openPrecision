@@ -46,14 +46,14 @@ class PurePursuitNavigator(Navigator):
             # look for closest
             best_segment_base_waypoint = None
             best_segment_target_waypoint = None
-            smallest_loss = float('inf')
+            smallest_loss = None
             for path in self.course.paths:
                 nr_of_waypoints = len(path.waypoints)
                 for waypoint_id in range(nr_of_waypoints):
                     if waypoint_id == 0:
                         # check from wp_id 0 to wp_id 1
                         loss = self.calc_line_error(current_position, path.waypoints[0], path.waypoints[1])
-                        if smallest_loss > loss:
+                        if smallest_loss is None or smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[0]
                             best_segment_target_waypoint = path.waypoints[1]
@@ -61,7 +61,7 @@ class PurePursuitNavigator(Navigator):
                         # check from wp_id nr_of_waypoints - 1 to previous wp
                         loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
                                                     path.waypoints[nr_of_waypoints - 2])
-                        if smallest_loss > loss:
+                        if smallest_loss is None or smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[nr_of_waypoints - 1]
                             best_segment_target_waypoint = path.waypoints[nr_of_waypoints - 2]
@@ -69,13 +69,13 @@ class PurePursuitNavigator(Navigator):
                         # check both directions
                         loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
                                                     path.waypoints[waypoint_id + 1])
-                        if smallest_loss > loss:
+                        if smallest_loss is None or smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[waypoint_id]
                             best_segment_target_waypoint = path.waypoints[waypoint_id + 1]
                         loss = self.calc_line_error(current_position, path.waypoints[waypoint_id],
                                                     path.waypoints[waypoint_id - 1])
-                        if smallest_loss > loss:
+                        if smallest_loss is None or smallest_loss > loss:
                             smallest_loss = loss
                             best_segment_base_waypoint = path.waypoints[waypoint_id]
                             best_segment_target_waypoint = path.waypoints[waypoint_id - 1]
