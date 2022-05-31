@@ -27,6 +27,8 @@ class Location:
                 self.z += other[2]
                 if len(other) == 4:
                     self.error += other[3]
+        else:
+            raise TypeError
         return self
 
     def __sub__(self, other):
@@ -43,6 +45,8 @@ class Location:
                 self.z -= other[2]
                 if len(other) == 4:
                     self.error += other[3]
+        else:
+            raise TypeError
         return self
 
     def __abs__(self) -> float:
