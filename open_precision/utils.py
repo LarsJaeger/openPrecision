@@ -26,20 +26,20 @@ def get_rotation_matrix_ypr(y, p, r):
     p = p * np.pi / 180.0
     r = r * np.pi / 180.0
 
-    rr = np.array(
+    rr = np.ndarray(
         [[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]]
     )
-    rp = np.array(
+    rp = np.ndarray(
         [[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]]
     )
-    ry = np.array(
+    ry = np.ndarray(
         [[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]]
     )
 
     return ry * rp * rr
 
 
-def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.array:
+def get_rotation_matrix_ypr_array(rotation_array: np.ndarray) -> np.ndarray:
     """
     Rotationsmatrix für y=yaw, p=pitch, r=roll in degrees
     """
@@ -48,25 +48,25 @@ def get_rotation_matrix_ypr_array(rotation_array: np.array) -> np.array:
     p = rotation_array[1] * np.pi / 180.0
     r = rotation_array[0] * np.pi / 180.0
 
-    rr = np.array(
+    rr = np.ndarray(
         [[1.0, 0.0, 0.0], [0.0, np.cos(r), -np.sin(r)], [0.0, np.sin(r), np.cos(r)]]
     )
-    rp = np.array(
+    rp = np.ndarray(
         [[np.cos(p), 0.0, np.sin(p)], [0.0, 1.0, 0.0], [-np.sin(p), 0.0, np.cos(p)]]
     )
-    ry = np.array(
+    ry = np.ndarray(
         [[np.cos(y), -np.sin(y), 0.0], [np.sin(y), np.cos(y), 0.0], [0.0, 0.0, 1.0]]
     )
 
     return np.dot(np.dot(ry, rp), rr)
 
 
-def declination_from_vector(vector: np.array) -> float:
+def declination_from_vector(vector: np.ndarray) -> float:
     # vector[0] -> forward; vector[1] -> left; vector[2] -> up
     return np.arctan(np.divide(vector[1], vector[0]))
 
 
-def inclination_from_vector(vector: np.array) -> float:
+def inclination_from_vector(vector: np.ndarray) -> float:
     # vector[0] -> forward; vector[1] -> left; vector[2] -> up
     return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))
 
@@ -116,7 +116,7 @@ def _get_classes_in_package(package, classes: list) -> list:
     return classes
 
 
-def angle_between_vectors(vector_a: np.array, vector_b: np.array):
+def angle_between_vectors(vector_a: np.ndarray, vector_b: np.ndarray):
     """returns angle between vector_a and vector_b as radian"""
     inner = np.inner(vector_a, vector_b)
     norms = la.norm(vector_a) * la.norm(vector_b)
@@ -133,7 +133,7 @@ def calc_distance(loc1: Location, loc2: Location) -> float:
     return np.linalg.norm(loc2.to_numpy() - loc1.to_numpy())
 
 
-def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.array) -> float:
+def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.ndarray) -> float:
     print(f"A {loc1}")
     print(f"B {line_base_point}")
     print(f"C {line_direction}")

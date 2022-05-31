@@ -31,12 +31,12 @@ class GpsCompassPositionBuilder(PositionBuilder):
     @property
     def current_position(self) -> Position:
         uncorrected_location: Location = self._manager.sensors[self.gps_class].location
-        gravity_vector: np.array = self._manager.sensors[self.aos_class].gravity
-        mag_real_vector: np.array = self._manager.sensors[
+        gravity_vector: np.ndarray = self._manager.sensors[self.aos_class].gravity
+        mag_real_vector: np.ndarray = self._manager.sensors[
             self.aos_class
         ].scaled_magnetometer
-        mag_wmm_vector: np.array = self._manager.sensors[self.wmm_class].field_vector
-        gravity_model_vector = np.array([0.0, 0.0, -1.0])
+        mag_wmm_vector: np.ndarray = self._manager.sensors[self.wmm_class].field_vector
+        gravity_model_vector = np.ndarray([0.0, 0.0, -1.0])
 
         if any(
             x is None

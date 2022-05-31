@@ -19,7 +19,9 @@ class Location:
             self.y += other.y
             self.z += other.z
             self.error += other.error
-        elif isinstance(other, list) or isinstance(other, tuple):
+        elif isinstance(other, list) \
+            or isinstance(other, tuple) \
+            or isinstance(other, np.ndarray):
             if 3 <= len(other) <= 4:
                 floated_vals = [float(i) for i in other]
                 self.x += other[0]
@@ -37,7 +39,7 @@ class Location:
             self.y -= other.y
             self.z -= other.z
             self.error += other.error
-        elif isinstance(other, list) or isinstance(other, tuple):
+        elif isinstance(other, list) or isinstance(other, tuple) or isinstance(other, np.ndarray):
             if 3 <= len(other) <= 4:
                 floated_vals = [float(i) for i in other]
                 self.x -= other[0]
@@ -52,8 +54,8 @@ class Location:
     def __abs__(self) -> float:
         return sqrt(self.x ** 2 + self.y ** 2 + self.y ** 2)
 
-    def to_numpy(self) -> np.array:
-        return np.array([self.x, self.y, self.z], dtype=np.float64)
+    def to_numpy(self) -> np.ndarray:
+        return np.ndarray([self.x, self.y, self.z], dtype=np.float64)
 
 
 @dataclass(slots=True)

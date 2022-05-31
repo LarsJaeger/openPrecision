@@ -28,7 +28,7 @@ class GpsAosPositionBuilder(PositionBuilder):
     @property
     def current_position(self) -> Position:
         uncorrected_location: Location = self._manager.sensors[self.gps_class].location
-        orientation: np.array = self._manager.sensors[self.aos_class].orientation
+        orientation: np.ndarray = self._manager.sensors[self.aos_class].orientation
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
