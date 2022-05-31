@@ -203,7 +203,7 @@ class PurePursuitNavigator(Navigator):
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
         # calculate offset:
         offset_error = utils.calc_distance_to_line(pos1.location, waypoint_base.location,
-                                                   waypoint_target.location.to_numpy())
+                                                   (waypoint_target.location - waypoint_base).to_numpy())
         print(f"{type(offset_error)}")
 
         return self._calc_combined_error(offset_error, pos1, waypoint_base, waypoint_target)
