@@ -59,8 +59,7 @@ class PurePursuitNavigator(Navigator):
                             best_segment_target_waypoint = path.waypoints[1]
                     elif waypoint_id == nr_of_waypoints - 1:
                         # check from wp_id nr_of_waypoints - 1 to previous wp
-                        print(f"LOL {path.waypoints[nr_of_waypoints - 1]}")
-                        print(f"LOL2 {path.waypoints[nr_of_waypoints - 2]}")
+                        print(f"LOL {path.waypoints[nr_of_waypoints - 1].path.waypoints}")
                         loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
                                                     path.waypoints[nr_of_waypoints - 2])
                         if smallest_loss > loss:
