@@ -20,8 +20,7 @@ class Location:
             self.z += other.z
             self.error += other.error
         elif isinstance(other, list) \
-            or isinstance(other, tuple) \
-            or isinstance(other, np.ndarray):
+                or isinstance(other, tuple):
             if 3 <= len(other) <= 4:
                 floated_vals = [float(i) for i in other]
                 self.x += other[0]
@@ -29,8 +28,24 @@ class Location:
                 self.z += other[2]
                 if len(other) == 4:
                     self.error += other[3]
+                else:
+                    raise TypeError
+            else:
+                raise TypeError
+        elif isinstance(other, np.ndarray):
+            print("hello there")
+            if 3 <= other.shape[0] <= 4:
+                floated_vals = [float(i) for i in other]
+                self.x += other[0]
+                self.y += other[1]
+                self.z += other[2]
+                if len(other) == 4:
+                    self.error += other[3]
+                else:
+                    raise TypeError
         else:
             raise TypeError
+
         return self
 
     def __sub__(self, other):
@@ -50,9 +65,6 @@ class Location:
         else:
             raise TypeError
         return self
-
-    def __abs__(self) -> float:
-        return sqrt(self.x ** 2 + self.y ** 2 + self.y ** 2)
 
     def to_numpy(self) -> np.array:
         return np.array([self.x, self.y, self.z], dtype=np.float64)
