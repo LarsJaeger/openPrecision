@@ -26,22 +26,15 @@ class GpsAosPositionBuilder(PositionBuilder):
         self.wmm_class = WorldMagneticModelCalculator
 
     @property
-    def current_position(self) -> Position:
+    def current_position(self) -> Position | None:
         uncorrected_location: Location = self._manager.sensors[self.gps_class].location
         orientation: np.array = self._manager.sensors[self.aos_class].orientation
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
-        print(f"uncorrected_locaction {uncorrected_location}")
-        print(f"aklsdj {type(self._manager.vehicles.current_vehicle.gps_receiver_offset)}")
-        print(f"aklsdj {self._manager.vehicles.current_vehicle.gps_receiver_offset}")
-        print(f"aklsdj {type(list(self._manager.vehicles.current_vehicle.gps_receiver_offset))}")
-        print(f"aklsdj {list(self._manager.vehicles.current_vehicle.gps_receiver_offset)}")
-        print(f"ölaskd {type(orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset))}")
-        print(f"ölaskd {orientation.rotate(self._manager.vehicles.current_vehicle.gps_receiver_offset)}")
 
         corrected_location = uncorrected_location + orientation.rotate(
-            self._manager.vehicles.current_vehicle.gps_receiver_offset
+            list(self._manager.vehicles.current_vehicle.gps_receiver_offset)
         )
 
         corrected_position: Position = Position(
