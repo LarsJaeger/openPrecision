@@ -28,13 +28,12 @@ class AHeadingParallelGenerator(CourseGenerator):
 
         course = Course(name=name, description=description, paths=[])
         for i in range(0, 20):
-            current_path = Path()
-            waypoint = base_position.location \
-                       + (1000 * base_position.orientation.rotate(np.array([1, 0, 0])))
-            current_path.add_waypoint(Waypoint(location=waypoint))
-            waypoint = base_position.location \
-                       + (1000 * base_position.orientation.rotate(np.array([1, 0, 0])))
-            current_path.add_waypoint(Waypoint(location=waypoint))
+            loc1 = base_position.location \
+                   + np.multiply(base_position.orientation.rotate(np.array([1, 0, 0])), 1000)
 
+            loc2 = base_position.location \
+                   + np.multiply(base_position.orientation.rotate(np.array([1, 0, 0])), 1000)
+
+            current_path = Path(waypoints=[Waypoint(location=loc1), Waypoint(location=loc2)])
             course.add_path(current_path)
         return course
