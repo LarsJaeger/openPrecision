@@ -32,7 +32,7 @@ class AHeadingParallelGenerator(CourseGenerator):
             loc1 = base_position.location \
                    + (base_position.orientation.rotate(np.ndarray([0, 1, 0])) * (i * working_width))
 
-            loc2 = loc1 + (base_position.orientation.rotate(np.ndarray([1, 0, 0])) * 1000)
+            loc2 = loc1 + (base_position.orientation.rotate(np.ndarray([1.0, 0.0, 0.0])) * 1000)
 
             current_path = Path().add_waypoint(Waypoint(location=loc1)).add_waypoint(Waypoint(location=loc2))
             course.add_path(current_path)
