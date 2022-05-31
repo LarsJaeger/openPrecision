@@ -21,7 +21,7 @@ class Location:
             self.error += other.error
         elif isinstance(other, list) \
             or isinstance(other, tuple) \
-            or isinstance(other, np.array):
+            or isinstance(other, np.ndarray):
             if 3 <= len(other) <= 4:
                 floated_vals = [float(i) for i in other]
                 self.x += other[0]
@@ -39,7 +39,7 @@ class Location:
             self.y -= other.y
             self.z -= other.z
             self.error += other.error
-        elif isinstance(other, list) or isinstance(other, tuple) or isinstance(other, np.array):
+        elif isinstance(other, list) or isinstance(other, tuple) or isinstance(other, np.ndarray):
             if 3 <= len(other) <= 4:
                 floated_vals = [float(i) for i in other]
                 self.x -= other[0]
