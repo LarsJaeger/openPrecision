@@ -53,6 +53,7 @@ class PurePursuitNavigator(Navigator):
                     if waypoint_id == 0:
                         # check from wp_id 0 to wp_id 1
                         print("X")
+                        print(f"LOL {path.waypoints}")
                         loss = self.calc_line_error(current_position, path.waypoints[0], path.waypoints[1])
                         if smallest_loss > loss:
                             smallest_loss = loss
@@ -61,7 +62,7 @@ class PurePursuitNavigator(Navigator):
                     elif waypoint_id == nr_of_waypoints - 1:
                         # check from wp_id nr_of_waypoints - 1 to previous wp
                         print("XX")
-                        print(f"LOL {path.waypoints[nr_of_waypoints - 1].path.waypoints}")
+                        print(f"LOL {path.waypoints}")
                         loss = self.calc_line_error(current_position, path.waypoints[nr_of_waypoints - 1],
                                                     path.waypoints[nr_of_waypoints - 2])
                         if smallest_loss > loss:
