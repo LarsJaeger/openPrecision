@@ -28,8 +28,6 @@ class Location:
                 self.z += other[2]
                 if len(other) == 4:
                     self.error += other[3]
-                else:
-                    raise TypeError
             else:
                 raise TypeError
         elif isinstance(other, np.ndarray):
@@ -41,8 +39,6 @@ class Location:
                 self.z += other[2]
                 if len(other) == 4:
                     self.error += other[3]
-                else:
-                    raise TypeError
         else:
             raise TypeError
 
