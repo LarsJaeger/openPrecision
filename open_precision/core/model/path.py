@@ -8,14 +8,10 @@ if TYPE_CHECKING:
     from open_precision.core.model.waypoint import Waypoint
 
 
-class Path:
-    pass
-
-
-@dataclass
+@dataclass(slots=True)
 class Path:
     priority: int = field(init=True, default=0)
-    waypoints: list[Waypoint] = field(init=True, default_factory=lambda: [])
+    waypoints: list[Waypoint] = field(init=True, default_factory=lambda: [], repr=False)
     course: Course = field(init=False, default=None)
 
     def add_waypoint(self, waypoint: Waypoint) -> Path:

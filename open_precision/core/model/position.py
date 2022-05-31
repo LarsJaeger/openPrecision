@@ -6,7 +6,7 @@ import numpy as np
 from pyquaternion import Quaternion
 
 
-@dataclass
+@dataclass(slots=True)
 class Location:
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
@@ -52,7 +52,7 @@ class Location:
         return np.array([self.x, self.y, self.z], dtype=np.float64)
 
 
-@dataclass
+@dataclass(slots=True)
 class Position:
     """position of vehicle: location describes the location of the center of the rear axle; orientation is a
     quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, z+ = up"""

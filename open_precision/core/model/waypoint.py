@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from open_precision.core.model.position import Location
 
 
-@dataclass
+@dataclass(slots=True)
 class Waypoint:
     priority: int = field(init=True, default=0)  # higher priority = more important and vice versa
     location: Location = field(init=True, default=None)
