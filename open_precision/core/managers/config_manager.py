@@ -43,7 +43,7 @@ class ConfigManager:
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
         return self
 
-    def get_value(self, origin_object: object, value_name: str):
+    def get_value(self, origin_object: object, value_name: str) -> dict | any:
         address = type(origin_object).__name__
         if value_name is not None:
             address += "." + value_name
