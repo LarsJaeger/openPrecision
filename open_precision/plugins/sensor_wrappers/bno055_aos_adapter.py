@@ -43,16 +43,16 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         pass
 
     @property
-    def scaled_acceleration(self) -> 'np.ndarray':
-        return np.ndarray(self.sensor.acceleration)
+    def scaled_acceleration(self) -> 'np.array':
+        return np.array(self.sensor.acceleration)
 
     @property
-    def scaled_angular_acceleration(self) -> 'np.ndarray':
-        return np.ndarray(self.sensor.gyro)
+    def scaled_angular_acceleration(self) -> 'np.array':
+        return np.array(self.sensor.gyro)
 
     @property
-    def scaled_magnetometer(self) -> 'np.ndarray':
-        return np.ndarray(self.sensor.magnetic)
+    def scaled_magnetometer(self) -> 'np.array':
+        return np.array(self.sensor.magnetic)
 
     @property
     def orientation(self) -> 'Quaternion':
@@ -64,6 +64,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         return quat
 
     @property
-    def gravity(self) -> 'np.ndarray':
+    def gravity(self) -> 'np.array':
         """returns a gravity vector"""
-        return np.ndarray(self.sensor.gravity)
+        return np.array(self.sensor.gravity)

@@ -146,7 +146,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
     def field_vector(self) -> ndarray:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
-        return np.ndarray(
+        return np.array(
             [
                 float(self._current_datapoint["X_nT"]),
                 float(self._current_datapoint["Y_nT"]),

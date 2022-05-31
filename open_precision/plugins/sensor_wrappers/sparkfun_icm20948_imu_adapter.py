@@ -26,7 +26,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
             raise SensorNotConnectedException("Qwiic ICM20948")
 
         if self._manager.config.get_value(self, "magnetometer_bias") is None:
-            self.calibrated_magnetometer_correction = np.ndarray([0.0, 0.0, 0.0])
+            self.calibrated_magnetometer_correction = np.array([0.0, 0.0, 0.0])
         else:
             self.calibrated_magnetometer_correction = self._manager.config.get_value(
                 self, "magnetometer_bias"
@@ -80,7 +80,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
     def retrieve_scaled_acceleration(self):
         if self.imu.dataReady():
             return np.dot(
-                np.ndarray([self.imu.axRaw, self.imu.ayRaw, self.imu.azRaw]), 1 / 16384
+                np.array([self.imu.axRaw, self.imu.ayRaw, self.imu.azRaw]), 1 / 16384
             )
         else:
             return None
@@ -88,7 +88,7 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
     def retrieve_scaled_angular_acceleration(self):
         if self.imu.dataReady():
             return np.dot(
-                np.ndarray([self.imu.gxRaw, self.imu.gyRaw, self.imu.gzRaw]), 1 / 131
+                np.array([self.imu.gxRaw, self.imu.gyRaw, self.imu.gzRaw]), 1 / 131
             )
         else:
             return None
@@ -96,6 +96,6 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
     def retrieve_scaled_magnetometer(self):
         if self.imu.dataReady():
             scaled_magnetometer = np.dot(
-                np.ndarray([self.imu.mxRaw, self.imu.myRaw, self.imu.mzRaw]), 0.15
+                np.array([self.imu.mxRaw, self.imu.myRaw, self.imu.mzRaw]), 0.15
             )
             return np.add(scaled_magnetometer, self.calibrated_magnetometer_correction)

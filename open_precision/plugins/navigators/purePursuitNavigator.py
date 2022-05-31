@@ -190,7 +190,7 @@ class PurePursuitNavigator(Navigator):
         else:
             turning_radius = self._manager.vehicles.current_vehicle.turn_radius_left
         # calculate angle between vehicle direction and line direction
-        heading_error_angle = np.arccos(np.clip(np.dot(relative_orientation_vector, np.ndarray([1, 0, 0])), -1.0, 1.0))
+        heading_error_angle = np.arccos(np.clip(np.dot(relative_orientation_vector, np.array([1, 0, 0])), -1.0, 1.0))
         # factor that describes the change of radius TODO make dependent on current speed
         speed_turning_radius_factor = 1.1
         # final_error = e_o + 1XX% r_min * (2 * e_h / pi)
@@ -201,7 +201,7 @@ class PurePursuitNavigator(Navigator):
         return final_error
 
     def calc_position_error(self, pos1: Position, target_location: Location,
-                            target_direction_vector: np.ndarray) -> float:
+                            target_direction_vector: np.array) -> float:
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
         # calculate offset:
         offset_error = utils.calc_distance(pos1.location, target_location)
