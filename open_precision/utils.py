@@ -135,7 +135,8 @@ def calc_distance(loc1: Location, loc2: Location) -> float:
 
 def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.array) -> float:
     print(f"A {np.linalg.norm(np.cross((loc1 - line_base_point).to_numpy(), line_direction))}")
-    print(f"A {np.linalg.norm(line_direction)}")
+    print(f"B {line_direction}")
+    print(f"C {np.linalg.norm(line_direction)}")
     return np.divide(np.linalg.norm(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
                      np.linalg.norm(line_direction))
 
