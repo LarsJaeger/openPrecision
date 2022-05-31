@@ -28,7 +28,7 @@ class AHeadingParallelGenerator(CourseGenerator):
 
         course = Course(name=name, description=description, paths=[])
         for i in range(-3, 3):
-            print(f"TEST {(base_position.orientation.rotate(np.array([0, 1, 0])) * (i * working_width))}")
+            print(f"TEST {type(base_position.orientation.rotate(np.array([0, 1, 0])) * (i * working_width))}")
             loc1 = base_position.location \
                    + (base_position.orientation.rotate(np.array([0, 1, 0])) * (i * working_width))
 
