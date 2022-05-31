@@ -34,7 +34,7 @@ class GpsAosPositionBuilder(PositionBuilder):
             return None
 
         corrected_location = uncorrected_location + orientation.rotate(
-            list(self._manager.vehicles.current_vehicle.gps_receiver_offset)
+            np.array(list(self._manager.vehicles.current_vehicle.gps_receiver_offset), dtype=np.float64)
         )
 
         corrected_position: Position = Position(
