@@ -10,7 +10,7 @@ from open_precision.core.interfaces.sensor_types.global_positioning_system impor
 )
 from open_precision.core.managers.manager import Manager
 
-from open_precision.core.model.position import Location
+from open_precision.core.model.location import Location
 
 shortest_update_dt = 100  # in ms
 

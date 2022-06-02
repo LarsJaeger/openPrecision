@@ -9,7 +9,8 @@ from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.course import Course
-from open_precision.core.model.position import Location, Position
+from open_precision.core.model.position import Position
+from open_precision.core.model.location import Location
 from open_precision.core.model.waypoint import Waypoint
 from open_precision.utils import intersections_of_circle_and_line_segment
 

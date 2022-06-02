@@ -15,7 +15,8 @@ from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater
     WorldMagneticModelCalculator,
 )
 from open_precision.core.managers.manager import Manager
-from open_precision.core.model.position import Position, Location
+from open_precision.core.model.position import Position
+from open_precision.core.model.location import Location
 from open_precision.utils import norm_vector
 
 

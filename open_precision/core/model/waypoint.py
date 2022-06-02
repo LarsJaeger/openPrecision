@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from open_precision.core.model.path import Path
-    from open_precision.core.model.position import Location
+    from open_precision.core.model.location import Location
 
 
 @dataclass(slots=True)

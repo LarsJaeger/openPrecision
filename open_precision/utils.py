@@ -10,7 +10,7 @@ from math import sqrt
 import numpy as np
 import numpy.linalg as la
 
-from open_precision.core.model.position import Location
+from open_precision.core.model.location import Location
 
 
 def millis():
