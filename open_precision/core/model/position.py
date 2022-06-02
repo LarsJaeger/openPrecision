@@ -21,7 +21,9 @@ class Location:
                 res_z = self.z + other.z
                 res_error = self.error + other.error
             case list() | tuple():
-                if 3 <= len(other) <= 4:
+                if 3 <= len(other) <= 4 \
+                        and self.error is not None \
+                        and other.error is not None:
                     floated_vals = [float(i) for i in other]
                     res_x = self.x + other[0]
                     res_y = self.y + other[1]
@@ -41,7 +43,9 @@ class Location:
                     res_z = self.z + other[2]
                 else:
                     raise TypeError
-                if len(other) == 4:
+                if len(other) == 4 \
+                        and self.error is not None \
+                        and other.error is not None:
                     res_error = self.error + other[3]
                 else:
                     res_error = None
@@ -63,7 +67,9 @@ class Location:
                     res_z = self.z - other[2]
                 else:
                     raise TypeError
-                if len(other) == 4:
+                if len(other) == 4 \
+                        and self.error is not None \
+                        and other.error is not None:
                     res_error = self.error - other[3]
                 else:
                     res_error = None
@@ -76,7 +82,9 @@ class Location:
                     res_z = self.z - other[2]
                 else:
                     raise TypeError
-                if len(other) == 4:
+                if len(other) == 4 \
+                        and self.error is not None \
+                        and other.error is not None:
                     res_error = self.error + other[3]
                 else:
                     res_error = None
