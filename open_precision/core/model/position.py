@@ -14,53 +14,67 @@ class Location:
     error: 'float'  # position accuracy in meters
 
     def __add__(self, other):
-        if isinstance(other, Location):
-            self.x += other.x
-            self.y += other.y
-            self.z += other.z
-            self.error += other.error
-        elif isinstance(other, list) \
-                or isinstance(other, tuple):
-            if 3 <= len(other) <= 4:
-                floated_vals = [float(i) for i in other]
-                self.x += other[0]
-                self.y += other[1]
-                self.z += other[2]
+        match other:
+            case Location():
+                self.x += other.x
+                self.y += other.y
+                self.z += other.z
+                self.error += other.error
+            case list() | tuple():
+                if 3 <= len(other) <= 4:
+                    floated_vals = [float(i) for i in other]
+                    self.x += other[0]
+                    self.y += other[1]
+                    self.z += other[2]
+                else:
+                    raise TypeError
                 if len(other) == 4:
                     self.error += other[3]
-            else:
-                raise TypeError
-        elif isinstance(other, np.ndarray):
-            print("hello there")
-            if 3 <= other.shape[0] <= 4:
-                floated_vals = [float(i) for i in other]
-                self.x += other[0]
-                self.y += other[1]
-                self.z += other[2]
-                if len(other) == 4:
-                    self.error += other[3]
-        else:
-            raise TypeError
 
+            case np.ndarray():
+                print("hello there")
+                if 3 <= other.shape[0] <= 4:
+                    floated_vals = [float(i) for i in other]
+                    self.x += other[0]
+                    self.y += other[1]
+                    self.z += other[2]
+                else:
+                    raise TypeError
+                if len(other) == 4:
+                    self.error += other[3]
+            case _: raise TypeError
         return self
 
     def __sub__(self, other):
-        if isinstance(other, Location):
-            self.x -= other.x
-            self.y -= other.y
-            self.z -= other.z
-            self.error += other.error
-        elif isinstance(other, list) or isinstance(other, tuple) or isinstance(other, np.ndarray):
-            if 3 <= len(other) <= 4:
-                floated_vals = [float(i) for i in other]
-                self.x -= other[0]
-                self.y -= other[1]
-                self.z -= other[2]
+        match other:
+            case Location():
+                self.x -= other.x
+                self.y -= other.y
+                self.z -= other.z
+                self.error += other.error
+            case list() | tuple():
+                if 3 <= len(other) <= 4:
+                    floated_vals = [float(i) for i in other]
+                    self.x -= other[0]
+                    self.y -= other[1]
+                    self.z -= other[2]
+                else:
+                    raise TypeError
                 if len(other) == 4:
                     self.error += other[3]
-        else:
-            raise TypeError
-        return self
+            case np.ndarray():
+                print("hello there")
+                if 3 <= other.shape[0] <= 4:
+                    floated_vals = [float(i) for i in other]
+                    self.x -= other[0]
+                    self.y -= other[1]
+                    self.z -= other[2]
+                else:
+                    raise TypeError
+                if len(other) == 4:
+                    self.error += other[3]
+            case _:
+                raise TypeError
 
     def to_numpy(self) -> np.array:
         return np.array([self.x, self.y, self.z], dtype=np.float64)
