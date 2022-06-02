@@ -19,11 +19,15 @@ class Location:
                 res_x = self.x + other.x
                 res_y = self.y + other.y
                 res_z = self.z + other.z
-                res_error = self.error + other.error
+                if self.error is not None \
+                        and other.error is not None:
+                    res_error = self.error + other.error
+                else:
+                    res_error = None
             case list() | tuple():
                 if 3 <= len(other) <= 4 \
                         and self.error is not None \
-                        and other.error is not None:
+                        and other[3] is not None:
                     floated_vals = [float(i) for i in other]
                     res_x = self.x + other[0]
                     res_y = self.y + other[1]
@@ -45,7 +49,7 @@ class Location:
                     raise TypeError
                 if len(other) == 4 \
                         and self.error is not None \
-                        and other.error is not None:
+                        and other[3] is not None:
                     res_error = self.error + other[3]
                 else:
                     res_error = None
@@ -58,7 +62,11 @@ class Location:
                 res_x = self.x - other.x
                 res_y = self.y - other.y
                 res_z = self.z - other.z
-                res_error = self.error + other.error
+                if self.error is not None \
+                        and other.error is not None:
+                    res_error = self.error + other.error
+                else:
+                    res_error = None
             case list() | tuple():
                 if 3 <= len(other) <= 4:
                     floated_vals = [float(i) for i in other]
@@ -69,7 +77,7 @@ class Location:
                     raise TypeError
                 if len(other) == 4 \
                         and self.error is not None \
-                        and other.error is not None:
+                        and other[3] is not None:
                     res_error = self.error - other[3]
                 else:
                     res_error = None
@@ -84,7 +92,7 @@ class Location:
                     raise TypeError
                 if len(other) == 4 \
                         and self.error is not None \
-                        and other.error is not None:
+                        and other[3] is not None:
                     res_error = self.error + other[3]
                 else:
                     res_error = None
