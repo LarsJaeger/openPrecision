@@ -16,65 +16,73 @@ class Location:
     def __add__(self, other):
         match other:
             case Location():
-                self.x += other.x
-                self.y += other.y
-                self.z += other.z
-                self.error += other.error
+                res_x = self.x + other.x
+                res_y = self.y + other.y
+                res_z = self.z + other.z
+                res_error = self.error + other.error
             case list() | tuple():
                 if 3 <= len(other) <= 4:
                     floated_vals = [float(i) for i in other]
-                    self.x += other[0]
-                    self.y += other[1]
-                    self.z += other[2]
+                    res_x = self.x + other[0]
+                    res_y = self.y + other[1]
+                    res_z = self.z + other[2]
                 else:
                     raise TypeError
                 if len(other) == 4:
-                    self.error += other[3]
+                    res_error = self.error + other[3]
+                else:
+                    res_error = None
 
             case np.ndarray():
-                print("hello there")
                 if 3 <= other.shape[0] <= 4:
                     floated_vals = [float(i) for i in other]
-                    self.x += other[0]
-                    self.y += other[1]
-                    self.z += other[2]
+                    res_x = self.x + other[0]
+                    res_y = self.y + other[1]
+                    res_z = self.z + other[2]
                 else:
                     raise TypeError
                 if len(other) == 4:
-                    self.error += other[3]
+                    res_error = self.error + other[3]
+                else:
+                    res_error = None
             case _: raise TypeError
-        return self
+        return Location(x=res_x, y=res_y, z=res_z, error=res_error)
 
     def __sub__(self, other):
         match other:
             case Location():
-                self.x -= other.x
-                self.y -= other.y
-                self.z -= other.z
-                self.error += other.error
+                res_x = self.x - other.x
+                res_y = self.y - other.y
+                res_z = self.z - other.z
+                res_error = self.error + other.error
             case list() | tuple():
                 if 3 <= len(other) <= 4:
                     floated_vals = [float(i) for i in other]
-                    self.x -= other[0]
-                    self.y -= other[1]
-                    self.z -= other[2]
+                    res_x = self.x - other[0]
+                    res_y = self.y - other[1]
+                    res_z = self.z - other[2]
                 else:
                     raise TypeError
                 if len(other) == 4:
-                    self.error += other[3]
+                    res_error = self.error - other[3]
+                else:
+                    res_error = None
+
             case np.ndarray():
-                print("hello there")
                 if 3 <= other.shape[0] <= 4:
                     floated_vals = [float(i) for i in other]
-                    self.x -= other[0]
-                    self.y -= other[1]
-                    self.z -= other[2]
+                    res_x = self.x - other[0]
+                    res_y = self.y - other[1]
+                    res_z = self.z - other[2]
                 else:
                     raise TypeError
                 if len(other) == 4:
-                    self.error += other[3]
+                    res_error = self.error + other[3]
+                else:
+                    res_error = None
             case _:
                 raise TypeError
+        return Location(x=res_x, y=res_y, z=res_z, error=res_error)
 
     def to_numpy(self) -> np.array:
         return np.array([self.x, self.y, self.z], dtype=np.float64)
