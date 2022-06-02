@@ -211,6 +211,11 @@ class PurePursuitNavigator(Navigator):
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
         print("hilfe" + str(type(waypoint_target.location)))
         print("hilfeA" + str(waypoint_target.location))
+        print("hilfe2" + str(type(waypoint_base.location)))
+        print("hilfe2A" + str(waypoint_base.location))
+        print("hilfe3" + str(type((waypoint_target.location - waypoint_base.location))))
+        print("hilfeA3" + str((waypoint_target.location - waypoint_base.location)))
+
         # calculate offset:
         offset_error = utils.calc_distance_to_line(pos1.location, waypoint_base.location,
                                                    (waypoint_target.location - waypoint_base.location).to_numpy())
