@@ -190,8 +190,6 @@ class PurePursuitNavigator(Navigator):
         # final_error = e_o + 1XX% r_min * (2 * e_h / pi)
         final_error = offset_error + np.multiply(np.multiply(speed_turning_radius_factor, turning_radius),
                                                  np.divide(heading_error_angle, np.pi))
-
-        print(f"{type(final_error)}")
         return final_error
 
     def calc_position_error(self, pos1: Position, target_location: Location,
