@@ -209,6 +209,8 @@ class PurePursuitNavigator(Navigator):
 
     def calc_line_error(self, pos1: Position, waypoint_base: Waypoint, waypoint_target: Waypoint) -> float:
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
+        print("hilfe" + str(type(waypoint_target.location)))
+        print("hilfeA" + str(waypoint_target.location))
         # calculate offset:
         offset_error = utils.calc_distance_to_line(pos1.location, waypoint_base.location,
                                                    (waypoint_target.location - waypoint_base.location).to_numpy())
