@@ -139,6 +139,8 @@ class PurePursuitNavigator(Navigator):
                 .rotate(current_path_waypoints[waypoint_id].location.to_numpy())
             possible_target_points = intersections_of_circle_and_line_segment(vec_base[:2], vec_target[:2],
                                                                               lookahead_distance)
+            print(f"vec_base: {vec_base}")
+            print(f"vec_target: {vec_target}")
             if len(possible_target_points) == 0:
                 print("debug1")
                 continue
