@@ -156,6 +156,7 @@ class PurePursuitNavigator(Navigator):
             break
         if target_point is None:
             # i don't yet know what to do TODO think about solution
+            print("target_point is none")
             return None
 
         # based on https://www.youtube.com/watch?v=qYR7mmcwT2w and http://www.davdata.nl/math/turning_radius.html
