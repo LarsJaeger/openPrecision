@@ -127,6 +127,7 @@ class PurePursuitNavigator(Navigator):
 
         target_point = None
         # walk through all waypoints in correct order
+        print(f"Path: {current_path_waypoints}")
         for waypoint_id in range(waypoint_base_id + (1 if path_direction_is_positive else -1),
                                  len(current_path_waypoints) if path_direction_is_positive else 0):
             # determine if an intersection occurs between base waypoint and waypoint_id
