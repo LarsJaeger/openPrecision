@@ -134,10 +134,16 @@ class PurePursuitNavigator(Navigator):
 
             # determine possible intersections between lookahead circle and path line (infinitely long)
             # rotate to vehicle coordinates
+            wp_base = current_path_waypoints[waypoint_id - (1 if path_direction_is_positive else -1)]
+            print(f"wpb: {wp_base}")
             vec_base = global_to_vehicle \
-                .rotate(current_path_waypoints[waypoint_id - (1 if path_direction_is_positive else -1)].location.to_numpy())
+                .rotate(wp_base.location.to_numpy())
+
+            wp_target = current_path_waypoints[waypoint_id]
+            print(f"wpb: {wp_target}")
             vec_target = global_to_vehicle \
-                .rotate(current_path_waypoints[waypoint_id].location.to_numpy())
+                .rotate(wp_target.location.to_numpy())
+
             possible_target_points = intersections_of_circle_and_line_segment(vec_base[:2], vec_target[:2],
                                                                               lookahead_distance)
             print(f"vec_base: {vec_base}")
