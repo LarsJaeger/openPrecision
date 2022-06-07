@@ -25,8 +25,8 @@ class Manager:
         for plugin in self._plugins:
             plugin.cleanup()
 
-        self.config.cleanup()
         self.vehicles.cleanup()
+        self.config.cleanup()
 
     @property
     def config(self) -> ConfigManager:

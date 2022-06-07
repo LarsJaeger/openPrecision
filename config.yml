@@ -1,2 +1,33 @@
-Bno055AosAdapter:
-  debug: true
+VehicleManager:
+  vehicles:
+  - name: example_vehicle
+    gps_receiver_offset:
+    - 1
+    - 2
+    - 3
+    turn_radius_right: 70.3
+    turn_radius_left: 69.1
+    wheelbase: 3.2
+  current_vehicle_id: 0
+PluginManager:
+  loading_priority:
+    CourseGenerator:
+    - AHeadingParallelGenerator
+    Navigator:
+    - PurePursuitNavigator
+    PositionBuilder:
+    - GpsAosPositionBuilder
+    - GpsCompassPositionBuilder
+    UserInterface: []
+    AbsoluteOrientationSensor:
+    - AOSDummySensor
+    - Bno055AosAdapter
+    GlobalPositioningSystem:
+    - GPSDummySensor
+    - UbloxGPSAdapter
+    InertialMeasurementUnit:
+    - SparkfunIcm20948Adapter
+    WorldMagneticModelCalculator:
+    - WmmWrapper
+SparkfunIcm20948Adapter:
+  magnetometer_bias:

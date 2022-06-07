@@ -39,6 +39,7 @@ class ConfigManager:
         flat_conf = flatten(self._config, reducer="dot")
         flat_conf[address] = value
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
+        self._save_config_file() # TODO possibly cache and save
         return self
 
     def get_value(self, origin_object: object, key: str) -> dict | any:
