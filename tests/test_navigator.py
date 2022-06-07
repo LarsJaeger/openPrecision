@@ -4,6 +4,8 @@ import unittest
 import context
 import time
 
+from open_precision.core.interfaces.course_generator import CourseGenerator
+from open_precision.core.interfaces.navigator import Navigator
 from open_precision.core.managers.manager import Manager
 
 
@@ -26,8 +28,8 @@ class TestPositionBuilder(unittest.TestCase):
         man = Manager()
         try:
             while True:
-                man.navigator.course = man.course_generator.generate_course()
-                print(f"angle: {man.navigator.steering_angle}")
+                man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
+                print(f"angle: {man.plugins[Navigator].steering_angle}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 

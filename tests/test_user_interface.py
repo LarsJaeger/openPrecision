@@ -25,7 +25,7 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = Manager()
-        ui = FlaskWebUI(man)
+
 
 def main():
     unittest.main()
