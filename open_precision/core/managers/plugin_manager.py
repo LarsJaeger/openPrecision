@@ -79,7 +79,7 @@ class PluginManager:
         plugin_loading_priority = self._manager.config.get_value(self,
                                                                  f"loading_priority.{self._plugin_type_class.__name__}")
         for plugin in possible_plugins:
-            if plugin not in plugin_loading_priority:
+            if plugin.__name__ not in plugin_loading_priority:
                 plugin_loading_priority.append(plugin.__name__)
         # create reverse lookup table
         plugins_from_name = {plugin.__name__: plugin for plugin in possible_plugins}

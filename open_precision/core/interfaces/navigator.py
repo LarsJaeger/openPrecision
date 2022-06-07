@@ -4,11 +4,13 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from open_precision.core.model.course import Course
+from open_precision.core.plugin import Plugin
+
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
 
 
-class Navigator(ABC):
+class Navigator(Plugin, ABC):
     """computes from current position and target point (or line) to output/call actions that need to be performed in
     order to the target point (or line)"""
 

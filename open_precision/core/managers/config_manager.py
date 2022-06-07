@@ -3,7 +3,7 @@ from __future__ import annotations
 import atexit
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
-from open_precision.core.managers import class_plugin_manager
+from open_precision.core.managers import plugin_manager
 
 
 class ConfigManager:
@@ -11,7 +11,7 @@ class ConfigManager:
         self._config: CommentedMap = CommentedMap()
         self._config_path = config_path
         self._load_config_file()
-        self.classes = class_plugin_manager.get_classes_in_package("open_precision")
+        self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
         atexit.register(self._cleanup)

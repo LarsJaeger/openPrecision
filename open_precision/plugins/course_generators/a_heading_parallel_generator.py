@@ -12,6 +12,9 @@ from open_precision.core.model.waypoint import Waypoint
 
 
 class AHeadingParallelGenerator(CourseGenerator):
+    def _cleanup(self):
+        pass
+
     def __init__(self, manager: Manager):
         self.man: Manager = manager
 
