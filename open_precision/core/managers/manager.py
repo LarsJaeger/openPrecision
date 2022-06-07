@@ -11,11 +11,14 @@ from open_precision.core.managers.vehicle_manager import VehicleManager
 class Manager:
     def __init__(self):
         atexit.register(self._cleanup)
+        # loading sub managers
         self._config = ConfigManager("../config.yml")
+        self._vehicles = VehicleManager(self)
+
+        # loading plugins
         self._plugins = {}
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
-        self._vehicles = VehicleManager(self)
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
