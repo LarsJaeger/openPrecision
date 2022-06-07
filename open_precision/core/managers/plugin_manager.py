@@ -61,7 +61,7 @@ def _check_plugins_for_class(plugin_class, plugins) -> list:
 
 class PluginManager:
     def __init__(self, manager: Manager, plugin_type_class: object, plugin_package: str):
-        atexit.register(self._cleanup())
+        atexit.register(self._cleanup)
         self._manager: Manager = manager
         self._plugin_type_class: object = plugin_type_class
         self._plugin_package: str = plugin_package
