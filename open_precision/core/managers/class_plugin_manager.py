@@ -94,7 +94,6 @@ class PluginManager:
                 print(
                     f"[ERROR] An error occurred while enabling {str(plugin_loading_priority[current_init_plugin])}: {str(PluginException)}"
                 )
-        raise
 
     @property
     def instance(self):
