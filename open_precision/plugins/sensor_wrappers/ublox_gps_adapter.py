@@ -16,7 +16,6 @@ shortest_update_dt = 100  # in ms
 
 
 class UbloxGPSAdapter(GlobalPositioningSystem):
-
     def __init__(self, manager: Manager):
         self._manager = manager
         self._manager.config.register_value(self, "enable_rtk_correction", True)

@@ -34,28 +34,28 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         pass
 
     @property
-    def is_calibrated(self) -> 'bool':
+    def is_calibrated(self) -> bool:
         return self.sensor.calibrated
 
-    def calibrate(self) -> 'bool':
+    def calibrate(self) -> bool:
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and
         return True if calibration succeeded"""
         pass
 
     @property
-    def scaled_acceleration(self) -> 'np.array':
+    def scaled_acceleration(self) -> np.ndarray:
         return np.array(self.sensor.acceleration)
 
     @property
-    def scaled_angular_acceleration(self) -> 'np.array':
+    def scaled_angular_acceleration(self) -> np.ndarray:
         return np.array(self.sensor.gyro)
 
     @property
-    def scaled_magnetometer(self) -> 'np.array':
+    def scaled_magnetometer(self) -> np.ndarray:
         return np.array(self.sensor.magnetic)
 
     @property
-    def orientation(self) -> 'Quaternion':
+    def orientation(self) -> Quaternion | None:
         """returns an orientation quaternion"""
         current_quat = self.sensor.quaternion
         if current_quat == (None, None, None, None):
@@ -64,6 +64,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         return quat
 
     @property
-    def gravity(self) -> 'np.array':
+    def gravity(self) -> np.ndarray:
         """returns a gravity vector"""
         return np.array(self.sensor.gravity)

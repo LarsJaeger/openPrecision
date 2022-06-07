@@ -7,6 +7,7 @@ import numpy as np
 from open_precision import utils
 from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.interfaces.navigator import Navigator
+from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.manager import Manager
 from open_precision.core.model.course import Course
 from open_precision.core.model.position import Position
@@ -40,7 +41,7 @@ class PurePursuitNavigator(Navigator):
         # what's following now is a lot of spaghetti code
         if self._course is None:
             raise CourseNotSetException(self)
-        current_position = self._manager.position_builder.current_position
+        current_position = self._manager.plugins[PositionBuilder].current_position
         waypoint_base_id = None
 
         if self._current_path_id is None:

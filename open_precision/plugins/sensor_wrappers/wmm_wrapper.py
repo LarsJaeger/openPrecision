@@ -43,7 +43,6 @@ class WmmWrapper(WorldMagneticModelCalculator):
         )
         self._last_update = None
         self._current_datapoint: any = None
-        self.gps_class = GlobalPositioningSystem
         atexit.register(self._cleanup)
 
     def _cleanup(self):
@@ -99,9 +98,9 @@ class WmmWrapper(WorldMagneticModelCalculator):
             or utils.millis() - self._last_update >= shortest_update_dt
         ):
             self._current_datapoint = self._get_data_point(
-                self._manager.sensors[self.gps_class].longitude,
-                self._manager.sensors[self.gps_class].latitude,
-                self._manager.sensors[self.gps_class].height_above_sea_level,
+                self._manager.plugins[GlobalPositioningSystem].longitude,
+                self._manager.plugins[GlobalPositioningSystem].latitude,
+                self._manager.plugins[GlobalPositioningSystem].height_above_sea_level,
             )
             self._last_update = utils.millis()
 
@@ -143,7 +142,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
         return self._current_datapoint["H_nT"]
 
     @property
-    def field_vector(self) -> ndarray:
+    def field_vector(self) -> np.ndarray:
         """returns the corresponting axis components as a vector in nT, X+ = north, Y+ = East, Z+ = up"""
         self.update_values()
         return np.array(

@@ -25,18 +25,13 @@ class GpsCompassPositionBuilder(PositionBuilder):
         self._manager = manager
 
         """get available sensors"""
-        self.gps_class = GlobalPositioningSystem
-        self.aos_class = AbsoluteOrientationSensor
-        self.wmm_class = WorldMagneticModelCalculator
 
     @property
-    def current_position(self) -> Position:
-        uncorrected_location: Location = self._manager.sensors[self.gps_class].location
-        gravity_vector: np.array = self._manager.sensors[self.aos_class].gravity
-        mag_real_vector: np.array = self._manager.sensors[
-            self.aos_class
-        ].scaled_magnetometer
-        mag_wmm_vector: np.array = self._manager.sensors[self.wmm_class].field_vector
+    def current_position(self) -> Position | None:
+        uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
+        gravity_vector: np.array = self._manager.plugins[AbsoluteOrientationSensor].gravity
+        mag_real_vector: np.array = self._manager.plugins[AbsoluteOrientationSensor].scaled_magnetometer
+        mag_wmm_vector: np.array = self._manager.plugins[WorldMagneticModelCalculator].field_vector
         gravity_model_vector = np.array([0.0, 0.0, -1.0])
 
         if any(
@@ -99,6 +94,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
             self._manager.vehicles.current_vehicle.gps_receiver_offset
         )  # TODO: check if it is a unit vector
         print(f"correction_vector {correction_vector}")
+        # TODO switch to ecef
         corrected_location: Location = Location(
             lat=uncorrected_location.lat
             - math.tan(
@@ -133,7 +129,7 @@ class GpsCompassPositionBuilder(PositionBuilder):
     @property
     def is_ready(self):
         return (
-            self._manager.sensors[self.gps_class].is_calibrated()
-            and self._manager.sensors[self.aos_class].is_calibrated()
-            and self._manager.sensors[self.wmm_class].is_calibrated()
+            self._manager.plugins[GlobalPositioningSystem].is_calibrated()
+            and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
+            and self._manager.plugins[WorldMagneticModelCalculator].is_calibrated()
         )
