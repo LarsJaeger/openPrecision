@@ -22,8 +22,9 @@ class Manager:
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
-        for _, plugin in self._plugins:
+        for plugin in self._plugins:
             plugin.cleanup()
+
         self.config.cleanup()
         self.vehicles.cleanup()
 
