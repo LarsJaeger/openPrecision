@@ -18,7 +18,7 @@ from open_precision.core.model.location import Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):
-    def _cleanup(self):
+    def cleanup(self):
         pass
 
     def __init__(self, manager: Manager):

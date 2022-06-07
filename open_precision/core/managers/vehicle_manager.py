@@ -30,9 +30,8 @@ class VehicleManager:
         )
         self._vehicles = []
         self.load_data()
-        atexit.register(self._cleanup)
 
-    def _cleanup(self):
+    def cleanup(self):
         self.save_data()
 
     def load_data(self):

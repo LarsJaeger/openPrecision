@@ -11,5 +11,5 @@ class GPSDummySensor(GlobalPositioningSystem):
     def __init__(self, manager: Manager):
         pass
 
-    def _cleanup(self):
+    def cleanup(self):
         pass

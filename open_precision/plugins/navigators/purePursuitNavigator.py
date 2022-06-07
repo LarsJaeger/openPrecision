@@ -17,7 +17,7 @@ from open_precision.utils import intersections_of_circle_and_line_segment
 
 
 class PurePursuitNavigator(Navigator):
-    def _cleanup(self):
+    def cleanup(self):
         pass
 
     def __init__(self, manager: Manager):

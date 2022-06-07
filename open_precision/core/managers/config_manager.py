@@ -14,7 +14,6 @@ class ConfigManager:
         self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
-        atexit.register(self._cleanup)
 
     def register_value(
         self, origin_object: object, key: str, value: any
@@ -54,7 +53,7 @@ class ConfigManager:
             else flat_conf[address]
         )
 
-    def _cleanup(self):
+    def cleanup(self):
         self._save_config_file()
 
     def _load_config_file(self):

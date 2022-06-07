@@ -20,5 +20,5 @@ class FlaskWebUI(UserInterface):
         def index():
             return render_template("app.html")
 
-    def _cleanup(self):
+    def cleanup(self):
         pass

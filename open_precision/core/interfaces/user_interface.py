@@ -14,9 +14,9 @@ class UserInterface(Plugin, ABC):
     @abstractmethod
     def __init__(self, manager: Manager):
         self._manager = manager
-        atexit.register(self._cleanup)
+        atexit.register(self.cleanup)
         pass
 
     @abstractmethod
-    def _cleanup(self):
+    def cleanup(self):
         pass

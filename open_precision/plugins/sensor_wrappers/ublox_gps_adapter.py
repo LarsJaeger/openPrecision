@@ -34,10 +34,10 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._last_update = None
         self._message: any = None
 
-        atexit.register(self._cleanup)
+        atexit.register(self.cleanup)
         print("[UbloxGPSAdapter] finished initialisation")
 
-    def _cleanup(self):
+    def cleanup(self):
         self.stop_rtk_correction()
         self._port.close()
 

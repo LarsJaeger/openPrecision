@@ -21,7 +21,7 @@ from open_precision.utils import norm_vector
 
 
 class GpsCompassPositionBuilder(PositionBuilder):
-    def _cleanup(self):
+    def cleanup(self):
         pass
 
     def __init__(self, manager: Manager):

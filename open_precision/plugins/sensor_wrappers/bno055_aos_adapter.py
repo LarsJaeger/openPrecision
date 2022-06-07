@@ -27,10 +27,10 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         self.sensor.mode = adafruit_bno055.NDOF_MODE
         # self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
         self.sensor.accel_range = adafruit_bno055.ACCEL_2G
-        atexit.register(self._cleanup)
+        atexit.register(self.cleanup)
         print("[Bno055AosAdapter] finished initialisation")
 
-    def _cleanup(self):
+    def cleanup(self):
         pass
 
     @property

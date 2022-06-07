@@ -43,9 +43,9 @@ class WmmWrapper(WorldMagneticModelCalculator):
         )
         self._last_update = None
         self._current_datapoint: any = None
-        atexit.register(self._cleanup)
+        atexit.register(self.cleanup)
 
-    def _cleanup(self):
+    def cleanup(self):
         pass
 
     def _get_data_point(self, longitude: float, latitude: float, altitude_msl):
