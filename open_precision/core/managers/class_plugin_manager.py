@@ -92,7 +92,7 @@ class PluginManager:
                 return plugins_from_name[current_init_plugin](self._manager)
             except PluginException:
                 print(
-                    f"[ERROR] An error occurred while enabling {str(plugin_loading_priority[current_init_plugin])}: {str(PluginException)}"
+                    f"[ERROR] An error occurred while enabling {current_init_plugin}: {str(PluginException)}"
                 )
 
     @property
