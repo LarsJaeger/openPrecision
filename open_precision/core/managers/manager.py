@@ -11,11 +11,11 @@ from open_precision.core.managers.vehicle_manager import VehicleManager
 
 class Manager:
     def __init__(self):
-        self._plugins = {}  # todo fix implementations
+        self._config = ConfigManager("../config.yml")
+        self._plugins = {}
         for plugin_type in class_plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
 
-        self._config = ConfigManager("../config.yml")
         self._sensor_manager = PluginManager(self, "open_precision.core.interfaces.sensor_types",
                                              "open_precision.plugins.sensor_wrappers")
         self._position_builder_manager = PluginManager(self, PositionBuilder,
@@ -34,4 +34,4 @@ class Manager:
 
     @property
     def plugins(self) -> dict[object, any]:
-        return self._plugins #todo refactor old usage
+        return self._plugins
