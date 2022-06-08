@@ -71,51 +71,6 @@ def inclination_from_vector(vector: np.array) -> float:
     return np.arctan(np.divide(np.multiply(-1, vector[2]), vector[0]))
 
 
-def get_classes_in_package(package: str) -> list:
-    # returns a dict with classes as key and class names as value
-    return _get_classes_in_package(package, [])
-
-
-def _get_classes_in_package(package, classes: list) -> list:
-    # recursively walk the supplied package to retrieve all classes
-    imported_package = __import__(package, fromlist=["a"])
-
-    for _, plugin_name, is_package in pkgutil.iter_modules(
-            imported_package.__path__, imported_package.__name__ + "."
-    ):
-        if not is_package:
-            plugin_module = __import__(plugin_name, fromlist=["a"])
-            found_classes = inspect.getmembers(plugin_module, inspect.isclass)
-            for name, cls in found_classes:
-                if str(cls.__module__) == plugin_name:
-                    classes.append(cls)
-
-    # Now that we have looked at all the modules in the current package, start looking
-    # recursively for additional modules in sub packages
-    all_current_paths = []
-    if isinstance(imported_package.__path__, str):
-        all_current_paths.append(imported_package.__path__)
-    else:
-        all_current_paths.extend([x for x in imported_package.__path__])
-
-    seen_paths = []
-    for pkg_path in all_current_paths:
-        if pkg_path not in seen_paths:
-            seen_paths.append(pkg_path)
-
-            # Get all sub directory of the current package path directory
-            child_pkgs = [
-                p
-                for p in os.listdir(pkg_path)
-                if os.path.isdir(os.path.join(pkg_path, p))
-            ]
-
-            # For each sub directory, apply the walk_package method recursively
-            for child_pkg in child_pkgs:
-                _get_classes_in_package(package + "." + child_pkg, classes)
-    return classes
-
-
 def angle_between_vectors(vector_a: np.array, vector_b: np.array):
     """returns angle between vector_a and vector_b as radian"""
     inner = np.inner(vector_a, vector_b)
@@ -164,13 +119,13 @@ def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list
 
     # check if points are not only on line, but also on line segment and add if point is not already on list
     result = []
-    if min(point_on_line1[0], point_on_line2[0]) < x1_candidate < max(point_on_line1[0], point_on_line2[0]) \
-            and min(point_on_line1[1], point_on_line2[1]) < y1_candidate < max(point_on_line1[1], point_on_line2[1]):
+    if min(point_on_line1[0], point_on_line2[0]) <= x1_candidate <= max(point_on_line1[0], point_on_line2[0]) \
+            and min(point_on_line1[1], point_on_line2[1]) <= y1_candidate <= max(point_on_line1[1], point_on_line2[1]):
         # point 1 is on line -> add to list
         result.append((x1_candidate, y1_candidate))
 
-    if (min(point_on_line1[0], point_on_line2[0]) < x2_candidate < max(point_on_line1[0], point_on_line2[0])) \
-            and min(point_on_line1[1], point_on_line2[1]) < y2_candidate < max(point_on_line1[1], point_on_line2[1]) \
+    if (min(point_on_line1[0], point_on_line2[0]) <= x2_candidate <= max(point_on_line1[0], point_on_line2[0])) \
+            and min(point_on_line1[1], point_on_line2[1]) <= y2_candidate <= max(point_on_line1[1], point_on_line2[1]) \
             and not all([x1_candidate == x2_candidate, y1_candidate == y2_candidate]):
         # point 2 is on line and differs from point 1 -> add to list
         result.append((x2_candidate, y2_candidate))

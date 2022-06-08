@@ -3,7 +3,7 @@ from __future__ import annotations
 import atexit
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
-from open_precision import utils
+from open_precision.core.managers import plugin_manager
 
 
 class ConfigManager:
@@ -11,19 +11,18 @@ class ConfigManager:
         self._config: CommentedMap = CommentedMap()
         self._config_path = config_path
         self._load_config_file()
-        self.classes = utils.get_classes_in_package("open_precision")
+        self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
-        atexit.register(self._cleanup)
 
     def register_value(
-        self, origin_object: object, value_name: str, value: any
-    ) -> 'object':
-        # YAML().register_class(type(value))  #register class
+        self, origin_object: object, key: str, value: any
+    ) -> ConfigManager:
+        """adds key/value pair to object's config if not already set"""
 
         address = type(origin_object).__name__
-        if value_name is not None:
-            address += "." + value_name
+        if key is not None:
+            address += "." + key
         flat_conf = flatten(self._config, reducer="dot")
         if address not in flat_conf.keys():
             flat_conf[address] = value
@@ -32,21 +31,22 @@ class ConfigManager:
         )  # update config
         return self
 
-    def set_value(self, origin_object: object, value_name: str, value: any) -> any:
-        # YAML().register_class(type(value)) #register class
-
+    def set_value(self, origin_object: object, key: str, value: any) -> ConfigManager:
+        """updates key's value in object's config"""
         address = type(origin_object).__name__
-        if value_name is not None:
-            address += "." + value_name
+        if key is not None:
+            address += "." + key
         flat_conf = flatten(self._config, reducer="dot")
         flat_conf[address] = value
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
+        self._save_config_file() # TODO possibly cache and save
         return self
 
-    def get_value(self, origin_object: object, value_name: str) -> dict | any:
+    def get_value(self, origin_object: object, key: str) -> dict | any:
+        """returns value of key from origin_object's config"""
         address = type(origin_object).__name__
-        if value_name is not None:
-            address += "." + value_name
+        if key is not None:
+            address += "." + key
         flat_conf = flatten(self._config, reducer="dot")
         return (
             unflatten(flat_conf[address])
@@ -54,7 +54,7 @@ class ConfigManager:
             else flat_conf[address]
         )
 
-    def _cleanup(self):
+    def cleanup(self):
         self._save_config_file()
 
     def _load_config_file(self):

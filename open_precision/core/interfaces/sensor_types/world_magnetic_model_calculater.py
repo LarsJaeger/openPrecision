@@ -3,10 +3,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List
 
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+from open_precision.core.plugin import Plugin
 
 
-class WorldMagneticModelCalculator(BasicSensor, ABC):
+class WorldMagneticModelCalculator(Plugin, ABC):
     @property
     @abstractmethod
     def declination(self) -> float:

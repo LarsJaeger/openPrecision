@@ -4,6 +4,7 @@ import unittest
 import context
 import time
 
+from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.manager import Manager
 
 
@@ -29,7 +30,7 @@ class TestPositionBuilder(unittest.TestCase):
             while True:
                 counter += 1
                 print("a")
-                print(f"pos {counter}: {man.position_builder.current_position}")
+                print(f"pos {counter}: {man.plugins[PositionBuilder].current_position}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 

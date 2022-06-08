@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from abc import abstractmethod, ABC
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+from open_precision.core.plugin import Plugin
 from open_precision.core.model.location import Location
 
 
-class GlobalPositioningSystem(BasicSensor, ABC):
+class GlobalPositioningSystem(Plugin, ABC):
     @property
     @abstractmethod
     def location(self) -> Location:

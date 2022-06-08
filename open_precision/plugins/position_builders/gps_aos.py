@@ -18,18 +18,18 @@ from open_precision.core.model.location import Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):
+    def cleanup(self):
+        pass
+
     def __init__(self, manager: Manager):
         self._manager = manager
 
         """get available sensors"""
-        self.gps_class = GlobalPositioningSystem
-        self.aos_class = AbsoluteOrientationSensor
-        self.wmm_class = WorldMagneticModelCalculator
 
     @property
     def current_position(self) -> Position | None:
-        uncorrected_location: Location = self._manager.sensors[self.gps_class].location
-        orientation: np.array = self._manager.sensors[self.aos_class].orientation
+        uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
+        orientation: np.array = self._manager.plugins[AbsoluteOrientationSensor].orientation
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
@@ -46,6 +46,6 @@ class GpsAosPositionBuilder(PositionBuilder):
     @property
     def is_ready(self):
         return (
-            self._manager.sensors[self.gps_class].is_calibrated()
-            and self._manager.sensors[self.aos_class].is_calibrated()
+            self._manager.plugins[GlobalPositioningSystem].is_calibrated()
+            and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
         )
