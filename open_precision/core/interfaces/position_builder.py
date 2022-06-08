@@ -3,11 +3,13 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 from open_precision.core.model.position import Position
+from open_precision.core.plugin import Plugin
+
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
 
 
-class PositionBuilder(ABC):
+class PositionBuilder(Plugin, ABC):
     @abstractmethod
     def __init__(self, manager: Manager):
         # self._manager = manager

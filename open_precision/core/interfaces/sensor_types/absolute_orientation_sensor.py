@@ -4,10 +4,10 @@ from abc import abstractmethod, ABC
 import numpy as np
 from pyquaternion import Quaternion
 
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+from open_precision.core.plugin import Plugin
 
 
-class AbsoluteOrientationSensor(BasicSensor, ABC):
+class AbsoluteOrientationSensor(Plugin, ABC):
     @property
     @abstractmethod
     def orientation(self) -> Quaternion:
@@ -16,6 +16,6 @@ class AbsoluteOrientationSensor(BasicSensor, ABC):
 
     @property
     @abstractmethod
-    def gravity(self) -> np.array:
+    def gravity(self) -> np.ndarray:
         """returns an gravity vector"""
         pass

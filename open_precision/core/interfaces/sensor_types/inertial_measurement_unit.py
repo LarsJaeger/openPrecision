@@ -2,21 +2,22 @@ from __future__ import annotations
 
 from abc import abstractmethod, ABC
 import numpy as np
-from open_precision.core.interfaces.sensor_types.basic_sensor import BasicSensor
+
+from open_precision.core.plugin import Plugin
 
 
-class InertialMeasurementUnit(BasicSensor, ABC):
+class InertialMeasurementUnit(Plugin, ABC):
     @property
     @abstractmethod
-    def scaled_acceleration(self) -> np.array:
+    def scaled_acceleration(self) -> np.ndarray:
         pass
 
     @property
     @abstractmethod
-    def scaled_angular_acceleration(self) -> np.array:
+    def scaled_angular_acceleration(self) -> np.ndarray:
         pass
 
     @property
     @abstractmethod
-    def scaled_magnetometer(self) -> np.array:
+    def scaled_magnetometer(self) -> np.ndarray:
         pass
