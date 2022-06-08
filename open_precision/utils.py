@@ -119,13 +119,13 @@ def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list
 
     # check if points are not only on line, but also on line segment and add if point is not already on list
     result = []
-    if min(point_on_line1[0], point_on_line2[0]) < x1_candidate < max(point_on_line1[0], point_on_line2[0]) \
-            and min(point_on_line1[1], point_on_line2[1]) < y1_candidate < max(point_on_line1[1], point_on_line2[1]):
+    if min(point_on_line1[0], point_on_line2[0]) <= x1_candidate <= max(point_on_line1[0], point_on_line2[0]) \
+            and min(point_on_line1[1], point_on_line2[1]) <= y1_candidate <= max(point_on_line1[1], point_on_line2[1]):
         # point 1 is on line -> add to list
         result.append((x1_candidate, y1_candidate))
 
-    if (min(point_on_line1[0], point_on_line2[0]) < x2_candidate < max(point_on_line1[0], point_on_line2[0])) \
-            and min(point_on_line1[1], point_on_line2[1]) < y2_candidate < max(point_on_line1[1], point_on_line2[1]) \
+    if (min(point_on_line1[0], point_on_line2[0]) <= x2_candidate <= max(point_on_line1[0], point_on_line2[0])) \
+            and min(point_on_line1[1], point_on_line2[1]) <= y2_candidate <= max(point_on_line1[1], point_on_line2[1]) \
             and not all([x1_candidate == x2_candidate, y1_candidate == y2_candidate]):
         # point 2 is on line and differs from point 1 -> add to list
         result.append((x2_candidate, y2_candidate))

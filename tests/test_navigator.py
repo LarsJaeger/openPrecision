@@ -1,5 +1,6 @@
 # test_template.py
 # change 'template' to python file name of file to be tested
+import math
 import unittest
 import context
 import time
@@ -28,8 +29,9 @@ class TestPositionBuilder(unittest.TestCase):
         man = Manager()
         try:
             while True:
+
                 man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
-                print(f"angle: {man.plugins[Navigator].steering_angle}")
+                print(f"angle: {math.degrees(man.plugins[Navigator].steering_angle)}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 

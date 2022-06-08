@@ -139,47 +139,48 @@ class PurePursuitNavigator(Navigator):
             # determine possible intersections between lookahead circle and path line (infinitely long)
             # rotate to vehicle coordinates
             wp_base = current_path_waypoints[waypoint_id - (1 if path_direction_is_positive else -1)]
-            print(f"wpb: {wp_base}")
             vec_base = global_to_vehicle \
-                .rotate(wp_base.location.to_numpy())
+                .rotate(wp_base.location.to_numpy() - current_position.location.to_numpy())
 
             wp_target = current_path_waypoints[waypoint_id]
-            print(f"wpb: {wp_target}")
             vec_target = global_to_vehicle \
-                .rotate(wp_target.location.to_numpy())
+                .rotate(wp_target.location.to_numpy() - current_position.location.to_numpy())
 
             possible_target_points = intersections_of_circle_and_line_segment(vec_base[:2], vec_target[:2],
                                                                               lookahead_distance)
-            print(f"vec_base: {vec_base}")
-            print(f"vec_target: {vec_target}")
-            if len(possible_target_points) == 0:
-                print("debug1")
-                continue
-            elif len(possible_target_points) == 2:
-                print("debug2")
-                # see which one is closer to vec_target
-                d0 = sqrt(possible_target_points[0][0] ** 2 + possible_target_points[0][1] ** 2)
-                d1 = sqrt(possible_target_points[1][0] ** 2 + possible_target_points[1][1] ** 2)
-                if d0 < d1:
-                    target_point = d0
-                else:
-                    target_point = d1
-            else:
-                print("debug3")
-                target_point = possible_target_points[0]
-            # target has been found -> break
-            break
+            match len(possible_target_points):
+                case 0:
+                    continue
+                case 1:
+                    target_point = possible_target_points[0]
+                    # target has been found -> break
+                    break
+                case _:
+                    # see which one is closer to vec_target
+                    d0 = sqrt(possible_target_points[0][0] ** 2 + possible_target_points[0][1] ** 2)
+                    d1 = sqrt(possible_target_points[1][0] ** 2 + possible_target_points[1][1] ** 2)
+                    if d0 < d1:
+                        target_point = d0
+                    else:
+                        target_point = d1
+                    # target has been found -> break
+                    break
         if target_point is None:
             # i don't yet know what to do TODO think about solution
-            print("target_point is none")
+            print("target_point is none; no line in sight")
             return None
 
         # based on https://www.youtube.com/watch?v=qYR7mmcwT2w and http://www.davdata.nl/math/turning_radius.html
         # return result of formula arctan(W / (L² / (2*|gy|)))
         wheelbase = self._manager.vehicles.current_vehicle.wheelbase
-        angle = np.arctan(wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1]))))
+        part1 = 2 * abs(target_point[1])
+        part2 = lookahead_distance ** 2
+        if part1 == 0 or part2 == 0:
+            angle = 0
+        else:
+            angle = np.arctan(wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1]))))
         # set sign of angle dependent on turning direction
-        angle = angle * 1 if target_point[1] < 0 else -1
+        angle = angle * (1 if target_point[1] < 0 else -1)
         return angle
 
     def _calc_combined_error(self, offset_error: float, pos1, waypoint_base: Waypoint, waypoint_target: Waypoint):

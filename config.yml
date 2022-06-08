@@ -5,8 +5,8 @@ VehicleManager:
     - 1
     - 2
     - 3
-    turn_radius_right: 70.3
     turn_radius_left: 69.1
+    turn_radius_right: 70.3
     wheelbase: 3.2
   current_vehicle_id: 0
 PluginManager:
@@ -31,3 +31,5 @@ PluginManager:
     - WmmWrapper
 SparkfunIcm20948Adapter:
   magnetometer_bias:
+WmmWrapper:
+  wmm_bin_path: example/wmm/bin/path
