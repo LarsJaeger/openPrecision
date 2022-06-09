@@ -27,10 +27,9 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = Manager()
+        man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
         try:
             while True:
-
-                man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
                 print(f"angle: {math.degrees(man.plugins[Navigator].steering_angle)}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
