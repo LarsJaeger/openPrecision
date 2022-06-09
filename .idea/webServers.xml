@@ -2,10 +2,10 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="09ee09d8-0a7d-4734-b18f-4207e2a007ed" name="raspi">
-        <fileTransfer rootFolder="/home/pi" accessType="SFTP" host="192.168.10.22" port="22" sshConfigId="577ca968-7d04-401d-8849-e9934fef160c" sshConfig="pi@192.168.10.22:22 password">
+      <webServer id="09ee09d8-0a7d-4734-b18f-4207e2a007ed" name="raspi" url="http://localhost">
+        <fileTransfer rootFolder="/home/pi" accessType="SFTP" host="raspberrypi" port="22" sshConfigId="bdb72afd-0802-4b8d-94bb-56a92b546442" sshConfig="pi@raspberrypi:22 password">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

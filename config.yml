@@ -18,7 +18,8 @@ PluginManager:
     PositionBuilder:
     - GpsAosPositionBuilder
     - GpsCompassPositionBuilder
-    UserInterface: []
+    UserInterface:
+    - FlaskWebUI
     AbsoluteOrientationSensor:
     - AOSDummySensor
     - Bno055AosAdapter

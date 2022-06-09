@@ -1,4 +1,4 @@
-"""from __future__ import annotations
+from __future__ import annotations
 
 import os
 from typing import TYPE_CHECKING
@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 class FlaskWebUI(UserInterface):
     def __init__(self, manager: Manager):
-        template_dir = os.path.abspath('/templates')
+        template_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/templates')
         app = Flask(__name__, template_folder=template_dir)
-        app.run()
 
         @app.route('/')
         def index():
             return render_template("app.html")
 
+        app.run()
+
     def cleanup(self):
         pass
-"""
