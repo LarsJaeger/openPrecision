@@ -10,7 +10,7 @@ class Location:
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
     z: float  # ECEF Z coordinate in meters
-    error: float  # position accuracy in meters
+    error: float | None  # position accuracy in meters
 
     def __add__(self, other):
         match other:
