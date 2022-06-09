@@ -65,6 +65,5 @@ class ConfigManager:
 
     def _save_config_file(self):
         print("[LOG]: saving config file")
-        print(self._config)
         with open(self._config_path, "r+") as config_file_stream:
             YAML().dump(self._config, stream=config_file_stream)
