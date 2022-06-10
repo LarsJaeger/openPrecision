@@ -9,15 +9,15 @@ from open_precision.core.plugin import Plugin
 class InertialMeasurementUnit(Plugin, ABC):
     @property
     @abstractmethod
-    def scaled_acceleration(self) -> np.ndarray:
+    def scaled_acceleration(self) -> np.ndarray | None:
         pass
 
     @property
     @abstractmethod
-    def scaled_angular_acceleration(self) -> np.ndarray:
+    def scaled_angular_acceleration(self) -> np.ndarray | None:
         pass
 
     @property
     @abstractmethod
-    def scaled_magnetometer(self) -> np.ndarray:
+    def scaled_magnetometer(self) -> np.ndarray | None:
         pass

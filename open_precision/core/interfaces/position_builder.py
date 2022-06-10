@@ -17,7 +17,7 @@ class PositionBuilder(Plugin, ABC):
 
     @property
     @abstractmethod
-    def current_position(self) -> Position:
+    def current_position(self) -> Position | None:
         """returns current position (location describes the location of the center of the rear axle)"""
         pass
 

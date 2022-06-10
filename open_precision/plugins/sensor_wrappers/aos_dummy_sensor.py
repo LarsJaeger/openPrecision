@@ -7,7 +7,7 @@ from open_precision.core.managers.manager import Manager
 
 class AOSDummySensor(AbsoluteOrientationSensor):
     @property
-    def orientation(self) -> Quaternion:
+    def orientation(self) -> Quaternion | None:
         return Quaternion()
 
     @property

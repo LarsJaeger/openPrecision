@@ -22,6 +22,9 @@ class AHeadingParallelGenerator(CourseGenerator):
         # get position
         input('press enter to set first position')
         base_position: Position = self.man.plugins[PositionBuilder].current_position
+        while not base_position.is_valid():
+            base_position: Position = self.man.plugins[PositionBuilder].current_position
+            print("invalid_position")
         # get user input for working width
         # TODO get user input or read from config
         working_width: float = 3.0

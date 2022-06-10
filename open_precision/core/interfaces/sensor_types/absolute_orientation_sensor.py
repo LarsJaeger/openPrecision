@@ -10,12 +10,12 @@ from open_precision.core.plugin import Plugin
 class AbsoluteOrientationSensor(Plugin, ABC):
     @property
     @abstractmethod
-    def orientation(self) -> Quaternion:
+    def orientation(self) -> Quaternion | None:
         """returns an orientation quaternion"""
         pass
 
     @property
     @abstractmethod
-    def gravity(self) -> np.ndarray:
+    def gravity(self) -> np.ndarray | None:
         """returns an gravity vector"""
         pass

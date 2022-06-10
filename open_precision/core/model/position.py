@@ -13,3 +13,6 @@ class Position:
 
     location: Location
     orientation: Quaternion
+
+    def is_valid(self):
+        return self.location.is_valid() and (self.orientation is not None)

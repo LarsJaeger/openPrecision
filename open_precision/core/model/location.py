@@ -12,6 +12,9 @@ class Location:
     z: float  # ECEF Z coordinate in meters
     error: float | None  # position accuracy in meters
 
+    def is_valid(self):
+        return None not in [self.x, self.y, self.z]
+
     def __add__(self, other):
         match other:
             case Location():
@@ -52,7 +55,8 @@ class Location:
                     res_error = self.error + other[3]
                 else:
                     res_error = None
-            case _: raise TypeError
+            case _:
+                raise TypeError
         return Location(x=res_x, y=res_y, z=res_z, error=res_error)
 
     def __sub__(self, other):

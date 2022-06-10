@@ -64,6 +64,6 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         return quat
 
     @property
-    def gravity(self) -> np.ndarray:
+    def gravity(self) -> np.ndarray | None:
         """returns a gravity vector"""
         return np.array(self.sensor.gravity)

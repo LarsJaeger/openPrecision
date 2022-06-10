@@ -30,5 +30,5 @@ class Navigator(Plugin, ABC):
 
     @property
     @abstractmethod
-    def steering_angle(self) -> float:
+    def steering_angle(self) -> float | None:
         pass

@@ -8,6 +8,6 @@ from open_precision.core.model.location import Location
 class GlobalPositioningSystem(Plugin, ABC):
     @property
     @abstractmethod
-    def location(self) -> Location:
+    def location(self) -> Location | None:
         """returns a Location object"""
         pass
