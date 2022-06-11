@@ -7,6 +7,7 @@ import time
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
+from open_precision.core.interfaces.position_builder import PositionBuilder
 from open_precision.core.managers.manager import Manager
 
 
@@ -31,6 +32,7 @@ class TestPositionBuilder(unittest.TestCase):
         try:
             while True:
                 angle = man.plugins[Navigator].steering_angle
+                print(f" position: {man.plugins[PositionBuilder].current_position}")
                 if angle is None:
                     print("angle: None")
                 else:
