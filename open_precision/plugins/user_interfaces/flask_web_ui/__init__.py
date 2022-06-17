@@ -18,7 +18,7 @@ class FlaskWebUI(UserInterface):
 
         @app.route('/')
         def index():
-            return render_template("app.html")
+            return render_template("index.html")
 
     def cleanup(self):
         pass

@@ -21,11 +21,15 @@ def get_classes_in_package(package, classes: list | None = None) -> list:
 
     for _, plugin_name, is_package in pkgutil.iter_modules(imported_package.__path__, imported_package.__name__ + "."):
         if not is_package:
-            plugin_module = __import__(plugin_name, fromlist=["a"])
-            found_classes = inspect.getmembers(plugin_module, inspect.isclass)
-            for name, cls in found_classes:
-                if str(cls.__module__) == plugin_name:
-                    classes.append(cls)
+            try:
+                plugin_module = __import__(plugin_name, fromlist=["a"])
+                found_classes = inspect.getmembers(plugin_module, inspect.isclass)
+                for name, cls in found_classes:
+                    if str(cls.__module__) == plugin_name:
+                        classes.append(cls)
+            except ModuleNotFoundError:
+                print(f'[INFO] ModuleNotFoundError when importing {plugin_name}')
+                continue
 
     # Now that we have looked at all the modules in the current package, start looking recursively for additional
     # modules in sub packages
@@ -102,6 +106,10 @@ class PluginManager:
             except PluginException:
                 print(
                     f"[ERROR] An error occurred while enabling {current_init_plugin}: {str(PluginException)}"
+                )
+            except:
+                print(
+                    f"[ERROR] An error occurred while enabling {current_init_plugin}"
                 )
 
     @property

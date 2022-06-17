@@ -1,6 +1,0 @@
-:root {
-  --main-bg-color: aqua;
-}
-* {
-    background-color: var(--main-bg-color);
-}

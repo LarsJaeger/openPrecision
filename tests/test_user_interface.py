@@ -2,10 +2,8 @@
 # change 'template' to python file name of file to be tested
 import unittest
 import context
-import time
 
 from open_precision.core.managers.manager import Manager
-from open_precision.plugins.user_interfaces.flask_web_ui import FlaskWebUI
 
 
 class TestPositionBuilder(unittest.TestCase):

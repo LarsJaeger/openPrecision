@@ -31,6 +31,7 @@ class TestPositionBuilder(unittest.TestCase):
         try:
             while True:
                 print(f"angle: {math.degrees(man.plugins[Navigator].steering_angle)}")
+                time.sleep(5)
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 

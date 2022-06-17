@@ -42,7 +42,7 @@ class ConfigManager:
         self._save_config_file() # TODO possibly cache and save
         return self
 
-    def get_value(self, origin_object: object, key: str) -> dict | any:
+    def get_value(self, origin_object: object, key: str) -> any | dict:
         """returns value of key from origin_object's config"""
         address = type(origin_object).__name__
         if key is not None:

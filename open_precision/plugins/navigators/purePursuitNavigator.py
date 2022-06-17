@@ -28,6 +28,7 @@ class PurePursuitNavigator(Navigator):
 
     @property
     def course(self):
+        print(f'debug: {self._course}')
         return self._course
 
     @course.setter
@@ -42,6 +43,7 @@ class PurePursuitNavigator(Navigator):
     @property
     def steering_angle(self):
         # what's following now is a lot of spaghetti code
+        print(f'deebug: {self._course}')
         if self._course is None:
             raise CourseNotSetException(self)
         current_position = self._manager.plugins[PositionBuilder].current_position

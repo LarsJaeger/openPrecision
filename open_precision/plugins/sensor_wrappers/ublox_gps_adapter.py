@@ -65,9 +65,9 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
     def start_rtk_correction(self):
         print("[UBloxGpsAdapter] starting RTK correction stream")
-        command = "screen -dmS rtk_correction bash " + self._manager.config.get_value(
+        command = "screen -dmS rtk_correction bash " + str(self._manager.config.get_value(
             self, "rtk_correction_start_script_path"
-        )
+        ))
         os.system(command)
         self._correction_is_active = True
 
