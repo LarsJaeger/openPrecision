@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 @dataclass(slots=True)
 class Path:
     priority: int = field(init=True, default=0)
-    waypoints: list[Waypoint] = field(init=False, default_factory=lambda: [], repr=False)
-    course: Course = field(init=False, default=None)
+    waypoints: list[Waypoint] = field(init=False, default_factory=lambda: [])
+    course: Course | None = field(init=False, default=None, repr=False)
 
     def add_waypoint(self, waypoint: Waypoint) -> Path:
         waypoint.path = self

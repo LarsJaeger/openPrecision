@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 @dataclass(slots=True)
 class Waypoint:
     priority: int = field(init=True, default=0)  # higher priority = more important and vice versa
-    location: Location = field(init=True, default=None)
-    path: Path = field(init=False, default=None)
+    location: Location | None = field(init=True, default=None)
+    path: Path | None = field(init=False, default=None, repr=False)
 
     @property
     def id(self) -> int:
