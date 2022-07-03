@@ -36,7 +36,7 @@ class FlaskWebUI(UserInterface, threading.Thread):
         def test_connect(auth):
             print('[INFO]: client connected')
             d = self.man.plugins[Navigator].course
-            data = json.dumps(d)
+            data = d.to_json()
             print(f"data: {data}, bla: {str(d)}")
             emit('course', {'Course': data})
 

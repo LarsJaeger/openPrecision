@@ -28,7 +28,6 @@ class PurePursuitNavigator(Navigator):
 
     @property
     def course(self):
-        print(f'debug: {self._course}')
         return self._course
 
     @course.setter

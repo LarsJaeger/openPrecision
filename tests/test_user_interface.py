@@ -2,6 +2,8 @@
 # change 'template' to python file name of file to be tested
 import unittest
 import context
+from open_precision.core.interfaces.course_generator import CourseGenerator
+from open_precision.core.interfaces.navigator import Navigator
 
 from open_precision.core.managers.manager import Manager
 
@@ -23,6 +25,8 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = Manager()
+        man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
+        print("testtt")
 
 
 def main():

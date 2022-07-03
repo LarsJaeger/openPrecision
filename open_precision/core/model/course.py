@@ -4,13 +4,14 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from open_precision.core.exceptions import NotAPathException
+from open_precision.core.model.model import Model
 
 if TYPE_CHECKING:
     from open_precision.core.model.path import Path
 
 
 @dataclass(slots=True)
-class Course:
+class Course(Model):
     """ A course consists of paths that contain waypoints"""
     name: str = field(init=True, default=None)
     description: str = field(init=True, default=None)

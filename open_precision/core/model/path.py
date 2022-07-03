@@ -3,13 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from open_precision.core.model.model import Model
+
 if TYPE_CHECKING:
     from open_precision.core.model.course import Course
     from open_precision.core.model.waypoint import Waypoint
 
 
 @dataclass(slots=True)
-class Path:
+class Path(Model):
     priority: int = field(init=True, default=0)
     waypoints: list[Waypoint] = field(init=False, default_factory=lambda: [])
     course: Course | None = field(init=False, default=None, repr=False)
