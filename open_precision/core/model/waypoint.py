@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Waypoint(Model):
     priority: int = field(init=True, default=0)  # higher priority = more important and vice versa
     location: Location | None = field(init=True, default=None)
-    path: Path | None = field(init=False, default=None, repr=False)
+    path: Path | None = field(init=False, default=None, repr=False, metadata={'to_json': False})
 
     @property
     def id(self) -> int:

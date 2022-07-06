@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import asdict
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
@@ -10,7 +11,7 @@ class MyTestCase(unittest.TestCase):
         man = Manager()
         man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
         print(f"a: {man.plugins[Navigator].course}")
-        print(f"b: {man.plugins[Navigator].course.to_dict()}")
+        print(f"b: {man.plugins[Navigator].course.asdict()}")
 
 
 if __name__ == '__main__':

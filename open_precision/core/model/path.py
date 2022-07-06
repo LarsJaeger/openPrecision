@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Path(Model):
     priority: int = field(init=True, default=0)
     waypoints: list[Waypoint] = field(init=False, default_factory=lambda: [])
-    course: Course | None = field(init=False, default=None, repr=False)
+    course: Course | None = field(init=False, default=None, repr=False, metadata={'to_json': False})
 
     def add_waypoint(self, waypoint: Waypoint) -> Path:
         waypoint.path = self
