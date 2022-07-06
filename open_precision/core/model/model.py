@@ -48,30 +48,9 @@ def _asdict_inner(obj, dict_factory=dict):
 
 
 class Model:
-    def to_dict(self) -> dict[str, any]:
-        """Get a name-to-value dictionary of instance attributes of an arbitrary object."""
-        try:
-            slots = self.__slots__
-            # collect all slots attributes (some might not be present)
-            attrs = {}
-            for name in slots:
-                try:
-                    if self.__dataclass_fields__[name].metadata.contains('to_json') and self.__dataclass_fields__[name].metadata['to_json']:
-                        attrs[name] = getattr(self, name)
-                except AttributeError:
-                    continue
-            return attrs
-        except AttributeError:
-            pass
+    def as_json(self):
+        return json.dumps(self.as_dict())
 
-        try:
-            return vars(self)
-        except TypeError:
-            return {}
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-    def asdict(self):
+    def as_dict(self) -> dict:
         return _asdict_inner(self)
 

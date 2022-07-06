@@ -20,7 +20,8 @@ class AHeadingParallelGenerator(CourseGenerator):
 
     def generate_course(self) -> Course:
         # get position
-        input('press enter to set first position')
+        # input('press enter to set first position')
+        print("[INFO]: course generation startet")
         base_position: Position = self.man.plugins[PositionBuilder].current_position
         # get user input for working width
         # TODO get user input or read from config

@@ -4,6 +4,7 @@ import atexit
 import inspect
 import os
 import pkgutil
+import traceback
 from typing import TYPE_CHECKING
 
 from open_precision.core.exceptions import PluginException, MissingPluginException
@@ -107,10 +108,12 @@ class PluginManager:
                 print(
                     f"[ERROR] An error occurred while enabling {current_init_plugin}: {str(PluginException)}"
                 )
+                traceback.print_exc()
             except:
                 print(
                     f"[ERROR] An error occurred while enabling {current_init_plugin}"
                 )
+                traceback.print_exc()
 
     @property
     def instance(self):

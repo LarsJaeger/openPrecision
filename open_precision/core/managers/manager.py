@@ -22,7 +22,7 @@ class Manager:
             if plugin_type is UserInterface:
                 continue;
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
-
+        # starting the application happens when initializing the UserInterface
         self._plugins[UserInterface] = PluginManager(self, UserInterface, "open_precision.plugins").instance
 
     def _cleanup(self) -> None:

@@ -6,7 +6,7 @@ import os
 import threading
 from typing import TYPE_CHECKING
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_socketio import SocketIO, emit
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
@@ -26,6 +26,9 @@ class FlaskWebUI(UserInterface):
         template_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/templates')
         static_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/static')
         app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+        # deliver favicon
+        app.add_url_rule('/favicon.ico',
+                         redirect_to=url_for('static', filename='favicon.ico'))
         socketio = SocketIO(app)
 
         @app.route('/')
@@ -37,9 +40,7 @@ class FlaskWebUI(UserInterface):
             print('[INFO]: client connected')
             self.man.plugins[Navigator].course = self.man.plugins[CourseGenerator].generate_course()
             d = self.man.plugins[Navigator].course
-            data = d.asdict()
-            print(f"data: {data}, bla: {str(d)}")
-            emit('course', {'Course': data})
+            emit('course', {'Course': d.as_json()})
 
         @socketio.on('disconnect')
         def test_disconnect():

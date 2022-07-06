@@ -25,8 +25,6 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = Manager()
-        man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
-        print("testtt")
 
 
 def main():
