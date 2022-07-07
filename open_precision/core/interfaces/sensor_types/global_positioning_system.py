@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod, ABC
-from open_precision.core.plugin import Plugin
+from open_precision.core.interfaces.plugin import Plugin
 from open_precision.core.model.location import Location
 
 

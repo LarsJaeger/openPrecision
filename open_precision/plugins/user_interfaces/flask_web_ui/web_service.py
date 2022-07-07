@@ -6,7 +6,7 @@ import os
 import threading
 from typing import TYPE_CHECKING
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, send_from_directory
 from flask_socketio import SocketIO, emit
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
@@ -26,14 +26,16 @@ class FlaskWebUI(UserInterface):
         template_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/templates')
         static_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/static')
         app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
-        # deliver favicon
-        app.add_url_rule('/favicon.ico',
-                         redirect_to=url_for('static', filename='favicon.ico'))
         socketio = SocketIO(app)
 
         @app.route('/')
         def index():
             return render_template("index.html")
+
+        @app.route('/favicon.ico')
+        def favicon():
+            return send_from_directory(os.path.join(app.root_path, 'static'),
+                                       'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
         @socketio.on('connect')
         def test_connect(auth):

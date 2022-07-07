@@ -20,7 +20,7 @@ class Manager:
         self._plugins = {}
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
             if plugin_type is UserInterface:
-                continue;
+                continue
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
         # starting the application happens when initializing the UserInterface
         self._plugins[UserInterface] = PluginManager(self, UserInterface, "open_precision.plugins").instance
@@ -33,6 +33,7 @@ class Manager:
         self.vehicles.cleanup()
         self.config.cleanup()
 
+
     @property
     def config(self) -> ConfigManager:
         return self._config
@@ -44,3 +45,4 @@ class Manager:
     @property
     def plugins(self) -> dict[object, any]:
         return self._plugins
+

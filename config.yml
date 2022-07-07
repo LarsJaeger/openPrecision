@@ -30,6 +30,17 @@ PluginManager:
     - SparkfunIcm20948Adapter
     WorldMagneticModelCalculator:
     - WmmWrapper
+    Plugin:
+    - AHeadingParallelGenerator
+    - PurePursuitNavigator
+    - GpsAosPositionBuilder
+    - GpsCompassPositionBuilder
+    - AOSDummySensor
+    - Bno055AosAdapter
+    - GPSDummySensor
+    - SparkfunIcm20948Adapter
+    - WmmWrapper
+    - FlaskWebUI
 SparkfunIcm20948Adapter:
   magnetometer_bias:
 WmmWrapper:

@@ -12,12 +12,16 @@ const aspect = 2;  // the canvas default
 const near = 0.1;
 const far = 50;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-
+camera.up.set( 0, 0, 1 );
 const controls = new OrbitControls(camera, renderer.domElement);
+camera.position.x = -6;
+camera.position.z = 6;
+// camera.rotation.x = Math.PI / 2;
+// camera.rotation.y = -  Math.PI / 2;
+camera.rotation.z = -  Math.PI / 2;
 
-camera.position.z = -6;
-camera.position.y = 6
-controls.update()
+
+controls.update();
 const scene = new THREE.Scene();
 
 
@@ -30,21 +34,14 @@ scene.add(axesHelper);
 
 // create main pointer
 const tractor_pointer = new THREE.Mesh(new THREE.ConeGeometry(0.7, 2, 32), new THREE.MeshPhongMaterial({color: 0xff0000}));
-tractor_pointer.rotation.x = Math.PI / 2;
+tractor_pointer.rotation.z = - Math.PI / 2;
 const plane_pointer = new THREE.Mesh(new THREE.CircleGeometry(1.5, 32), new THREE.MeshPhongMaterial({color: 0x0000ff}));
-plane_pointer.rotation.x = -Math.PI / 2;
+plane_pointer.rotation.z = - Math.PI / 2;
 
 const pointer = new THREE.Group();
 pointer.add(tractor_pointer)
 pointer.add(plane_pointer)
 scene.add(pointer)
-
-// drawing lines
-const points = [];
-points.push(new THREE.Vector3(-10, 1, 0));
-points.push(new THREE.Vector3(0, 0, 0));
-const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({color: 0x00ffff}));
-scene.add(line);
 
 function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
@@ -83,10 +80,15 @@ function render(time) {
 // implement project specific functions
 
 function renderCourse(course) {
-    for (const path in course.paths) {
+    console.log('rendering course');
+    console.log(course.paths);
+    for (const pathIndex in course.paths) {
+        const path = course.paths[pathIndex];
+        console.log(path);
         const pathLinePoints = [];
-        for (const wp in path.waypoints) {
-            console.log(wp);
+        pathLinePoints.push(new THREE.Vector3(0));
+        for (const wpIndex in path.waypoints) {
+            const wp = path.waypoints[wpIndex];
             pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
         }
         const pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathLinePoints), new THREE.LineBasicMaterial({color: 0x00ffff}));
@@ -108,4 +110,4 @@ socket.on('course', (arg) => {
 
 // starting the connection to the backend
 requestAnimationFrame(render);
-socket.emit('ping', true);
+socket.emit('requestConnection', true);

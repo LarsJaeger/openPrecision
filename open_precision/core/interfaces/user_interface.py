@@ -4,7 +4,7 @@ import atexit
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 
-from open_precision.core.plugin import Plugin
+from open_precision.core.interfaces.plugin import Plugin
 
 if TYPE_CHECKING:
     from open_precision.core.managers.manager import Manager
