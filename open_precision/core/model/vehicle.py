@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from open_precision.core.model.model import Model
 
 
-@dataclass(slots=True)
+@dataclass
 class Vehicle(Model):
     name: str
     gps_receiver_offset: list

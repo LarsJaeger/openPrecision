@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from open_precision.core.model.waypoint import Waypoint
 
 
-@dataclass(slots=True)
+@dataclass
 class Path(Model):
     priority: int = field(init=True, default=0)
     waypoints: list[Waypoint] = field(init=False, default_factory=lambda: [])

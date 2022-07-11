@@ -7,7 +7,7 @@ import numpy as np
 from open_precision.core.model.model import Model
 
 
-@dataclass(slots=True)
+@dataclass
 class Location(Model):
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters

@@ -1,6 +1,8 @@
 import dataclasses
 import json
 
+from sqlalchemy.orm import registry
+
 
 def _asdict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
@@ -48,6 +50,8 @@ def _asdict_inner(obj, dict_factory=dict):
 
 
 class Model:
+    __sa_dataclass_metadata_key__ = "sa"
+
     def as_json(self):
         return json.dumps(self.as_dict())
 

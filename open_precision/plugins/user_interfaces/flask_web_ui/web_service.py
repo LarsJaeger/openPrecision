@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from flask import Flask, render_template, url_for, send_from_directory
 from flask_socketio import SocketIO, emit
+from flask_sqlalchemy import SQLAlchemy
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
@@ -23,9 +24,14 @@ class FlaskWebUI(UserInterface):
         self.start()
 
     def start(self):
+        basedir = os.path.abspath(os.path.dirname(__file__))
         template_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/templates')
         static_dir = os.path.abspath('../open_precision/plugins/user_interfaces/flask_web_ui/static')
         app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+        db = SQLAlchemy(app)
         socketio = SocketIO(app)
 
         @app.route('/')
