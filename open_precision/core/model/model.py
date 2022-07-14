@@ -3,7 +3,6 @@ import json
 
 from sqlalchemy.orm import registry
 
-
 def _asdict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
     if dataclasses._is_dataclass_instance(obj):
