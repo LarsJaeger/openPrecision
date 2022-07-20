@@ -6,13 +6,18 @@ from open_precision.core.model.position import Position
 from open_precision.core.interfaces.plugin import Plugin
 
 if TYPE_CHECKING:
-    from open_precision.core.managers.manager import Manager
+    from open_precision.manager import Manager
 
 
 class PositionBuilder(Plugin, ABC):
     @abstractmethod
     def __init__(self, manager: Manager):
         # self._manager = manager
+        # atexit.register(self.cleanup)
+        pass
+
+    @abstractmethod
+    def cleanup(self):
         pass
 
     @property

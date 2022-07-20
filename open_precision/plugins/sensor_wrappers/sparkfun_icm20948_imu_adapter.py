@@ -8,7 +8,7 @@ from open_precision.core.interfaces.sensor_types.inertial_measurement_unit impor
 import qwiic_icm20948
 from open_precision import utils
 from open_precision.core.exceptions import SensorNotConnectedException
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 shortest_update_dt = 10  # in ms
 

@@ -1,12 +1,11 @@
 import unittest
 
-import context
-from open_precision.core.managers.config_manager import ConfigManager
+from open_precision.managers.config_manager import ConfigManager
 
 
 class ConfigManagerTest(unittest.TestCase):
     def test_config_manager(self):
-        conf = ConfigManager("../config.yml")
+        conf = ConfigManager("../../config.yml")
         conf.register_value(self, "depend.some_config_val.blup.ble", 5)
         print("Wert: " + str(conf.get_value(self, "depend.some_config_val.blup.ble")))
         self.assertEqual(False, False)  # add assertion here

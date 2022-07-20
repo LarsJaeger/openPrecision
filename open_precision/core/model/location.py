@@ -3,26 +3,19 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
-from sqlalchemy import Column, Float, Integer
-from sqlalchemy.orm import registry
+from sqlalchemy import Column, Float, Integer, ForeignKey
 
-from open_precision.core.model.model import Model
-
-
-def start_mapping(mapper_registry):
-    mapper_registry.mapped(Location)
+from open_precision.core.model.model_base import Model
 
 
-mapper_registry = registry()
-
-
-@mapper_registry.mapped
 @dataclass
 class Location(Model):
     # for SQLAlchemy purposes; __sa_dataclass_metadata_key__ is inherited from 'Model'-class
     __tablename__ = 'Locations'
 
     id: int = field(init=False, metadata={'sa': Column(Integer, primary_key=True)})
+    position_id = Column(ForeignKey('Positions.id'))
+    waypoint_id = Column(ForeignKey('Waypoints.id'))
 
     x: float = field(metadata={'as': Column(Float)})  # ECEF X coordinate in meters
     y: float = field(metadata={'as': Column(Float)})  # ECEF Y coordinate in meters

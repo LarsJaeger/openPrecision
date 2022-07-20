@@ -4,7 +4,7 @@ import numpy as np
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.position_builder import PositionBuilder
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position

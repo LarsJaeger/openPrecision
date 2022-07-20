@@ -5,9 +5,7 @@ import os
 from datetime import datetime
 
 import numpy as np
-from numpy import ndarray
 from pyquaternion import Quaternion
-from typing import List
 from open_precision import utils
 from open_precision.core.interfaces.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
@@ -15,7 +13,7 @@ from open_precision.core.interfaces.sensor_types.global_positioning_system impor
 from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):

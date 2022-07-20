@@ -2,6 +2,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.m
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 import {io} from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 
+// init app constants
+const colorLight = 0xFFFDFA;
+const colorNeutral_= 0x434345;
+const colorDark = 0x241F19;
+const colorBaseLight = 0xFED6AA;
+const colorBase = 0xFB8604;
+const colorBaseDark = 0x764F23;
+
 // set up three.js
 
 const canvas = document.querySelector('#c');
@@ -23,12 +31,14 @@ camera.rotation.z = -  Math.PI / 2;
 
 controls.update();
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(colorLight); // set background color of three.js scene
 
-
+// add lights
 const light = new THREE.AmbientLight(0x505050, 2);
 light.position.set(0, 0, 4);
 scene.add(light);
 
+// add axes helper
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
@@ -110,4 +120,4 @@ socket.on('course', (arg) => {
 
 // starting the connection to the backend
 requestAnimationFrame(render);
-socket.emit('requestConnection', true);
+socket.emit('requestConnection', 'I\'m connected!');

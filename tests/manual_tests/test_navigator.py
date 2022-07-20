@@ -2,12 +2,11 @@
 # change 'template' to python file name of file to be tested
 import math
 import unittest
-import context
 import time
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 
 class TestPositionBuilder(unittest.TestCase):
@@ -19,11 +18,11 @@ class TestPositionBuilder(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        """This setup will only be executed once before the first tests"""
+        """This setup will only be executed once before the first manual_tests"""
 
     @classmethod
     def tearDownClass(cls) -> None:
-        """This teardown will only be executed once after all tests are done"""
+        """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
         man = Manager()

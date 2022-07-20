@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import atexit
+import os
+
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
-from open_precision.core.managers import plugin_manager
+from open_precision.managers import plugin_manager
 
 
 class ConfigManager:
@@ -39,7 +40,7 @@ class ConfigManager:
         flat_conf = flatten(self._config, reducer="dot")
         flat_conf[address] = value
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
-        self._save_config_file() # TODO possibly cache and save
+        self._save_config_file()  # TODO possibly cache and save
         return self
 
     def get_value(self, origin_object: object, key: str) -> any | dict:

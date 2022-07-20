@@ -2,7 +2,11 @@ from __future__ import annotations
 from __future__ import print_function
 
 import sys
-import time
+from multiprocessing.managers import SyncManager
+
+from open_precision.core.interfaces.user_interface import UserInterface
+from open_precision.custom_sync_manager import CustomSyncManager, proxy
+from open_precision.manager import Manager
 
 
 class Main:
@@ -10,10 +14,14 @@ class Main:
         self.run()
 
     def run(self):
-        pass
+        # init SyncManager
+        sync_manager = CustomSyncManager(("127.0.0.1", 50000), authkey=b'open_precision')
+        sync_manager.start()
+        man = sync_manager.Manager()
+        man.plugins[UserInterface].start()
 
     def close(self):
-        self.keyboard.close()
+        pass
 
 
 if __name__ == "__main__":

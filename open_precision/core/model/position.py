@@ -4,15 +4,12 @@ import ast
 from dataclasses import dataclass, field
 from pyquaternion import Quaternion
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy.orm import relationship
 
 from open_precision.core.model.location import Location
-from open_precision.core.model.model import Model
-
-mapper_registry = registry()
+from open_precision.core.model.model_base import Model
 
 
-@mapper_registry.mapped
 @dataclass
 class Position(Model):
     """position of vehicle: location describes the location of the center of the rear axle; orientation is a
@@ -23,8 +20,8 @@ class Position(Model):
 
     id: int = field(init=False, metadata={'sa': Column(Integer, primary_key=True)})
 
-    location: Location | None = field(metadata={'sa': relationship('Locations')})
-    _orientation: str = field(init=False, metadata={'sa': Column(String(50))})
+    location: Location | None = field(metadata={'sa': relationship(Location)})
+    _orientation = Column(String(50))
     orientation: Quaternion
 
     @property

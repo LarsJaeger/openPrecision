@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from open_precision.core.exceptions import PluginException, MissingPluginException
 
 if TYPE_CHECKING:
-    from open_precision.core.managers.manager import Manager
+    from open_precision.manager import Manager
 
 
 def get_classes_in_package(package, classes: list | None = None) -> list:
@@ -65,10 +65,10 @@ def _check_plugins_for_class(plugin_class, plugins) -> list:
 
 
 class PluginManager:
-    def __init__(self, manager: Manager, plugin_type_class: object, plugin_package: str):
+    def __init__(self, manager: Manager, plugin_type_class: type, plugin_package: str):
         atexit.register(self._cleanup)
         self._manager: Manager = manager
-        self._plugin_type_class: object = plugin_type_class
+        self._plugin_type_class: type = plugin_type_class
         self._plugin_package: str = plugin_package
         self._manager.config.register_value(self, f"loading_priority.{self._plugin_type_class.__name__}", [])
         print(f"[ClassPluginManager] loading plugins for type: {str(self._plugin_type_class.__name__)}")

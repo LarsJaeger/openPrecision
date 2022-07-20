@@ -1,9 +1,8 @@
 import unittest
-from dataclasses import asdict
 
 from open_precision.core.interfaces.course_generator import CourseGenerator
 from open_precision.core.interfaces.navigator import Navigator
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 
 class MyTestCase(unittest.TestCase):

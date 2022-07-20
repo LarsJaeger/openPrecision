@@ -12,11 +12,11 @@ class TestTemplate(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        """This setup will only be executed once before the first tests"""
+        """This setup will only be executed once before the first manual_tests"""
 
     @classmethod
     def tearDownClass(cls) -> None:
-        """This teardown will only be executed once after all tests are done"""
+        """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
 

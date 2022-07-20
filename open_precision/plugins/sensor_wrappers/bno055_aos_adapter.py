@@ -8,7 +8,7 @@ from pyquaternion import Quaternion
 from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):

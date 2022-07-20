@@ -2,13 +2,13 @@ import numpy as np
 from pyquaternion import Quaternion
 
 from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 
 class AOSDummySensor(AbsoluteOrientationSensor):
     @property
     def orientation(self) -> Quaternion:
-        return Quaternion()
+        return Quaternion(0, 0, 0, 1)
 
     @property
     def gravity(self) -> np.ndarray:

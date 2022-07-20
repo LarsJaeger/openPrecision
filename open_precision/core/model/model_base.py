@@ -1,7 +1,6 @@
 import dataclasses
 import json
 
-from sqlalchemy.orm import registry
 
 def _asdict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
@@ -9,7 +8,7 @@ def _asdict_inner(obj, dict_factory=dict):
         result = []
         for f in dataclasses.fields(obj):
             if 'to_json' in list(obj.__dataclass_fields__[f.name].metadata.keys()) and not \
-            obj.__dataclass_fields__[f.name].metadata['to_json']:
+                    obj.__dataclass_fields__[f.name].metadata['to_json']:
                 continue
             value = _asdict_inner(getattr(obj, f.name), dict_factory)
             result.append((f.name, value))
@@ -56,4 +55,3 @@ class Model:
 
     def as_dict(self) -> dict:
         return _asdict_inner(self)
-

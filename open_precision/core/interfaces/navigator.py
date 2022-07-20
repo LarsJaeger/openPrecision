@@ -7,7 +7,7 @@ from open_precision.core.model.course import Course
 from open_precision.core.interfaces.plugin import Plugin
 
 if TYPE_CHECKING:
-    from open_precision.core.managers.manager import Manager
+    from open_precision.manager import Manager
 
 
 class Navigator(Plugin, ABC):
@@ -16,6 +16,12 @@ class Navigator(Plugin, ABC):
 
     @abstractmethod
     def __init__(self, manager: Manager):
+        # self._manager = manager
+        # atexit.register(self.cleanup)
+        pass
+
+    @abstractmethod
+    def cleanup(self):
         pass
 
     @property
