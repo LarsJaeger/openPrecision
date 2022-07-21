@@ -42,14 +42,15 @@ class FlaskWebUI(UserInterface):
 
         @socketio.on('connect')
         def test_connect(data):
-            print('[INFO]: client connected')
+            pass
+            """print('[INFO]: client connected')
             sync_manager = CustomSyncManager(("127.0.0.1", 50000), authkey=b'open_precision')
             sync_manager.connect()
             man = sync_manager.Manager
             print(f'A {man}')
             man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
             d = man.plugins[Navigator].course
-            emit('course', {'Course': d.as_json()})
+            emit('course', {'Course': d.as_json()})"""
 
         @socketio.on('disconnect')
         def test_disconnect():

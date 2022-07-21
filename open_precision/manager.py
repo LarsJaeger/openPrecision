@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import atexit
 import os.path
+import pickle
 from multiprocessing.managers import SyncManager
 
 from open_precision.core.interfaces.user_interface import UserInterface
