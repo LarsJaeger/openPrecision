@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import atexit
 import os.path
-import pickle
-from multiprocessing.managers import SyncManager
 
-from open_precision.core.interfaces.user_interface import UserInterface
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -28,11 +25,7 @@ class Manager:
         # loading plugins, but loading UserInterface last
         self._plugins = {}
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
-            if plugin_type is UserInterface:
-                continue
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
-        # starting the application happens when initializing the UserInterface
-        self._plugins[UserInterface] = PluginManager(self, UserInterface, "open_precision.plugins").instance
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
