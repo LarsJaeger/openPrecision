@@ -18,7 +18,7 @@ class MessageType(Enum):
     ERROR = 5
 
 
-class UserInterface(ABC):
+class UserInterfaceBase(ABC):
     """
     Application Programming Interface for the Open Precision library.
     """
