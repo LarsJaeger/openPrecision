@@ -3,6 +3,9 @@ from __future__ import annotations
 import atexit
 import os.path
 
+import uvicorn
+
+from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -24,8 +27,11 @@ class Manager:
 
         # loading plugins, but loading UserInterface last
         self._plugins = {}
-        for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
+        for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
+
+        self._user_interface_delivery = UserInterfaceDelivery(self)
+        uvicorn.run(self._user_interface_delivery._app)
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
@@ -52,3 +58,7 @@ class Manager:
     @property
     def data(self) -> DataManager:
         return self._data
+
+    @property
+    def user_interface_delivery(self) -> UserInterfaceDelivery:
+        return self._user_interface_delivery

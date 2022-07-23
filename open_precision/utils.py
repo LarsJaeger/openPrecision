@@ -1,16 +1,25 @@
 from __future__ import annotations
 
-import inspect
-import os
-import pkgutil
+import asyncio
 import time as time_
-from cmath import cos
 from math import sqrt
 
 import numpy as np
 import numpy.linalg as la
 
 from open_precision.core.model.location import Location
+
+
+def async_partial(f, *args):
+    # source:
+    # https://stackoverflow.com/questions/52422860/partial-asynchronous-functions-are-not-detected-as-asynchronous
+    async def f2(*args2):
+        result = f(*args, *args2)
+        if asyncio.iscoroutinefunction(f):
+            result = await result
+        return result
+
+    return f2
 
 
 def millis():

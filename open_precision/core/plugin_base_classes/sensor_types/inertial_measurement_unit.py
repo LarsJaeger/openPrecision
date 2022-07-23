@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 import numpy as np
 
-from open_precision.core.interfaces.plugin import Plugin
+from open_precision.core.plugin_base_classes.plugin import Plugin
 
 
 class InertialMeasurementUnit(Plugin, ABC):

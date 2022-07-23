@@ -5,7 +5,7 @@ import os
 import serial
 import externalTools.ublox_gps_fixed as ublox_gps
 from open_precision import utils
-from open_precision.core.interfaces.sensor_types.global_positioning_system import (
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
 from open_precision.manager import Manager

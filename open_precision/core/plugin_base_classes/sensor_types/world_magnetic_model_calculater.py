@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List
 
-from open_precision.core.interfaces.plugin import Plugin
+from open_precision.core.plugin_base_classes.plugin import Plugin
 
 
 class WorldMagneticModelCalculator(Plugin, ABC):

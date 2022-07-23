@@ -1,7 +1,7 @@
 import unittest
 
-from open_precision.core.interfaces.course_generator import CourseGenerator
-from open_precision.core.interfaces.navigator import Navigator
+from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
+from open_precision.core.plugin_base_classes.navigator import Navigator
 from open_precision.manager import Manager
 
 

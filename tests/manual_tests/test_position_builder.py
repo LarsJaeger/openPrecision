@@ -2,7 +2,7 @@
 # change 'template' to python file name of file to be tested
 import unittest
 
-from open_precision.core.interfaces.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
 from open_precision.manager import Manager
 
 

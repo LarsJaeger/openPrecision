@@ -42,6 +42,9 @@ PluginManager:
     - SparkfunIcm20948Adapter
     - WmmWrapper
     - FlaskWebUI
+    MessageType: []
+    UserInterfaceBase:
+    - FastAPIUserInterface
 SparkfunIcm20948Adapter:
   magnetometer_bias:
 WmmWrapper:

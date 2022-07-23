@@ -4,14 +4,14 @@ import math
 
 import numpy as np
 from pyquaternion import Quaternion
-from open_precision.core.interfaces.position_builder import PositionBuilder
-from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import (
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.core.interfaces.sensor_types.global_positioning_system import (
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
-from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import (
+from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
 from open_precision.manager import Manager

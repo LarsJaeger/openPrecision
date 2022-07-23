@@ -6,8 +6,8 @@ import numpy as np
 
 from open_precision import utils
 from open_precision.core.exceptions import CourseNotSetException
-from open_precision.core.interfaces.navigator import Navigator
-from open_precision.core.interfaces.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.navigator import Navigator
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
 from open_precision.manager import Manager
 from open_precision.core.model.course import Course
 from open_precision.core.model.position import Position
