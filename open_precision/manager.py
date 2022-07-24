@@ -31,7 +31,7 @@ class Manager:
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
 
         self._user_interface_delivery = UserInterfaceDelivery(self)
-        uvicorn.run(self._user_interface_delivery._app)
+        uvicorn.run(self._user_interface_delivery._app, log_level="info") #, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary

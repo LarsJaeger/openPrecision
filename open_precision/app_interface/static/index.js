@@ -1,6 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
-import {io} from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 
 // init app constants
 const colorLight = 0xFFFDFA;
@@ -108,16 +107,37 @@ function renderCourse(course) {
 
 
 // web sockets
-var socket = io();
-
+/*
 socket.on('course', (arg) => {
     var course;
     //socket.emit('ping_response', {data: 'I\'m connected!'});
     course = JSON.parse(arg['Course']);
     console.log(course);
     renderCourse(course);
-});
+}); */
 
-// starting the connection to the backend
 requestAnimationFrame(render);
-socket.emit('requestConnection', 'I\'m connected!');
+// starting the connection to the backend
+var ws = new WebSocket("ws://localhost:8000/app_data");
+sendMessage();
+
+function sendMessage() {
+    ws.send('Hello WebSockets!');
+}
+
+ws.onmessage = function(event) {
+    console.log(event.data)
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    alert('[close] Connection died');
+  }
+};
+
+    socket.onerror = function(error) {
+  alert(`[error] ${error.message}`);
+};
+
