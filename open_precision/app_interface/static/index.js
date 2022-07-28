@@ -119,9 +119,10 @@ socket.on('course', (arg) => {
 requestAnimationFrame(render);
 // starting the connection to the backend
 var ws = new WebSocket("ws://localhost:8000/app_data");
-sendMessage();
+console.log('waiting for connection');
 
-function sendMessage() {
+ws.onopen = function(event) {
+    console.log('[open] Connection established');
     ws.send('Hello WebSockets!');
 }
 
@@ -129,7 +130,7 @@ ws.onmessage = function(event) {
     console.log(event.data)
 };
 
-socket.onclose = function(event) {
+ws.onclose = function(event) {
   if (event.wasClean) {
     console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {

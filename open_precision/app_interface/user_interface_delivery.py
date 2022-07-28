@@ -3,10 +3,11 @@ from __future__ import annotations
 import os.path
 from enum import Enum
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from fastapi import FastAPI
 from fastapi import WebSocket
+from fastapi.params import Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -32,18 +33,6 @@ class MessageType(Enum):
     ERROR = 5
 
 
-# quasi class methods
-
-async def websocket_endpoint(self: UserInterfaceDelivery, websocket: WebSocket):
-    await self._connection_manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await self._connection_manager.unicast(f"ULULULULUL: {data} {str(self._manager.vehicles.current_vehicle.as_json())}", websocket)
-    except WebSocketDisconnect:
-        self._connection_manager.disconnect(websocket)
-
-
 class UserInterfaceDelivery:
     def __init__(self, manager: Manager):
         self._manager = manager
@@ -57,11 +46,23 @@ class UserInterfaceDelivery:
             return self._templates.TemplateResponse("index.html", {'request': request})
         self._app.get("/", include_in_schema=False, response_class=HTMLResponse)(get_index)
 
-        self._app.mount("/",
+        self._app.mount("/static/",
                         StaticFiles(directory=os.path.join(self._base_dir, os.path.relpath("./static")), html=True),
                         name="static")
-        self._app.websocket("/app_data", name='app_data')(
-            async_partial(websocket_endpoint, self))
+
+        async def websocket_endpoint(websocket: WebSocket):
+            await self._connection_manager.connect(websocket)
+            try:
+                while True:
+                    print("waiting for message")
+                    data = await websocket.receive_text()
+                    print("received message:", data)
+                    await self._connection_manager.unicast(
+                        f"ULULULULUL: {data} {str(self._manager.vehicles.current_vehicle.as_json())}", websocket)
+            except WebSocketDisconnect:
+                self._connection_manager.disconnect(websocket)
+
+        self._app.websocket("/app_data", name='app_data')(websocket_endpoint)
 
     def show_message(self, message: str, message_type: MessageType):
         pass
