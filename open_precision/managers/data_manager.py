@@ -6,7 +6,7 @@ import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, registry
 
-from open_precision.core.model.model_base import Model
+from open_precision.core.model.data_classes.model_base import Model
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager

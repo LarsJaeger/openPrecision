@@ -21,7 +21,7 @@ class Manager:
         self._config = ConfigManager(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   os.path.relpath('../config.yml')))
 
-        self._data = DataManager(self)
+        #self._data = DataManager(self)
 
         self._vehicles = VehicleManager(self)
 

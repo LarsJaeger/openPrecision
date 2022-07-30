@@ -15,6 +15,7 @@ from fastapi.requests import Request
 from fastapi.websockets import WebSocketDisconnect
 
 from open_precision.app_interface.helper import ConnectionManager
+from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.utils import async_partial
 
 if TYPE_CHECKING:
@@ -57,8 +58,9 @@ class UserInterfaceDelivery:
                     print("waiting for message")
                     data = await websocket.receive_text()
                     print("received message:", data)
-                    await self._connection_manager.unicast(
-                        f"ULULULULUL: {data} {str(self._manager.vehicles.current_vehicle.as_json())}", websocket)
+                    self._manager.plugins[Navigator].course = self._manager.plugins[CourseGenerator].generate_course()
+                    d = self._manager.plugins[Navigator].course
+                    await self._connection_manager.unicast(d.as_json(), websocket)
             except WebSocketDisconnect:
                 self._connection_manager.disconnect(websocket)
 

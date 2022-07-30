@@ -128,6 +128,7 @@ ws.onopen = function(event) {
 
 ws.onmessage = function(event) {
     console.log(event.data)
+    renderCourse( JSON.parse(event.data))
 };
 
 ws.onclose = function(event) {
@@ -138,7 +139,7 @@ ws.onclose = function(event) {
   }
 };
 
-    socket.onerror = function(error) {
+socket.onerror = function(error) {
   alert(`[error] ${error.message}`);
 };
 

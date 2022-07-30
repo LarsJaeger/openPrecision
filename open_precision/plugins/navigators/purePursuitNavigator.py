@@ -9,10 +9,10 @@ from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.plugin_base_classes.navigator import Navigator
 from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
 from open_precision.manager import Manager
-from open_precision.core.model.course import Course
-from open_precision.core.model.position import Position
-from open_precision.core.model.location import Location
-from open_precision.core.model.waypoint import Waypoint
+from open_precision.core.model.data_classes.course import Course
+from open_precision.core.model.data_classes.position import Position
+from open_precision.core.model.data_classes.location import Location
+from open_precision.core.model.data_classes.waypoint import Waypoint
 from open_precision.utils import intersections_of_circle_and_line_segment
 
 

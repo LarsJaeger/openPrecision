@@ -9,8 +9,8 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
     GlobalPositioningSystem,
 )
 from open_precision.manager import Manager
-from open_precision.core.model.position import Position
-from open_precision.core.model.location import Location
+from open_precision.core.model.data_classes.position import Position
+from open_precision.core.model.data_classes.location import Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):

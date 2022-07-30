@@ -48,7 +48,6 @@ def _asdict_inner(obj, dict_factory=dict):
 
 
 class Model:
-    __sa_dataclass_metadata_key__ = "sa"
 
     def as_json(self):
         return json.dumps(self.as_dict())

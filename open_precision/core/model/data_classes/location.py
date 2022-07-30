@@ -5,22 +5,19 @@ from dataclasses import dataclass, field
 import numpy as np
 from sqlalchemy import Column, Float, Integer, ForeignKey
 
-from open_precision.core.model.model_base import Model
+from open_precision.core.model.data_classes.model_base import Model
 
 
 @dataclass
 class Location(Model):
-    # for SQLAlchemy purposes; __sa_dataclass_metadata_key__ is inherited from 'Model'-class
-    __tablename__ = 'Locations'
-
-    id: int = field(init=False, metadata={'sa': Column(Integer, primary_key=True)})
+    id: int | None = field(init=False)
     position_id = Column(ForeignKey('Positions.id'))
     waypoint_id = Column(ForeignKey('Waypoints.id'))
 
-    x: float = field(metadata={'as': Column(Float)})  # ECEF X coordinate in meters
-    y: float = field(metadata={'as': Column(Float)})  # ECEF Y coordinate in meters
-    z: float = field(metadata={'as': Column(Float)})  # ECEF Z coordinate in meters
-    error: float | None = field(metadata={'as': Column(Float)})  # position accuracy in meters
+    x: float  # ECEF X coordinate in meters
+    y: float  # ECEF Y coordinate in meters
+    z: float  # ECEF Z coordinate in meters
+    error: float | None  # position accuracy in meters
 
     def __add__(self, other):
         match other:
