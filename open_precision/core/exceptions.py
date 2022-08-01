@@ -4,8 +4,8 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from open_precision.core.interfaces.navigator import Navigator
-    from open_precision.core.model.path import Path
+    from open_precision.core.plugin_base_classes.navigator import Navigator
+    from open_precision.core.model.data.path import Path
 
 
 class MissingPluginException(Exception):

@@ -8,15 +8,19 @@ authors = ["larsjaeger <lars@jgr.one>"]
 python = "^3.10"
 numpy = "^1.22.4"
 pyserial = "^3.5"
-spidev = "^3.5"
 pyquaternion = "^0.9.9"
 flatten-dict = "^0.4.2"
 "ruamel.yaml" = "^0.17.21"
 sparkfun-qwiic-icm20948 = "^0.0.1"
 adafruit-python-shell = "^1.3.3"
 adafruit-circuitpython-bno055 = "^5.4.1"
-"RPi.GPIO" = "^0.7.1"
-Flask = "^2.1.2"
+spidev = {version = "^3.5", optional = true}
+redis = "^4.3.4"
+fastapi = "^0.79.0"
+SQLAlchemy = "^1.4.39"
+uvicorn = "^0.18.2"
+Jinja2 = "^3.1.2"
+websockets = "^10.3"
 
 [tool.poetry.dev-dependencies]
 

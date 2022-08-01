@@ -6,13 +6,13 @@ import numpy as np
 
 from open_precision import utils
 from open_precision.core.exceptions import CourseNotSetException
-from open_precision.core.interfaces.navigator import Navigator
-from open_precision.core.interfaces.position_builder import PositionBuilder
-from open_precision.core.managers.manager import Manager
-from open_precision.core.model.course import Course
-from open_precision.core.model.position import Position
-from open_precision.core.model.location import Location
-from open_precision.core.model.waypoint import Waypoint
+from open_precision.core.plugin_base_classes.navigator import Navigator
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.manager import Manager
+from open_precision.core.model.data.course import Course
+from open_precision.core.model.data.position import Position
+from open_precision.core.model.data.location import Location
+from open_precision.core.model.data.waypoint import Waypoint
 from open_precision.utils import intersections_of_circle_and_line_segment
 
 
@@ -42,6 +42,7 @@ class PurePursuitNavigator(Navigator):
     @property
     def steering_angle(self):
         # what's following now is a lot of spaghetti code
+        print(f'deebug: {self._course}')
         if self._course is None:
             raise CourseNotSetException(self)
         current_position = self._manager.plugins[PositionBuilder].current_position

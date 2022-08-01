@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from open_precision.core.interfaces.course_generator import CourseGenerator
-from open_precision.core.interfaces.position_builder import PositionBuilder
-from open_precision.core.managers.manager import Manager
-from open_precision.core.model.course import Course
-from open_precision.core.model.path import Path
-from open_precision.core.model.position import Position
-from open_precision.core.model.waypoint import Waypoint
+from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.manager import Manager
+from open_precision.core.model.data.course import Course
+from open_precision.core.model.data.path import Path
+from open_precision.core.model.data.position import Position
+from open_precision.core.model.data.waypoint import Waypoint
 
 
 class AHeadingParallelGenerator(CourseGenerator):
@@ -20,7 +20,8 @@ class AHeadingParallelGenerator(CourseGenerator):
 
     def generate_course(self) -> Course:
         # get position
-        input('press enter to set first position')
+        # input('press enter to set first position')
+        print("[INFO]: course generation started")
         base_position: Position = self.man.plugins[PositionBuilder].current_position
         while not base_position.is_valid():
             base_position: Position = self.man.plugins[PositionBuilder].current_position
@@ -33,7 +34,7 @@ class AHeadingParallelGenerator(CourseGenerator):
 
         description = "asdasda"
 
-        course = Course(name=name, description=description, paths=[])
+        course = Course(name=name, description=description)
         for i in range(-3, 3):
             loc1 = base_position.location \
                    + (base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64)) * (i * working_width))
@@ -42,4 +43,5 @@ class AHeadingParallelGenerator(CourseGenerator):
             current_path = Path().add_waypoint(Waypoint(location=loc1)).add_waypoint(Waypoint(location=loc2))
             course.add_path(current_path)
 
+        print("[INFO]: course generation finished")
         return course
