@@ -2,7 +2,10 @@ from __future__ import annotations
 from __future__ import print_function
 
 import sys
-import time
+
+import uvicorn
+
+from open_precision.manager import Manager
 
 
 class Main:
@@ -10,10 +13,11 @@ class Main:
         self.run()
 
     def run(self):
+        man = Manager()
         pass
 
     def close(self):
-        self.keyboard.close()
+        pass
 
 
 if __name__ == "__main__":

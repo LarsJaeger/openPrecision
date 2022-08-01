@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import atexit
 import numpy as np
-from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import (
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
     InertialMeasurementUnit,
 )
 import qwiic_icm20948
 from open_precision import utils
 from open_precision.core.exceptions import SensorNotConnectedException
-from open_precision.core.managers.manager import Manager
+from open_precision.manager import Manager
 
 shortest_update_dt = 10  # in ms
 
