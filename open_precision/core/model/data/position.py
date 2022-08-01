@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import ast
 from dataclasses import dataclass, field
-from pyquaternion import Quaternion
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 
-from open_precision.core.model.data.location import Location
+from pyquaternion import Quaternion
+
 from open_precision.core.model.data.data_model_base import DataModelBase
+from open_precision.core.model.data.location import Location
 
 
 @dataclass
@@ -19,3 +17,6 @@ class Position(DataModelBase):
 
     location: Location | None
     orientation: Quaternion
+
+    def is_valid(self):
+        return self.location.is_valid() and (self.orientation is not None)

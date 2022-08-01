@@ -6,6 +6,7 @@ import os.path
 import uvicorn
 
 from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
+from open_precision.core.model.auto_serializable import AutoSerializable
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -13,7 +14,7 @@ from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.vehicle_manager import VehicleManager
 
 
-class Manager:
+class Manager(AutoSerializable):
     def __init__(self):
         atexit.register(self._cleanup)
 
