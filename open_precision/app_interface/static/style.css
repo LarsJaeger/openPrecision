@@ -15,8 +15,10 @@ html, body {
     margin: 0;
     height: 100%;
 }
-
-#c {
+div,button{
+    z-index: 100;
+}
+#c{
     width: 100vw;
     height: 100vh;
     display: block;
@@ -25,6 +27,9 @@ html, body {
     left: 0;
     z-index: 1;
 }
+
+
+
 .metaButtons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -105,3 +110,4 @@ html, body {
     font-size: 300%;
 }
 .material-icons.md-48 { font-size: 48px; }
+
