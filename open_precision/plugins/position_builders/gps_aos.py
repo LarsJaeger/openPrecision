@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import numpy as np
-from open_precision.core.interfaces.position_builder import PositionBuilder
-from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import (
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.core.interfaces.sensor_types.global_positioning_system import (
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
 from open_precision.manager import Manager
-from open_precision.core.model.position import Position
-from open_precision.core.model.location import Location
+from open_precision.core.model.data.position import Position
+from open_precision.core.model.data.location import Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):

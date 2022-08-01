@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import atexit
 import numpy as np
-from open_precision.core.interfaces.sensor_types.inertial_measurement_unit import (
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
     InertialMeasurementUnit,
 )
 import qwiic_icm20948

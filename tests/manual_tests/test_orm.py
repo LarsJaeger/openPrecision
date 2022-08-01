@@ -6,11 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import registry, sessionmaker
 
-from open_precision.core.model.vehicle import Vehicle, start_mapping
+from open_precision.core.model.data.vehicle import Vehicle, start_mapping
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-template_dir = os.path.abspath('../../open_precision/plugins/user_interfaces/flask_web_ui/templates')
-static_dir = os.path.abspath('../../open_precision/plugins/user_interfaces/flask_web_ui/static')
+template_dir = os.path.abspath(
+    '../../../../.config/JetBrains/PyCharm2022.1/scratches/user_interfaces/flask_web_ui/templates')
+static_dir = os.path.abspath(
+    '../../../../.config/JetBrains/PyCharm2022.1/scratches/user_interfaces/flask_web_ui/static')
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

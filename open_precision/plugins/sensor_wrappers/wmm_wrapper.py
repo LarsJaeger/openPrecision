@@ -7,10 +7,10 @@ from datetime import datetime
 import numpy as np
 from pyquaternion import Quaternion
 from open_precision import utils
-from open_precision.core.interfaces.sensor_types.global_positioning_system import (
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
-from open_precision.core.interfaces.sensor_types.world_magnetic_model_calculater import (
+from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
 from open_precision.manager import Manager

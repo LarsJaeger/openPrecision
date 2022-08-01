@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from typing import TYPE_CHECKING
-from open_precision.core.model.vehicle import Vehicle
+from open_precision.core.model.data.vehicle import Vehicle
 if TYPE_CHECKING:
     from open_precision.manager import Manager
 

@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import atexit
 import os.path
-import pickle
-from multiprocessing.managers import SyncManager
 
-from open_precision.core.interfaces.user_interface import UserInterface
+import uvicorn
+
+from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -21,18 +21,18 @@ class Manager:
         self._config = ConfigManager(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   os.path.relpath('../config.yml')))
 
-        self._data = DataManager(self)
+        #self._data = DataManager(self)
 
         self._vehicles = VehicleManager(self)
 
         # loading plugins, but loading UserInterface last
         self._plugins = {}
-        for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.interfaces"):
-            if plugin_type is UserInterface:
-                continue
+        for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
-        # starting the application happens when initializing the UserInterface
-        self._plugins[UserInterface] = PluginManager(self, UserInterface, "open_precision.plugins").instance
+
+        self._user_interface_delivery = UserInterfaceDelivery(self)
+        uvicorn.run(self._user_interface_delivery._app, log_level="info") #, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
@@ -59,3 +59,7 @@ class Manager:
     @property
     def data(self) -> DataManager:
         return self._data
+
+    @property
+    def user_interface_delivery(self) -> UserInterfaceDelivery:
+        return self._user_interface_delivery

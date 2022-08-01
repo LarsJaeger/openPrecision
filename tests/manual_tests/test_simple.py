@@ -9,7 +9,7 @@ class MyTestCase(unittest.TestCase):
         print("test starts")
         sensor_manager = PackagePluginManager(
             None,
-            "open_precision.core.interfaces.sensor_types",
+            "open_precision.core.plugin_base_classes.sensor_types",
             "open_precision.plugins.sensor_wrappers",
         )
         # open_precision.utils.get_classes_of_module(open_precision.plugins.sensor_wrappers)

@@ -5,7 +5,7 @@ import adafruit_bno055
 import busio
 import numpy as np
 from pyquaternion import Quaternion
-from open_precision.core.interfaces.sensor_types.absolute_orientation_sensor import (
+from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
 from open_precision.manager import Manager
