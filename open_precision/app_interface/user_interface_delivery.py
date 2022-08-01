@@ -64,12 +64,15 @@ class UserInterfaceDelivery:
             await self._connection_manager.connect(websocket)
             try:
                 while True:
-                    print("waiting for message")
+                    print("[INFO]: Waiting for message...")
                     data = await websocket.receive_text()
-                    print("received message:", data)
+                    print("[INFO]: Received message:", data)
+                    return_data = None
+                    match data:
+                        case "manager.plugins[Navigator].course":
+                            return_data = await self._manager.plugins[Navigator].course
                     self._manager.plugins[Navigator].course = self._manager.plugins[CourseGenerator].generate_course()
-                    d: DataModelBase = self._manager.plugins[Navigator].course
-                    await self._connection_manager.unicast(d.as_json(), websocket)
+                    await self._connection_manager.unicast(return_data.as_json(), websocket)
             except WebSocketDisconnect:
                 self._connection_manager.disconnect(websocket)
 

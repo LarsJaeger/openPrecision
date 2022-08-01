@@ -105,17 +105,6 @@ function renderCourse(course) {
     }
 }
 
-
-// web sockets
-/*
-socket.on('course', (arg) => {
-    var course;
-    //socket.emit('ping_response', {data: 'I\'m connected!'});
-    course = JSON.parse(arg['Course']);
-    console.log(course);
-    renderCourse(course);
-}); */
-
 requestAnimationFrame(render);
 // starting the connection to the backend
 var ws = new WebSocket("ws://localhost:8000/app_data");
@@ -123,7 +112,7 @@ console.log('waiting for connection');
 
 ws.onopen = function(event) {
     console.log('[open] Connection established');
-    ws.send('Hello WebSockets!');
+    ws.send('');
 }
 
 ws.onmessage = function(event) {
