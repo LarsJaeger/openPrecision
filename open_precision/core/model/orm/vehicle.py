@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import ast
-from dataclasses import dataclass, field
-
 from sqlalchemy import Column, String, Float, Integer
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.orm.orm_model_base import ORMModelBase
 
 
-class DAOVehicle:
+class ORMVehicle(ORMModelBase):
     __tablename__ = 'Vehicles'
 
     id = Column(Integer, primary_key=True)

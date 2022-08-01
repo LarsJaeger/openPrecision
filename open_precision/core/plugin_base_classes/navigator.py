@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from open_precision.core.model.data_classes.course import Course
+from open_precision.core.model.data.course import Course
 from open_precision.core.plugin_base_classes.plugin import Plugin
 
 if TYPE_CHECKING:

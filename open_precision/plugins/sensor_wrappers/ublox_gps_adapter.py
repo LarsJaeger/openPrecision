@@ -10,7 +10,7 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
 )
 from open_precision.manager import Manager
 
-from open_precision.core.model.data_classes.location import Location
+from open_precision.core.model.data.location import Location
 
 shortest_update_dt = 100  # in ms
 

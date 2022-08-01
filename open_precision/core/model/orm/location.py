@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
-import numpy as np
 from sqlalchemy import Column, Float, Integer, ForeignKey
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.orm.orm_model_base import ORMModelBase
 
 
-class DAOLocation:
+class ORMLocation(ORMModelBase):
     __tablename__ = 'Locations'
 
     id = Column(Integer, primary_key=True)

@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
-
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from open_precision.core.exceptions import NotAPathException
-from open_precision.core.model.data_classes.model_base import Model
-from open_precision.core.model.data_classes.path import Path
+from open_precision.core.model.orm.orm_model_base import ORMModelBase
+from open_precision.core.model.orm.path import ORMPath
 
 
-class DAOCourse:
+class ORMCourse(ORMModelBase):
     """ A course consists of paths that contain waypoints"""
 
     __tablename__ = 'Courses'
@@ -19,4 +15,4 @@ class DAOCourse:
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
     description = Column(String(400))
-    paths = relationship(Path)
+    paths = relationship(ORMPath)

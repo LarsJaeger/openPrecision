@@ -7,17 +7,17 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from open_precision.core.exceptions import NotAPathException
-from open_precision.core.model.data_classes.model_base import Model
-from open_precision.core.model.data_classes.path import Path
+from open_precision.core.model.data.data_model_base import DataModelBase
+from open_precision.core.model.data.path import Path
 
 if TYPE_CHECKING:
     pass
 
 
 @dataclass
-class Course(Model):
+class Course(DataModelBase):
     """ A course consists of paths that contain waypoints"""
-    id: int | None = field(init=False)
+    id: int | None = field(init=False, default=None)
 
     name: str = field(init=True, default=None)
     description: str = field(init=True, default=None)

@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import registry, sessionmaker
 
-from open_precision.core.model.data_classes.vehicle import Vehicle, start_mapping
+from open_precision.core.model.data.vehicle import Vehicle, start_mapping
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 template_dir = os.path.abspath(

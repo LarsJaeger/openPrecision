@@ -2,13 +2,13 @@ from dataclasses import dataclass, field
 
 from sqlalchemy import Column, Integer, Float
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.data.data_model_base import DataModelBase
 
 
 @dataclass
-class MachineState(Model):
+class MachineState(DataModelBase):
 
-    id: int | None = field(init=False)
+    id: int | None = field(init=False, default=None)
 
     steering_angle: float = field(init=True, default=None)  # in degrees, positive
     # means to the right

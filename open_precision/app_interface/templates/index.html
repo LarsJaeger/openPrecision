@@ -8,20 +8,22 @@
     </head>
 <body>
     <canvas id="c"></canvas>
-    <div class="metaButtons">
-        <button class="metaButton material-symbols-outlined">info</button>
-        <button class="metaButton material-symbols-outlined">settings</button>
-    </div>
-    <div class="actionButtons">
-        <button class="actionButton">A</button>
-        <button class="actionButton "><div class="actionButtonContent material-symbols-outline">B</div></button>
-        <button class="actionButton "><div class="actionButtonContent material-symbols-outline">C</div></button>
-    </div>
-    <div class="statusBar">
-        <div class="statusBarItem">1</div>
-        <div class="statusBarItem">2</div>
-        <div class="statusBarItem">3</div>
-        <div class="statusBarItem">4</div>
+    <div>
+        <div class="metaButtons">
+            <button class="metaButton material-symbols-outlined">info</button>
+            <button class="metaButton material-symbols-outlined">settings</button>
+        </div>
+        <div class="actionButtons">
+            <button style="top:0" class="actionButton disableControls">A</button>
+            <button style="top:0" class="actionButton disableControls"><div class="actionButtonContent material-symbols-outline">B</div></button>
+            <button style="top:0" class="actionButton disableControls"><div class="actionButtonContent material-symbols-outline">C</div></button>
+        </div>
+        <div class="statusBar">
+            <div class="statusBarItem disableControls">1</div>
+            <div class="statusBarItem disableControls">2</div>
+            <div class="statusBarItem disableControls">3</div>
+            <div class="statusBarItem disableControls">4</div>
+        </div>
     </div>
     <!-- run script -->
     <script src="static/index.js" type="module"></script>

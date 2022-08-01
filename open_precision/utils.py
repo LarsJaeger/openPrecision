@@ -7,7 +7,7 @@ from math import sqrt
 import numpy as np
 import numpy.linalg as la
 
-from open_precision.core.model.data_classes.location import Location
+from open_precision.core.model.data.location import Location
 
 
 def async_partial(f, *args):

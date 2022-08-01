@@ -47,7 +47,7 @@ def _asdict_inner(obj, dict_factory=dict):
         return dataclasses.copy.deepcopy(obj)
 
 
-class Model:
+class DataModelBase:
 
     def as_json(self):
         return json.dumps(self.as_dict())

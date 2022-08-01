@@ -5,12 +5,12 @@ from dataclasses import dataclass, field
 import numpy as np
 from sqlalchemy import Column, Float, Integer, ForeignKey
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.data.data_model_base import DataModelBase
 
 
 @dataclass
-class Location(Model):
-    id: int | None = field(init=False)
+class Location(DataModelBase):
+    id: int | None = field(init=False, default=None)
     position_id = Column(ForeignKey('Positions.id'))
     waypoint_id = Column(ForeignKey('Waypoints.id'))
 

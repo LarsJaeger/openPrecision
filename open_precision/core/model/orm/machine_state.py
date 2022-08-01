@@ -1,11 +1,9 @@
-from dataclasses import dataclass, field
-
 from sqlalchemy import Column, Integer, Float
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.orm.orm_model_base import ORMModelBase
 
 
-class DAOMachineState:
+class ORMMachineState(ORMModelBase):
     __tablename__ = 'MachineStates'
 
     id = Column(Integer, primary_key=True)

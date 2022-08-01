@@ -6,7 +6,7 @@ import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, registry
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.data.data_model_base import DataModelBase
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager
@@ -35,7 +35,7 @@ class DataManager:
     def _map_orm(self):
         mapper_registry = registry()
         # register every model class
-        for cls in subclasses_recursive(Model):
+        for cls in subclasses_recursive(DataModelBase):
             mapper_registry.mapped(cls)
 
         mapper_registry.metadata.create_all(bind=self._engine)
@@ -49,28 +49,28 @@ class DataManager:
         return self._redis_session
 
 
-    def _model_get_object(self, cls: type, id: int) -> Model:
+    def _model_get_object(self, cls: type, id: int) -> DataModelBase:
         """returns an object of type cls with id id"""
         session = self._model_session()
         obj = session.query(cls).get(id)
         session.close()
         return obj
 
-    def _model_get_objects(self, cls: type) -> list[Model]:
+    def _model_get_objects(self, cls: type) -> list[DataModelBase]:
         """returns all objects of type cls"""
         session = self._model_session()
         objs = session.query(cls).all()
         session.close()
         return objs
 
-    def _model_save_object(self, obj: Model):
+    def _model_save_object(self, obj: DataModelBase):
         """saves an object"""
         session = self._model_session()
         session.add(obj)
         session.commit()
         session.close()
 
-    def _model_save_objects(self, objs: list[Model]):
+    def _model_save_objects(self, objs: list[DataModelBase]):
         """saves a list of objects"""
         session = self._model_session()
         for obj in objs:
@@ -78,14 +78,14 @@ class DataManager:
         session.commit()
         session.close()
 
-    def _model_delete_object(self, obj: Model):
+    def _model_delete_object(self, obj: DataModelBase):
         """deletes an object"""
         session = self._model_session()
         session.delete(obj)
         session.commit()
         session.close()
 
-    def _model_delete_objects(self, objs: list[Model]):
+    def _model_delete_objects(self, objs: list[DataModelBase]):
         """deletes a list of objects"""
         session = self._model_session()
         for obj in objs:

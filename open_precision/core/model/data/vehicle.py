@@ -5,11 +5,11 @@ from dataclasses import dataclass, field
 
 from sqlalchemy import Column, String, Float, Integer
 
-from open_precision.core.model.data_classes.model_base import Model
+from open_precision.core.model.data.data_model_base import DataModelBase
 
 
 @dataclass
-class Vehicle(Model):
+class Vehicle(DataModelBase):
     id: int
     name: str
     turn_radius_left: float
