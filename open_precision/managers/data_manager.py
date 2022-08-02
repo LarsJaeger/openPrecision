@@ -26,7 +26,7 @@ class DataManager:
         # init persistent relational db
         self._engine = create_engine('sqlite:///data.sqlite',
                                      echo=True)
-        self._map_orm()
+        # self._map_orm()
         self._session_maker = sessionmaker(bind=self._engine)
 
         # init in memory cache

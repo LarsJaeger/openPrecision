@@ -1,6 +1,8 @@
 import dataclasses
 import json
 
+from pyquaternion import Quaternion
+
 
 def _asdict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
@@ -43,6 +45,9 @@ def _asdict_inner(obj, dict_factory=dict):
         return type(obj)((_asdict_inner(k, dict_factory),
                           _asdict_inner(v, dict_factory))
                          for k, v in obj.items())
+    elif isinstance(obj, Quaternion):
+        obj = Quaternion()
+        return {'x': obj.x, 'y': obj.y, 'z': obj.z, 'w': obj.w}
     else:
         return dataclasses.copy.deepcopy(obj)
 

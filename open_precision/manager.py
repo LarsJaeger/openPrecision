@@ -6,7 +6,6 @@ import os.path
 import uvicorn
 
 from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
-from open_precision.core.model.auto_serializable import AutoSerializable
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -14,7 +13,7 @@ from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.vehicle_manager import VehicleManager
 
 
-class Manager(AutoSerializable):
+class Manager:
     def __init__(self):
         atexit.register(self._cleanup)
 
@@ -22,7 +21,7 @@ class Manager(AutoSerializable):
         self._config = ConfigManager(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   os.path.relpath('../config.yml')))
 
-        #self._data = DataManager(self)
+        self._data = DataManager(self)
 
         self._vehicles = VehicleManager(self)
 
@@ -32,7 +31,9 @@ class Manager(AutoSerializable):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
 
         self._user_interface_delivery = UserInterfaceDelivery(self)
+        print("ooooooo")
         uvicorn.run(self._user_interface_delivery._app, log_level="info") #, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+        print("binärer Suchbaum")
 
 
     def _cleanup(self) -> None:

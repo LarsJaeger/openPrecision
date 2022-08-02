@@ -14,10 +14,12 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.websockets import WebSocketDisconnect
+from pyquaternion import Quaternion
 
 from open_precision.app_interface.helper import ConnectionManager
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.navigator import Navigator
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
 from open_precision.utils import async_partial
 
 if TYPE_CHECKING:
@@ -41,6 +43,11 @@ class UserInterfaceDelivery:
     def __init__(self, manager: Manager):
         self._manager = manager
 
+        # TODO: remove
+        self._manager.plugins[Navigator].course = self._manager.plugins[CourseGenerator].generate_course()
+
+
+
         self._base_dir = os.path.dirname(__file__)
         self._templates = Jinja2Templates(directory=os.path.join(self._base_dir, os.path.relpath("./templates")))
         self._app = FastAPI()
@@ -60,19 +67,37 @@ class UserInterfaceDelivery:
                         StaticFiles(directory=os.path.join(self._base_dir, os.path.relpath("./static")), html=True),
                         name="static")
 
-        async def websocket_endpoint(websocket: WebSocket):
+        # steering angle websocket
+        async def steering_angle_websocket(websocket: WebSocket):
             await self._connection_manager.connect(websocket)
+            print("[INFO]: Steering angle websocket has started...")
+            last_steering_angle = None
             try:
                 while True:
-                    print("[INFO]: Waiting for message...")
-                    data = await websocket.receive_text()
-                    print("[INFO]: Received message:", data)
-                    self._manager.plugins[Navigator].course = self._manager.plugins[CourseGenerator].generate_course()
-                    await self._connection_manager.unicast(return_data, websocket)
+                    current_steering_angle = self._manager.plugins[Navigator].steering_angle
+                    if current_steering_angle != last_steering_angle or last_steering_angle is None:
+                        last_steering_angle = current_steering_angle
+                        await self._connection_manager.unicast(current_steering_angle.as_json(), websocket)
             except WebSocketDisconnect:
                 self._connection_manager.disconnect(websocket)
 
-        self._app.websocket("/app_data", name='app_data')(websocket_endpoint)
+        self._app.websocket("/ws/steering_angle", name='steering_angle')(steering_angle_websocket)
+
+        # position websocket
+        async def position_websocket(websocket: WebSocket):
+            await self._connection_manager.connect(websocket)
+            print("[INFO]: Position websocket has started...")
+            last_position = None
+            try:
+                while True:
+                    current_position = self._manager.plugins[PositionBuilder].current_position
+                    if current_position != last_position or last_position is None:
+                        last_position = current_position
+                        await self._connection_manager.unicast(current_position.as_json(), websocket)
+            except WebSocketDisconnect:
+                self._connection_manager.disconnect(websocket)
+
+        self._app.websocket("/ws/position", name='position')(position_websocket)
 
     def show_message(self, message: str, message_type: MessageType):
         pass
