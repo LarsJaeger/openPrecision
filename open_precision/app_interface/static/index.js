@@ -105,10 +105,40 @@ function renderCourse(course) {
     }
 }
 
-requestAnimationFrame(render);
 
 
-// starting the connection to the backend
+// target_machine_state websocket
+function updateTargetMachineState(data){
+    console.log("steering_angle: " + data.steering_angle);
+}
+
+
+var ws_target_machine_state = new WebSocket("ws://localhost:8000/ws/target_machine_state");
+console.log('[INFO]: (target_machine_state): waiting for connection');
+
+ws_target_machine_state.onopen = function(event) {
+    console.log('[INFO]: (target_machine_state): Listening...]');
+    ws_target_machine_state.send('');
+}
+
+ws_target_machine_state.onmessage = function(event) {
+    updateTargetMachineState(JSON.parse(event.data));
+    console.log("[INFO]: (target_machine_state): Received message: " + event.data);
+};
+
+ws_target_machine_state.onclose = function(event) {
+  if (event.wasClean) {
+    console.log(`[INFO]: (target_machine_state): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    alert('[ERROR]: (target_machine_state): Connection died');
+  }
+};
+
+ws_target_machine_state.onerror = function(error) {
+  alert(`[error] (target_machine_state): ${error.message}`);
+};
+
+// position websocket
 
 function updatePosition(data) {
     console.log(data);
@@ -118,52 +148,30 @@ function updatePosition(data) {
     pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w));
 }
 
-var ws_steering_angle = new WebSocket("ws://localhost:8000/ws/steering_angle");
-console.log('waiting for connection');
-
-ws_steering_angle.onopen = function(event) {
-    console.log('[INFO]: (steering angle): Listening...]');
-    ws_steering_angle.send('');
-}
-
-ws_steering_angle.onmessage = function(event) {
-    updateSteeringAngle(JSON.parse(event.data));
-    console.log("[INFO]: (steering angle): Received message: " + event.data);
-};
-
-ws_steering_angle.onclose = function(event) {
-  if (event.wasClean) {
-    console.log(`[INFO]: (steering angle): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-  } else {
-    alert('[ERROR]: (steering angle): Connection died');
-  }
-};
-
-ws_steering_angle.onerror = function(error) {
-  alert(`[error] (steering angle): ${error.message}`);
-};
 
 var ws_position = new WebSocket("ws://localhost:8000/ws/position");
-console.log('waiting for connection');
+console.log('[INFO]: (position): waiting for connection');
 
 ws_position.onopen = function(event) {
-    console.log('[INFO]: (steering angle): Listening...]');
+    console.log('[INFO]: (position): Listening...]');
     ws_position.send('');
 }
 
 ws_position.onmessage = function(event) {
     updatePosition(JSON.parse(event.data));
-    console.log("[INFO]: (steering angle): Received message: " + event.data);
+    console.log("[INFO]: (position): Received message: " + event.data);
 };
 
 ws_position.onclose = function(event) {
   if (event.wasClean) {
-    console.log(`[INFO]: (steering angle): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    console.log(`[INFO]: (position): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
-    alert('[ERROR]: (steering angle): Connection died');
+    alert('[ERROR]: (position): Connection died');
   }
 };
 
 ws_position.onerror = function(error) {
-  alert(`[error] (steering angle): ${error.message}`);
+  alert(`[error] (position): ${error.message}`);
 };
+
+requestAnimationFrame(render);

@@ -53,7 +53,6 @@ def _asdict_inner(obj, dict_factory=dict):
 
 
 class DataModelBase:
-
     def as_json(self):
         return json.dumps(self.as_dict())
 

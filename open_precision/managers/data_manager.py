@@ -6,7 +6,8 @@ import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, registry
 
-from open_precision.core.model.data.data_model_base import DataModelBase
+from open_precision.core.model.data_model_base import DataModelBase
+from open_precision.core.model.persistence_model_base import PersistenceModelBase
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager
@@ -26,7 +27,7 @@ class DataManager:
         # init persistent relational db
         self._engine = create_engine('sqlite:///data.sqlite',
                                      echo=True)
-        # self._map_orm()
+        self._map_orm()
         self._session_maker = sessionmaker(bind=self._engine)
 
         # init in memory cache
@@ -35,8 +36,9 @@ class DataManager:
     def _map_orm(self):
         mapper_registry = registry()
         # register every model class
-        for cls in subclasses_recursive(DataModelBase):
-            mapper_registry.mapped(cls)
+        for cls in subclasses_recursive(PersistenceModelBase):
+            print(f"[INFO]: mapping class {cls.__name__}")
+            mapper_registry.mapped_as_dataclass(cls)
 
         mapper_registry.metadata.create_all(bind=self._engine)
 

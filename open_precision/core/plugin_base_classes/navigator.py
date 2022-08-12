@@ -3,7 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from open_precision.core.model.data.course import Course
+from open_precision.core.model.course import Course
+from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.plugin import Plugin
 
 if TYPE_CHECKING:
@@ -36,5 +37,5 @@ class Navigator(Plugin, ABC):
 
     @property
     @abstractmethod
-    def steering_angle(self) -> float | None:
+    def target_machine_state(self) -> MachineState | None:
         pass

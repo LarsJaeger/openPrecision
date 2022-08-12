@@ -1,12 +1,11 @@
 import os
-from flask_socketio import SocketIO
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import registry, sessionmaker
 
-from open_precision.core.model.data.vehicle import Vehicle, start_mapping
+from open_precision.core.model.vehicle import Vehicle
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 template_dir = os.path.abspath(

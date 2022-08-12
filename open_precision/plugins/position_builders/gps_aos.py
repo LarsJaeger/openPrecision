@@ -9,8 +9,8 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
     GlobalPositioningSystem,
 )
 from open_precision.manager import Manager
-from open_precision.core.model.data.position import Position
-from open_precision.core.model.data.location import Location
+from open_precision.core.model.position import Position
+from open_precision.core.model.location import Location
 
 
 class GpsAosPositionBuilder(PositionBuilder):
@@ -29,7 +29,6 @@ class GpsAosPositionBuilder(PositionBuilder):
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None
-
         corrected_location = uncorrected_location + orientation.rotate(
             np.array(list(self._manager.vehicles.current_vehicle.gps_receiver_offset), dtype=np.float64)
         )
