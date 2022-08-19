@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import numpy as np
+
+from open_precision.core.model.orientation import Orientation
 from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
@@ -11,6 +13,7 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
 from open_precision.manager import Manager
 from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
+from open_precision.managers.persistence_manager import PersistenceManager
 
 
 class GpsAosPositionBuilder(PositionBuilder):
@@ -23,9 +26,10 @@ class GpsAosPositionBuilder(PositionBuilder):
         """get available sensors"""
 
     @property
+    @PersistenceManager.persist_return
     def current_position(self) -> Position | None:
         uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
-        orientation: np.array = self._manager.plugins[AbsoluteOrientationSensor].orientation
+        orientation: Orientation = self._manager.plugins[AbsoluteOrientationSensor].orientation
 
         if any(x is None for x in [uncorrected_location, orientation]):
             return None

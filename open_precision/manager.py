@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import asyncio
 import atexit
 import os.path
+from threading import Thread
 
 import uvicorn
 
 from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
 from open_precision.managers import plugin_manager
 from open_precision.managers.data_manager import DataManager
+from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.managers.plugin_manager import PluginManager
 from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.vehicle_manager import VehicleManager
@@ -21,6 +24,8 @@ class Manager:
         self._config = ConfigManager(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   os.path.relpath('../config.yml')))
 
+        self._persistence = PersistenceManager(self)
+
         self._data = DataManager(self)
 
         self._vehicles = VehicleManager(self)
@@ -31,7 +36,10 @@ class Manager:
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
 
         self._user_interface_delivery = UserInterfaceDelivery(self)
-        uvicorn.run(self._user_interface_delivery._app, log_level="info") #, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+        asgi_thread = Thread(target=self._user_interface_delivery.run)
+        asgi_thread.start()
+        asyncio.run(self._data.update_loop())
+        asgi_thread.join()
 
 
     def _cleanup(self) -> None:
@@ -55,6 +63,10 @@ class Manager:
     @property
     def plugins(self) -> dict[object, any]:
         return self._plugins
+
+    @property
+    def persistence(self) -> PersistenceManager:
+        return self._persistence
 
     @property
     def data(self) -> DataManager:

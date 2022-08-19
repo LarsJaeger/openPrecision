@@ -14,6 +14,7 @@ from open_precision.core.model.course import Course
 from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
 from open_precision.core.model.waypoint import Waypoint
+from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.utils import intersections_of_circle_and_line_segment
 
 
@@ -32,10 +33,12 @@ class PurePursuitNavigator(Navigator):
         return self._course
 
     @course.setter
+    @PersistenceManager.persist_arg
     def course(self, course: Course):
         self._course = course
         
     @property
+    @PersistenceManager.persist_return
     def target_machine_state(self) -> MachineState | None:
         target_machine_state = MachineState(steering_angle=self._steering_angle, speed=None)
         return target_machine_state

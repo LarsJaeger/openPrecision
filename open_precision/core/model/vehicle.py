@@ -27,8 +27,6 @@ class Vehicle(DataModelBase, PersistenceModelBase):
 
     @property
     def gps_receiver_offset(self) -> np.ndarray | None:
-        print(f"loaded: {json.loads(self._gps_receiver_offset)}")
-        print(f"loaded type: {type(json.loads(self._gps_receiver_offset))}")
         return np.array(json.loads(self._gps_receiver_offset), dtype=float)
 
     @gps_receiver_offset.setter

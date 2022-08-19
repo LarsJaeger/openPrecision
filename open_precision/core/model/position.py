@@ -20,10 +20,10 @@ class Position(DataModelBase, PersistenceModelBase):
 
     id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
 
-    location : Location | None = field(default=None)
+    location: Location | None = field(default=None)
     _location: Mapped[str] = mapped_column(init=False, default=None, repr=False)
 
-    orientation: Orientation | None= field(default=None)
+    orientation: Orientation | None = field(default=None)
     _orientation: Mapped[str] = mapped_column(init=False, default=None)
 
     @property
@@ -40,8 +40,7 @@ class Position(DataModelBase, PersistenceModelBase):
 
     @orientation.setter
     def orientation(self, orientation: Orientation):
-        if isinstance(orientation, Quaternion):
-            print(f"aaaaa {orientation}")
+        if (not isinstance(orientation, Orientation)) and isinstance(orientation, Quaternion):
             orientation = Orientation(orientation)
         self._orientation = orientation.as_json()
 

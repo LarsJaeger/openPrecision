@@ -10,8 +10,8 @@ class MachineState(DataModelBase, PersistenceModelBase):
 
     id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
 
-    steering_angle: Mapped[float] = mapped_column(default=None)  # in degrees, positive
+    steering_angle: Mapped[float] = mapped_column(default=None, nullable=True)  # in degrees, positive
     # means to the right
-    speed: Mapped[float] = mapped_column(default=None)  # in m/s, negative values mean
+    speed: Mapped[float] = mapped_column(default=None, nullable=True)  # in m/s, negative values mean
     # reverse
     # TODO add fields for things like section control, etc.

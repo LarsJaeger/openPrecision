@@ -4,6 +4,7 @@ import os.path
 from enum import Enum
 from typing import TYPE_CHECKING
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi import WebSocket
 from fastapi.staticfiles import StaticFiles
@@ -96,6 +97,9 @@ class UserInterfaceDelivery:
                 self._connection_manager_position.disconnect(websocket)
 
         self._app.websocket("/ws/position", name='position')(position_websocket)
+
+    def run(self):
+        uvicorn.run(self._app, log_level="info") #, ssl_keyfile="key.pem", ssl_certfile="cert.pem")
 
     def show_message(self, message: str, message_type: MessageType):
         pass

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from open_precision.core.model.course import Course
 from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.plugin import Plugin
+from open_precision.managers.persistence_manager import PersistenceManager
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager
@@ -32,10 +33,12 @@ class Navigator(Plugin, ABC):
 
     @course.setter
     @abstractmethod
+    @PersistenceManager.persist_arg
     def course(self, course: Course):
         pass
 
     @property
     @abstractmethod
+    @PersistenceManager.persist_return
     def target_machine_state(self) -> MachineState | None:
         pass
