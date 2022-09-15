@@ -105,41 +105,20 @@ function renderCourse(course) {
     }
 }
 
+const socket = io();
 
-
-// target_machine_state websocket
+// target_machine_state
 function updateTargetMachineState(data){
     console.log("steering_angle: " + data.steering_angle);
 }
 
+socket.io.on("target_machine_state", (data) => {
+    updateTargetMachineState(JSON.parse(data));
+    console.log("[INFO]: (target_machine_state): Received message: " + data);
+});
 
-var ws_target_machine_state = new WebSocket("ws://localhost:8000/ws/target_machine_state");
-console.log('[INFO]: (target_machine_state): waiting for connection');
 
-ws_target_machine_state.onopen = function(event) {
-    console.log('[INFO]: (target_machine_state): Listening...]');
-    ws_target_machine_state.send('');
-}
-
-ws_target_machine_state.onmessage = function(event) {
-    updateTargetMachineState(JSON.parse(event.data));
-    console.log("[INFO]: (target_machine_state): Received message: " + event.data);
-};
-
-ws_target_machine_state.onclose = function(event) {
-  if (event.wasClean) {
-    console.log(`[INFO]: (target_machine_state): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-  } else {
-    alert('[ERROR]: (target_machine_state): Connection died');
-  }
-};
-
-ws_target_machine_state.onerror = function(error) {
-  alert(`[error] (target_machine_state): ${error.message}`);
-};
-
-// position websocket
-
+// position
 function updatePosition(data) {
     console.log(data);
     pointer.position.x = data.location.x;
@@ -148,30 +127,11 @@ function updatePosition(data) {
     pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w));
 }
 
+socket.io.on("position", (data) => {
+    updatePosition(JSON.parse(data));
+    console.log("[INFO]: (positipon): Received message: " + data);
+});
 
-var ws_position = new WebSocket("ws://localhost:8000/ws/position");
-console.log('[INFO]: (position): waiting for connection');
 
-ws_position.onopen = function(event) {
-    console.log('[INFO]: (position): Listening...]');
-    ws_position.send('');
-}
-
-ws_position.onmessage = function(event) {
-    updatePosition(JSON.parse(event.data));
-    console.log("[INFO]: (position): Received message: " + event.data);
-};
-
-ws_position.onclose = function(event) {
-  if (event.wasClean) {
-    console.log(`[INFO]: (position): Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-  } else {
-    alert('[ERROR]: (position): Connection died');
-  }
-};
-
-ws_position.onerror = function(error) {
-  alert(`[error] (position): ${error.message}`);
-};
-
+// request first frame
 requestAnimationFrame(render);
