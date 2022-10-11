@@ -105,14 +105,21 @@ function renderCourse(course) {
     }
 }
 
-const socket = io();
+const socket = io();//("ws://" + window.location.hostname + "/");
+
+document.getElementById("ab_a").onclick = function () {
+    // generate Course
+    console.log("action: gen_course sent")
+    socket.emit("action", "gen_course");
+};
 
 // target_machine_state
 function updateTargetMachineState(data){
     console.log("steering_angle: " + data.steering_angle);
 }
 
-socket.io.on("target_machine_state", (data) => {
+socket.io.on("data", (data) => {
+    console.log("[INFO]: (target_machine_state): Received message: " + data); //TODO remove
     updateTargetMachineState(JSON.parse(data));
     console.log("[INFO]: (target_machine_state): Received message: " + data);
 });
@@ -129,7 +136,7 @@ function updatePosition(data) {
 
 socket.io.on("position", (data) => {
     updatePosition(JSON.parse(data));
-    console.log("[INFO]: (positipon): Received message: " + data);
+    console.log("[INFO]: (position): Received message: " + data);
 });
 
 

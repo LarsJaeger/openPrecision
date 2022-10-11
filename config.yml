@@ -1,6 +1,6 @@
 VehicleManager:
   vehicles:
-  - id:
+    id: 0
     name: example_vehicle
     turn_radius_left: 69.1
     turn_radius_right: 70.3

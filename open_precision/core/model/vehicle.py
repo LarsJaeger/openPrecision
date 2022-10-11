@@ -14,12 +14,12 @@ class Vehicle(DataModelBase, PersistenceModelBase):
 
     __tablename__ = "Vehicles"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, default=None)
 
-    name: Mapped[str]
-    turn_radius_left: Mapped[float]
-    turn_radius_right: Mapped[float]
-    wheelbase: Mapped[float] # wheelbase in meters
+    name: Mapped[str] = mapped_column(default=None)
+    turn_radius_left: Mapped[float] = mapped_column(default=None)
+    turn_radius_right: Mapped[float] = mapped_column(default=None)
+    wheelbase: Mapped[float] = mapped_column(default=None) # wheelbase in meters
     """3d vector from the rotation point of the vehicle (normally middle of the rear axle a tractor) at ground height 
     """
     gps_receiver_offset: np.ndarray | None = field(default=None)

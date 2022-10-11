@@ -1,18 +1,24 @@
-version: '3'
+version: "3.9"  # optional since v1.27.0
 services:
-  web:
+  open_precision:
     build: .
-    command: gunicorn -b 0.0.0.0:8000 todosapp.wsgi:application
-    depends_on:
-      - postgres
-    volumes:
-      - .:/usr/src/app
+    image: open_precision
+    restart: always
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: postgres://todoapp@postgres/todos
-  postgres:
-    image: postgres:9.6.2-alpine
-    environment:
-      POSTGRES_USER: todoapp
-      POSTGRES_DB: todos
+    volumes:
+      - /dev:/dev
+    networks:
+      - internal
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+    restart: always
+    expose:
+      - 6379
+    networks:
+      - internal
+    command: redis-server --loglevel warning
+networks:
+  internal: {}

@@ -9,6 +9,7 @@ import uvicorn
 
 from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
 from open_precision.managers import plugin_manager
+from open_precision.managers.action_manager import ActionManager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.managers.plugin_manager import PluginManager
@@ -30,6 +31,8 @@ class Manager:
 
         self._vehicles = VehicleManager(self)
 
+        self._action = ActionManager(self)
+
         # loading plugins, but loading UserInterface last
         self._plugins = {}
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
@@ -40,7 +43,6 @@ class Manager:
         asgi_thread.start()
         asyncio.run(self._data.update_loop())
         asgi_thread.join()
-
 
     def _cleanup(self) -> None:
         # TODO evaluate if necessary
@@ -71,6 +73,10 @@ class Manager:
     @property
     def data(self) -> DataManager:
         return self._data
+
+    @property
+    def action(self) -> ActionManager:
+        return self._action
 
     @property
     def user_interface_delivery(self) -> UserInterfaceDelivery:

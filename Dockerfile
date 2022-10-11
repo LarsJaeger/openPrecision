@@ -1,27 +1,27 @@
-FROM python:3-slim as python
+FROM python:3 as base
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 
-FROM python as poetry
+FROM base as intermediate
 # install git
-RUN apt update
-RUN apt install -y git
+#RUN apt update
+#RUN apt install -y git
 # install poetry
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV PATH="$POETRY_HOME/bin:$PATH"
 RUN python -c 'from urllib.request import urlopen; print(urlopen("https://install.python-poetry.org").read().decode())' | python -
 COPY . ./
-RUN poetry export -f requirements.txt --output ./requirements.txt
+RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes
 # RUN poetry build -f wheel -vvv
 RUN pip download -r requirements.txt -d ./libraries
 
-FROM python as runtime
-# ENV PATH="/app/.venv/bin:$PATH"
-COPY --from=poetry ./app/libraries ./libraries
-COPY --from=poetry ./app/open_precision ./open_precision
-COPY --from=poetry ./app/LICENSE ./LICENSE
-COPY --from=poetry ./app/config.yml ./config.yml
+FROM base as runtime
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+COPY --from=intermediate /app/libraries /app/libraries
+COPY --from=intermediate /app/open_precision /app/open_precision
+COPY --from=intermediate /app/LICENSE /app/LICENSE
+COPY --from=intermediate /app/config.yml /app/config.yml
 RUN pip install ./libraries/* --no-dependencies
 RUN rm -rf ./libraries
 EXPOSE 8000

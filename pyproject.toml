@@ -21,6 +21,7 @@ sqlalchemy = {git = "https://github.com/sqlalchemy/sqlalchemy.git", rev = "main"
 aioredis = "^2.0.1"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
+socketio = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 
