@@ -110,7 +110,7 @@ const socket = io();//("ws://" + window.location.hostname + "/");
 document.getElementById("ab_a").onclick = function () {
     // generate Course
     console.log("action: gen_course sent")
-    socket.emit("action", "gen_course");
+    socket.emit("action");
 };
 
 // target_machine_state
@@ -118,12 +118,11 @@ function updateTargetMachineState(data){
     console.log("steering_angle: " + data.steering_angle);
 }
 
-socket.io.on("data", (data) => {
+socket.on("target_machine_state", (data) => {
     console.log("[INFO]: (target_machine_state): Received message: " + data); //TODO remove
     updateTargetMachineState(JSON.parse(data));
     console.log("[INFO]: (target_machine_state): Received message: " + data);
 });
-
 
 // position
 function updatePosition(data) {

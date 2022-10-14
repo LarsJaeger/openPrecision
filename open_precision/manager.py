@@ -41,7 +41,7 @@ class Manager:
         self._user_interface_delivery = UserInterfaceDelivery(self)
         asgi_thread = Thread(target=self._user_interface_delivery.run)
         asgi_thread.start()
-        asyncio.run(self._data.update_loop())
+        asyncio.run(self._data.start_update_loop())
         asgi_thread.join()
 
     def _cleanup(self) -> None:

@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 
 import socketio
 import uvicorn
+from socketio.asyncio_redis_manager import AsyncRedisManager
+from socketio.asyncio_server import AsyncServer
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager
@@ -27,28 +29,28 @@ class UserInterfaceDelivery:
     def __init__(self, manager: Manager):
         self._manager = manager
         url = 'redis://redis:6379'
-        self._server = socketio.AsyncServer(client_manager=socketio.AsyncRedisManager(url),
-                                            async_mode='asgi',
-                                            cors_allowed_origins="*")
-        # client_manager=socketio.AsyncRedisManager(url), async_mode='asgi', cors_allowed_origins="*")
+        self._server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
+                                                async_mode='asgi',
+                                                cors_allowed_origins="*")
 
         # serve static files
         base_dir = os.path.dirname(__file__)
         static_files = {
+            '/': os.path.join(base_dir, os.path.relpath("static/index.html")),
+            '/favicon.ico': os.path.join(base_dir, os.path.relpath("static/favicon.ico")),
             '/app': os.path.join(base_dir, os.path.relpath("static/index.html")),
             '/static': os.path.join(base_dir, os.path.relpath("static"))
         }
 
         @self._server.event
         async def connect(sid, environment, auth):
-            print('connected', sid)
-            self._server.enter_room(sid, 'target_current_machine_state')
+            print('[INFO] client connected with socketid: ', sid)
+            self._server.enter_room(sid, 'target_machine_state')  # TODO make dynamic
 
         @self._server.event
         async def disconnect(sid):
-            print('disconnected', sid)
-            self._server.leave_room(sid, 'target_current_machine_state')
-
+            print('[INFO] client disconnected with socketid: ', sid)
+            self._server.leave_room(sid, 'target_machine_state')
 
         self._app = socketio.ASGIApp(self._server, static_files=static_files)
 
