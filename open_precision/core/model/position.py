@@ -32,7 +32,7 @@ class Position(DataModelBase, PersistenceModelBase):
 
     @location.setter
     def location(self, location: Location):
-        self._location = location.as_json()
+        self._location = location.to_json()
 
     @property
     def orientation(self) -> Orientation | None:
@@ -42,7 +42,7 @@ class Position(DataModelBase, PersistenceModelBase):
     def orientation(self, orientation: Orientation):
         if (not isinstance(orientation, Orientation)) and isinstance(orientation, Quaternion):
             orientation = Orientation(orientation)
-        self._orientation = orientation.as_json()
+        self._orientation = orientation.to_json()
 
     def is_valid(self):
         return self.location.is_valid() and (self.orientation is not None)

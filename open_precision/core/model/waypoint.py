@@ -35,4 +35,4 @@ class Waypoint(DataModelBase, PersistenceModelBase):
 
     @location.setter
     def location(self, location: Location):
-        self._location = location.as_json()
+        self._location = location.to_json()

@@ -31,8 +31,15 @@ class DataManager:
     async def update(self):
         try:
             target_machine_state = self._manager.plugins[Navigator].target_machine_state
-            await self._sio_queue.emit('target_machine_state', target_machine_state.as_json(),
+            await self._sio_queue.emit('target_machine_state', target_machine_state.to_json(),
                                        room='target_machine_state')
-        except CourseNotSetException:
-            # TODO think about way to send errors to frontend
-            print("[ERROR]: CourseNotSetException")
+
+            # handle actions and deliver responses
+            action_responses: list = self._manager.action.handle_actions(amount=10)
+            # send all the responses to the user interface
+            any(map(lambda action_response: await self._sio_queue.emit('action_response', action_response.to_json(),
+                                                                       room=action_response.action.initiator),
+                    action_responses))
+        except Exception as e:
+            # TODO think about way to send errors to frontend -> error class and broadcast room
+            print("[ERROR] Error during update:", e)

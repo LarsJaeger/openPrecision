@@ -4,7 +4,7 @@ import json
 from pyquaternion import Quaternion
 
 
-def _asdict_inner(obj, dict_factory=dict):
+def _todict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
     if dataclasses._is_dataclass_instance(obj):
         result = []
@@ -12,7 +12,7 @@ def _asdict_inner(obj, dict_factory=dict):
             if 'to_json' in list(obj.__dataclass_fields__[f.name].metadata.keys()) and not \
                     obj.__dataclass_fields__[f.name].metadata['to_json']:
                 continue
-            value = _asdict_inner(getattr(obj, f.name), dict_factory)
+            value = _todict_inner(getattr(obj, f.name), dict_factory)
             result.append((f.name, value))
         return dict_factory(result)
     elif isinstance(obj, tuple) and hasattr(obj, '_fields'):
@@ -35,15 +35,15 @@ def _asdict_inner(obj, dict_factory=dict):
         #   namedtuples, we could no longer call asdict() on a data
         #   structure where a namedtuple was used as a dict key.
 
-        return type(obj)(*[_asdict_inner(v, dict_factory) for v in obj])
+        return type(obj)(*[_todict_inner(v, dict_factory) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
+        return type(obj)(_todict_inner(v, dict_factory) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)((_asdict_inner(k, dict_factory),
-                          _asdict_inner(v, dict_factory))
+        return type(obj)((_todict_inner(k, dict_factory),
+                          _todict_inner(v, dict_factory))
                          for k, v in obj.items())
     elif isinstance(obj, Quaternion):
         obj = Quaternion()
@@ -53,8 +53,8 @@ def _asdict_inner(obj, dict_factory=dict):
 
 
 class DataModelBase:
-    def as_json(self):
-        return json.dumps(self.as_dict())
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
-    def as_dict(self) -> dict:
-        return _asdict_inner(self)
+    def to_dict(self) -> dict:
+        return _todict_inner(self)

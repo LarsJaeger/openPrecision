@@ -11,7 +11,7 @@ from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
 
 
-class AHeadingParallelGenerator(CourseGenerator):
+class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
