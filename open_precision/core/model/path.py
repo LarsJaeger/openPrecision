@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -21,7 +21,7 @@ class Path(DataModelBase, PersistenceModelBase):
     id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
 
     priority: Mapped[int] = mapped_column(init=True, default=0)
-    waypoints: list[Waypoint] = field(init=False, default_factory=list)
+    waypoints: List[Waypoint] = field(init=False, default_factory=list)
     _waypoints: Mapped[list[Waypoint]] = relationship(init=False, default_factory=list, repr=False, back_populates='path')
     course_id: Mapped[int] = mapped_column(ForeignKey("Courses.id"), init=False, repr=False, default=None)
     course: Mapped[Course] = relationship(default=None, init=False)

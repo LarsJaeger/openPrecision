@@ -17,6 +17,10 @@ from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.vehicle_manager import VehicleManager
 
 
+def _get_plugin_name_mapping(plugins: dict) -> dict:
+    return {plugin.__name__: plugin for plugin in plugins.keys()}
+
+
 class Manager:
     def __init__(self):
         atexit.register(self._cleanup)
@@ -37,7 +41,7 @@ class Manager:
         self._plugins = {}
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
-
+        self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
         self._user_interface_delivery = UserInterfaceDelivery(self)
         asgi_thread = Thread(target=self._user_interface_delivery.run)
         asgi_thread.start()
@@ -65,6 +69,10 @@ class Manager:
     @property
     def plugins(self) -> dict[object, any]:
         return self._plugins
+
+    @property
+    def plugin_name_mapping(self) -> dict[str, object]:
+        return self._plugin_name_mapping
 
     @property
     def persistence(self) -> PersistenceManager:

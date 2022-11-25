@@ -1,4 +1,8 @@
-from typing import TYPE_CHECKING
+from __future__ import annotations
+
+import json
+from dataclasses import field
+from typing import TYPE_CHECKING, List, Any, Dict
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,6 +12,7 @@ from open_precision.core.model.persistence_model_base import PersistenceModelBas
 if TYPE_CHECKING:
     from open_precision.core.model.action_response import ActionResponse
 
+
 class Action(DataModelBase, PersistenceModelBase):
     __tablename__ = "Actions"
 
@@ -15,7 +20,29 @@ class Action(DataModelBase, PersistenceModelBase):
 
     initiator: Mapped[str] = mapped_column(init=True, default=None)
     function_identifier: Mapped[str] = mapped_column(init=True,
-                                                     default=None)  # consists of the name of the class and the name of the function separated by a dot
-    args: Mapped[list] = mapped_column(init=True, default=None, nullable=True, default_factory=list)
-    kwargs: Mapped[dict] = mapped_column(init=True, default=None, nullable=True, default_factory=dict)
-    action_response_id: Mapped[ActionResponse] = relationship(back_populates="action")
+                                                     default=None)  # consists of the name of the class and the name
+    # of the function separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
+
+    args: List[Any] = field(default_factory=list)
+    _args: Mapped[str] = mapped_column(init=False, default=None, repr=False)  # json of the arguments
+
+    kw_args: Dict[str, Any] = field(default_factory=dict)
+    _kw_args: Mapped[str] = mapped_column(init=False, default=None, repr=False) # json of the keyword arguments
+
+    action_response: Mapped[ActionResponse] = relationship(back_populates="action", init=False, default=None, uselist=False)
+
+    @property
+    def args(self) -> List[Any]:
+        return json.loads(self._args)
+
+    @args.setter
+    def args(self, args: List):
+        self._args = json.dumps(args)
+
+    @property
+    def kw_args(self) -> Dict[Any, Any]:
+        return json.loads(self._kw_args)
+
+    @kw_args.setter
+    def kw_args(self, kw_args: Dict):
+        self._args = json.dumps(kw_args)

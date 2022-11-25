@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
@@ -22,8 +22,8 @@ class Course(DataModelBase, PersistenceModelBase):
 
     name: Mapped[str] = mapped_column(init=True, default=None)
     description: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
-    paths: list[Path] = field(init=False, default_factory=list)
-    _paths: Mapped[list[Path]] = relationship(default_factory=list, back_populates='course')
+    paths: List[Path] = field(init=False, default_factory=list)
+    _paths: Mapped[List[Path]] = relationship(default_factory=list, back_populates='course')
 
     def add_path(self, path: Path):
         # check if Path has at least two waypoints

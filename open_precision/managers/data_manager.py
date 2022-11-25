@@ -37,8 +37,8 @@ class DataManager:
             # handle actions and deliver responses
             action_responses: list = self._manager.action.handle_actions(amount=10)
             # send all the responses to the user interface
-            any(map(lambda action_response: await self._sio_queue.emit('action_response', action_response.to_json(),
-                                                                       room=action_response.action.initiator),
+            any(map(lambda action_response: (await self._sio_queue.emit('action_response', action_response.to_json(),
+                                                                       room=action_response.action.initiator) for _ in '_').__anext__(),
                     action_responses))
         except Exception as e:
             # TODO think about way to send errors to frontend -> error class and broadcast room

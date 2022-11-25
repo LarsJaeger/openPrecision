@@ -51,6 +51,6 @@ class Navigator(Plugin, ABC):
         possible identifiers are: 'a_heading_parallel'"""
         match course_generator_identifier:
             case 'a_heading_parallel':
-                self.course = AHeadingParallelCourseGenerator(self._manager)
+                self.course = AHeadingParallelCourseGenerator(self._manager).generate_course()
             case _:
                 raise ValueError(f'course_generator_identifier {course_generator_identifier} not supported')

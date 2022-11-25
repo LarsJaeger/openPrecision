@@ -52,6 +52,12 @@ class UserInterfaceDelivery:
             print('[INFO] client disconnected with socketid: ', sid)
             self._server.leave_room(sid, 'target_machine_state')
 
+        @self._server.on('action')
+        async def action(sid, data):
+            print('[INFO] action received: ', data)
+            data['initiator'] = sid
+            self._manager.action.queue_action(data)
+
         self._app = socketio.ASGIApp(self._server, static_files=static_files)
 
     def run(self):

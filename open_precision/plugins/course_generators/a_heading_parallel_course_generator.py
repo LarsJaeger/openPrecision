@@ -4,11 +4,14 @@ import numpy as np
 
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
-from open_precision.manager import Manager
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from open_precision.manager import Manager
 
 
 class AHeadingParallelCourseGenerator(CourseGenerator):

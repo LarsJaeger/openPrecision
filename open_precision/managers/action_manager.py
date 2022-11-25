@@ -1,6 +1,7 @@
-import json
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
+import json
 import redis
 
 from open_precision.core.model.action import Action
@@ -44,6 +45,8 @@ class ActionManager:
         obj = self._manager
         len_of_function_identifier_decompose = len(
             function_identifier_decomposed)  # save, so it doesn't have to be calculated every iteration
+        if function_identifier_decomposed[0] == 'plugins' and len_of_function_identifier_decompose > 1:
+            obj = self._manager.plugins[self._manager.plugin_name_mapping[function_identifier_decomposed[1]]]
         for index, identifier in enumerate(function_identifier_decomposed):
             try:
                 obj = getattr(obj, identifier)
@@ -55,7 +58,7 @@ class ActionManager:
                     # execute function
                     success = None
                     try:
-                        return_value = obj(*action.args, **action.kwargs)
+                        return_value = obj(*action.args, **action.kw_args)
                         success = True
                     except Exception as e:
                         return_value = e
