@@ -30,7 +30,6 @@ class ActionManager:
         match action:
             case Action():
                 self._redis.rpush('action', action.to_json())
-
             case str():
                 self._redis.rpush('action', action)
 
@@ -38,7 +37,10 @@ class ActionManager:
                 raise TypeError(f"Action must be of type Action or str (json), not {type(action)}")
 
     def _get_action(self):
-        return Action(**json.loads(self._redis.lpop('action')))
+        json_action = self._redis.lpop('action')
+        print(json_action)
+        action = Action(**json.loads(json_action)) if json_action is not None else None
+        return action
 
     def handle_action(self, action: Action):
         function_identifier_decomposed = action.function_identifier.split('.')
@@ -73,6 +75,8 @@ class ActionManager:
         action_responses = []
         for _ in range(amount):
             action = self._get_action()
+            if action is None:
+                return []
             action_response = self.handle_action(action)
             action_responses.append(action_response)
         return action_responses

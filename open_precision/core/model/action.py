@@ -33,7 +33,7 @@ class Action(DataModelBase, PersistenceModelBase):
 
     @property
     def args(self) -> List[Any]:
-        return json.loads(self._args)
+        return json.loads(self._args) if self._args is not None else []
 
     @args.setter
     def args(self, args: List):
@@ -41,7 +41,7 @@ class Action(DataModelBase, PersistenceModelBase):
 
     @property
     def kw_args(self) -> Dict[Any, Any]:
-        return json.loads(self._kw_args)
+        return json.loads(self._kw_args) if self._kw_args is not None else {}
 
     @kw_args.setter
     def kw_args(self, kw_args: Dict):

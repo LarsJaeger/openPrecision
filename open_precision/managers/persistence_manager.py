@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -71,11 +72,14 @@ class PersistenceManager:
     @staticmethod
     def _prep_for_db(origin_object: object, obj: PersistenceModelBase, parent: PersistenceModelBase = None) -> PersistenceModelBase:
         """prepares an object for the database"""
+        obj = copy.copy(obj)
         if not isinstance(obj, PersistenceModelBase):
             raise TypeError(f"{obj} is not part of the persistence model")
         obj.last_updated = datetime.now()
         obj.last_updated_by = type(origin_object).__name__
         for attr_name in dir(obj):
+            if attr_name[0] == "_" and attr_name[1] != "_":
+                delattr(obj, attr_name)
             # check / run for every attribute of the object
             attr = getattr(obj, attr_name)
             if isinstance(attr, PersistenceModelBase):

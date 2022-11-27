@@ -1,8 +1,8 @@
-//import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
-import * as THREE from 'three';
-//import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import data_model from './data_model.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
+//import * as THREE from 'three';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import {Action} from './data_model.js';
 
 // init app constants
 const colorLight = 0xFFFDFA;
@@ -112,10 +112,8 @@ const socket = io();//("ws://" + window.location.hostname + "/");
 
 document.getElementById("ab_a").onclick = function () {
     // generate Course
-    let action = new data_model.Action();
-    action.function_identifier = 'plugins.Navigator.set_course_from_course_generator';
-    action.kw_args = {'course_generator_identifier': 'a_heading_parallel'};
-    socket.emit("action", action);
+    let action = Action.create({function_identifier: 'plugins.Navigator.set_course_from_course_generator', args : [], kw_args: {'course_generator_identifier': 'a_heading_parallel'}});
+    socket.emit("action", JSON.stringify(action));
     console.log("[INFO]: gen_course sent")
 };
 // action responses

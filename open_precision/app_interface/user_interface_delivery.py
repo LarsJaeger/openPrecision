@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os.path
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -8,6 +9,8 @@ import socketio
 import uvicorn
 from socketio.asyncio_redis_manager import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
+
+from open_precision.core.model.action import Action
 
 if TYPE_CHECKING:
     from open_precision.manager import Manager
@@ -55,7 +58,12 @@ class UserInterfaceDelivery:
         @self._server.on('action')
         async def action(sid, data):
             print('[INFO] action received: ', data)
-            data['initiator'] = sid
+            print(type(data))
+            json_data = json.loads(data)
+            print(json_data)
+            print(type(json_data))
+            data = Action(**json_data)
+            data.initiator = sid
             self._manager.action.queue_action(data)
 
         self._app = socketio.ASGIApp(self._server, static_files=static_files)

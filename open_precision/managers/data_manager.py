@@ -1,5 +1,6 @@
 from __future__ import annotations
 import asyncio
+import traceback
 from typing import TYPE_CHECKING
 
 import socketio
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 
 class DataManager:
     def __init__(self, manager: Manager):
+        self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
 
@@ -24,22 +26,30 @@ class DataManager:
         self._sio_queue = AsyncServer(client_manager=AsyncRedisManager(url),
                                       async_mode='asgi',
                                       cors_allowed_origins="*")
-        while True:
+        while not self._signal_stop:
             await self.update()
             await asyncio.sleep(10)
 
     async def update(self):
         try:
-            target_machine_state = self._manager.plugins[Navigator].target_machine_state
-            await self._sio_queue.emit('target_machine_state', target_machine_state.to_json(),
-                                       room='target_machine_state')
-
             # handle actions and deliver responses
             action_responses: list = self._manager.action.handle_actions(amount=10)
             # send all the responses to the user interface
-            any(map(lambda action_response: (await self._sio_queue.emit('action_response', action_response.to_json(),
-                                                                       room=action_response.action.initiator) for _ in '_').__anext__(),
-                    action_responses))
+            print("action responses: " + str(action_responses))
+
+            for action_response in action_responses:
+                pass
+                await self._sio_queue.emit('action_response', action_response.to_json(),
+                                            room=action_response.action.initiator)
+
+            target_machine_state = self._manager.plugins[Navigator].target_machine_state
+            await self._sio_queue.emit('target_machine_state', target_machine_state.to_json(),
+                                        room='target_machine_state')
+
         except Exception as e:
             # TODO think about way to send errors to frontend -> error class and broadcast room
-            print("[ERROR] Error during update:", e)
+            print("[ERROR] Error during update:" + ''.join(
+                traceback.format_exception(e, value=e, tb=e.__traceback__)))
+
+    async def stop(self):
+        self._signal_stop = True

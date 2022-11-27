@@ -1,11 +1,11 @@
-import { Data } from 'dataclass';
+import { Data } from "https://unpkg.com/dataclass@2?module";
 
 class DataModelBase extends Data{
     *to_json() {
         return JSON.stringify(this);
     }
 }
-class Action extends DataModelBase {
+export class Action extends DataModelBase {
     id;
     initiator;
     function_identifier;

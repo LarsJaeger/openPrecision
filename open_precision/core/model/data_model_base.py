@@ -58,3 +58,7 @@ class DataModelBase:
 
     def to_dict(self) -> dict:
         return _todict_inner(self)
+
+    @classmethod
+    def from_json(cls, json_string: str):
+        return cls(**(json.loads(json_string)))
