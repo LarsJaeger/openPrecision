@@ -18,16 +18,16 @@ if TYPE_CHECKING:
 class Waypoint(DataModelBase, PersistenceModelBase):
     __tablename__ = "Waypoints"
 
-    id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
+    id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
 
-    priority: Mapped[int] = mapped_column(init=True, default=0)  # higher priority = more important
+    priority: Mapped[int] = mapped_column(init=True, default=None)  # higher priority = more important
     # and vice versa
 
-    location: Location | None = field(default=None)
-    _location: Mapped[str] = mapped_column(init=False, default=None)
+    location: Location | None = field(init=True, default=None)
+    _location: Mapped[str] = mapped_column(init=True, default=None)
 
-    path_id: Mapped[int] = mapped_column(ForeignKey("Paths.id"), init=False, default=None, repr=False)
-    path: Mapped[Path] = relationship(default=None, init=False)
+    path_id: Mapped[int] = mapped_column(ForeignKey("Paths.id"), init=True, default=None)
+    path: Mapped[Path] = relationship(init=True, default=None)
 
     @property
     def location(self) -> Location | None:

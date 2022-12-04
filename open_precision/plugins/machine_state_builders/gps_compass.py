@@ -17,7 +17,7 @@ from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_c
 from open_precision.manager import Manager
 from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
-from open_precision.utils import norm_vector
+from open_precision.utils.math import norm_vector
 
 
 class GpsCompassMachineStateBuilder(MachineStateBuilder):

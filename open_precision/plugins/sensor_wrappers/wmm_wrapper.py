@@ -6,7 +6,8 @@ from datetime import datetime
 
 import numpy as np
 from pyquaternion import Quaternion
-from open_precision import utils
+
+import open_precision.utils.other
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
@@ -93,14 +94,14 @@ class WmmWrapper(WorldMagneticModelCalculator):
     def update_values(self):
         if (
             self._last_update is None
-            or utils.millis() - self._last_update >= shortest_update_dt
+            or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
         ):
             self._current_datapoint = self._get_data_point(
                 self._manager.plugins[GlobalPositioningSystem].longitude,
                 self._manager.plugins[GlobalPositioningSystem].latitude,
                 self._manager.plugins[GlobalPositioningSystem].height_above_sea_level,
             )
-            self._last_update = utils.millis()
+            self._last_update = open_precision.utils.other.millis()
 
     def calibrate(self) -> bool:
         """calibrate device, (depending on your implementation also set is_calibrated accordingly) and

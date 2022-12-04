@@ -4,7 +4,7 @@ from math import sqrt
 
 import numpy as np
 
-from open_precision import utils
+import open_precision.utils.math
 from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.navigator import Navigator
@@ -15,7 +15,7 @@ from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
 from open_precision.core.model.waypoint import Waypoint
 from open_precision.managers.persistence_manager import PersistenceManager
-from open_precision.utils import intersections_of_circle_and_line_segment
+from open_precision.utils.math import intersections_of_circle_and_line_segment
 
 
 class PurePursuitNavigator(Navigator):
@@ -110,11 +110,11 @@ class PurePursuitNavigator(Navigator):
                 # check for the waypoint closest to lookahead
                 if waypoint_base_id is None:
                     waypoint_base_id = waypoint_id
-                    nearest_waypoint_distance = utils.calc_distance(current_position.location,
-                                                                    waypoint.location)
+                    nearest_waypoint_distance = open_precision.utils.math.calc_distance(current_position.location,
+                                                                                        waypoint.location)
                 else:
-                    waypoint_distance = utils.calc_distance(current_position.location,
-                                                            waypoint.location)
+                    waypoint_distance = open_precision.utils.math.calc_distance(current_position.location,
+                                                                                waypoint.location)
                     if waypoint_distance < nearest_waypoint_distance:
                         waypoint_base_id = waypoint_id
                         nearest_waypoint_distance = waypoint_distance
@@ -199,7 +199,7 @@ class PurePursuitNavigator(Navigator):
         # rotation from global to vehicle reference system
         back_rotation = pos1.orientation.inverse
         # norm target_direction_vector
-        target_direction_vector = utils.norm_vector((waypoint_target.location - waypoint_base.location).to_numpy())
+        target_direction_vector = open_precision.utils.math.norm_vector((waypoint_target.location - waypoint_base.location).to_numpy())
         # calc *horizontal* heading error; horizon is a plane that has the vector of pos1 as a normal vector
         relative_orientation_vector = back_rotation.rotate(waypoint_target.location.to_numpy()) \
                                       - back_rotation.rotate(waypoint_base.location.to_numpy())
@@ -225,12 +225,12 @@ class PurePursuitNavigator(Navigator):
                             target_direction_vector: np.array) -> float:
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
         # calculate offset:
-        offset_error = utils.calc_distance(pos1.location, target_location)
+        offset_error = open_precision.utils.math.calc_distance(pos1.location, target_location)
         return self._calc_combined_error(offset_error, pos1, target_direction_vector)
 
     def calc_line_error(self, pos1: Position, waypoint_base: Waypoint, waypoint_target: Waypoint) -> float:
         """ returns a value that becomes bigger the more effort it takes to reach a certain position. """
         # calculate offset:
-        offset_error = utils.calc_distance_to_line(pos1.location, waypoint_base.location,
-                                                   (waypoint_target.location - waypoint_base.location).to_numpy())
+        offset_error = open_precision.utils.math.calc_distance_to_line(pos1.location, waypoint_base.location,
+                                                                       (waypoint_target.location - waypoint_base.location).to_numpy())
         return self._calc_combined_error(offset_error, pos1, waypoint_base, waypoint_target)

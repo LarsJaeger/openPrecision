@@ -20,7 +20,7 @@ class Course(DataModelBase, PersistenceModelBase):
     """ A course consists of paths that contain waypoints"""
     id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
 
-    name: Mapped[str] = mapped_column(init=True, default=None)
+    name: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
     description: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
     paths: List[Path] = field(init=True, default_factory=list)
     _paths: Mapped[List[Path]] = relationship(init=True, default_factory=list, back_populates='course')

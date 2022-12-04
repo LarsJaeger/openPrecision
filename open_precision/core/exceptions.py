@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from open_precision.core.plugin_base_classes.navigator import Navigator
@@ -50,3 +50,22 @@ class CourseNotSetException(PluginException):
 
     def __str__(self):
         return f'Course of navigator {self.navigator} is None / has not been set'
+
+class InvalidValueException(PluginException):
+    """raised when a value is invalid"""
+
+    def __init__(self, value: Any, value_rule: str = None):
+        """
+        :param value: the invalid value
+        :param value_rule: a string describing the rule that the value must follow
+        """
+        self.value = value
+        self.value_rule = value_rule
+
+    def __str__(self):
+        if self.value_rule is None:
+            return f'value {self.value} of type {type(self.value)} is invalid'
+        else:
+            return f'value {self.value} of type {type(self.value)} is invalid. Value rule: {self.value_rule}'
+
+
