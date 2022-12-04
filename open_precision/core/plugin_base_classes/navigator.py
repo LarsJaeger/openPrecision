@@ -46,7 +46,7 @@ class Navigator(Plugin, ABC):
         pass
 
     @ActionManager.enable_action
-    def set_course_from_generator(self, course_generator_identifier: str = 'a_heading_parallel'):
+    def set_course_from_course_generator(self, course_generator_identifier: str = 'a_heading_parallel'):
         """sets the course generator to the one with the given identifier,
         possible identifiers are: 'a_heading_parallel'"""
         match course_generator_identifier:

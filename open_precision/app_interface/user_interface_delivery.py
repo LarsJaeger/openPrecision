@@ -58,11 +58,11 @@ class UserInterfaceDelivery:
         @self._server.on('action')
         async def action(sid, data):
             print('[INFO] action received: ', data)
-            print(type(data))
-            json_data = json.loads(data)
-            print(json_data)
-            print(type(json_data))
-            data = Action(**json_data)
+            try:
+                data = Action.from_json(data)
+            except Exception as e:
+                print(f'[ERROR]: {e}, while parsing action {data}')
+                return
             data.initiator = sid
             self._manager.action.queue_action(data)
 

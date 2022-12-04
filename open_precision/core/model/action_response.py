@@ -11,11 +11,11 @@ from open_precision.core.model.persistence_model_base import PersistenceModelBas
 class ActionResponse(DataModelBase, PersistenceModelBase):
     __tablename__ = "ActionResponses"
 
-    id: Mapped[int] = mapped_column(init=False, primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(init=True, primary_key=True, default=None)
 
-    action_id: Mapped[int] = mapped_column(ForeignKey("Actions.id"), init=False, repr=False, nullable=False)
-    action: Mapped[Action] = relationship(init=True, back_populates="action_response")
+    action_id: Mapped[int] = mapped_column(ForeignKey("Actions.id"), init=True, repr=False, default=None, nullable=True)
+    action: Mapped[Action] = relationship(init=True, default=None, back_populates='action_response')
 
-    success: Mapped[bool] = mapped_column(init=True, nullable=False)
+    success: Mapped[bool] = mapped_column(init=True, default=None, nullable=True)
 
     response: Mapped[str] = mapped_column(init=True, default=None, nullable=True)  # json of either the return value or the exception

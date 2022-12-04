@@ -127,10 +127,20 @@ function updateTargetMachineState(data){
 }
 
 socket.on("target_machine_state", (data) => {
-    console.log("[INFO]: (target_machine_state): Received message: " + data); //TODO remove
     updateTargetMachineState(JSON.parse(data));
     console.log("[INFO]: (target_machine_state): Received message: " + data);
 });
+
+// course
+function updateCourse(data){
+    console.log("steering_angle: " + data.steering_angle);
+}
+
+socket.on("course", (data) => {
+    updateCourse(JSON.parse(data));
+    console.log("[INFO]: (course): Received message: " + data);
+});
+
 
 // position
 function updatePosition(data) {

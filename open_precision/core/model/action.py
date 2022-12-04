@@ -4,6 +4,7 @@ import json
 from dataclasses import field
 from typing import TYPE_CHECKING, List, Any, Dict
 
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from open_precision.core.model.data_model_base import DataModelBase
@@ -16,20 +17,20 @@ if TYPE_CHECKING:
 class Action(DataModelBase, PersistenceModelBase):
     __tablename__ = "Actions"
 
-    id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
+    id: Mapped[int] = mapped_column(init=True, primary_key=True, default=None)
 
-    initiator: Mapped[str] = mapped_column(init=True, default=None)
+    initiator: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
     function_identifier: Mapped[str] = mapped_column(init=True,
                                                      default=None)  # consists of the name of the class and the name
     # of the function separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
 
-    args: List[Any] = field(default_factory=list)
-    _args: Mapped[str] = mapped_column(init=False, default=None, repr=False)  # json of the arguments
+    args: List[Any] = field(init=True, default_factory=list)
+    _args: Mapped[str] = mapped_column(init=True, default=None, repr=False, nullable=True)  # json of the arguments
 
-    kw_args: Dict[str, Any] = field(default_factory=dict)
-    _kw_args: Mapped[str] = mapped_column(init=False, default=None, repr=False) # json of the keyword arguments
+    kw_args: Dict[str, Any] = field(init=True, default_factory=dict)
+    _kw_args: Mapped[str] = mapped_column(init=True, default=None, repr=False, nullable=True) # json of the keyword arguments
 
-    action_response: Mapped[ActionResponse] = relationship(back_populates="action", init=False, default=None, uselist=False)
+    action_response: Mapped[ActionResponse] = relationship(init=True, default=None, repr=False, uselist=False, back_populates='action')
 
     @property
     def args(self) -> List[Any]:

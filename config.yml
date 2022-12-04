@@ -17,8 +17,8 @@ PluginManager:
     Navigator:
     - PurePursuitNavigator
     PositionBuilder:
-    - GpsAosPositionBuilder
-    - GpsCompassPositionBuilder
+    - GpsAosMachineStateBuilder
+    - GpsCompassMachineStateBuilder
     UserInterface:
     - FlaskWebUI
     AbsoluteOrientationSensor:
@@ -34,8 +34,8 @@ PluginManager:
     Plugin:
     - AHeadingParallelGenerator
     - PurePursuitNavigator
-    - GpsAosPositionBuilder
-    - GpsCompassPositionBuilder
+    - GpsAosMachineStateBuilder
+    - GpsCompassMachineStateBuilder
     - AOSDummySensor
     - Bno055AosAdapter
     - GPSDummySensor

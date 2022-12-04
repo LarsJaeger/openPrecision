@@ -4,9 +4,8 @@ import copy
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-import redis
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session, registry
+from sqlalchemy.orm import sessionmaker, registry
 
 from open_precision.core.model.persistence_model_base import PersistenceModelBase
 
@@ -56,7 +55,7 @@ class PersistenceManager:
         self._manager = manager
         # init persistent relational db
         self._engine = create_engine('sqlite:///data.sqlite',
-                                     echo=True)
+                                     echo=False)
         self._map_orm()
         self._session_maker = sessionmaker(bind=self._engine)
         self._session = self._session_maker()
@@ -66,20 +65,17 @@ class PersistenceManager:
         # register every model class
         for cls in subclasses_recursive(PersistenceModelBase):
             print(f"[INFO]: mapping class {cls.__name__}")
-            mapper_registry.mapped_as_dataclass(cls)
+            mapper_registry.mapped_as_dataclass(cls, kw_only=True)
         mapper_registry.metadata.create_all(bind=self._engine)
 
     @staticmethod
     def _prep_for_db(origin_object: object, obj: PersistenceModelBase, parent: PersistenceModelBase = None) -> PersistenceModelBase:
-        """prepares an object for the database"""
-        obj = copy.copy(obj)
+        """prepares an object for the database TODO: try replacing with a cascade action"""
         if not isinstance(obj, PersistenceModelBase):
             raise TypeError(f"{obj} is not part of the persistence model")
         obj.last_updated = datetime.now()
         obj.last_updated_by = type(origin_object).__name__
         for attr_name in dir(obj):
-            if attr_name[0] == "_" and attr_name[1] != "_":
-                delattr(obj, attr_name)
             # check / run for every attribute of the object
             attr = getattr(obj, attr_name)
             if isinstance(attr, PersistenceModelBase):

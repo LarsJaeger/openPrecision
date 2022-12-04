@@ -21,10 +21,10 @@ class Path(DataModelBase, PersistenceModelBase):
     id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
 
     priority: Mapped[int] = mapped_column(init=True, default=0)
-    waypoints: List[Waypoint] = field(init=False, default_factory=list)
-    _waypoints: Mapped[list[Waypoint]] = relationship(init=False, default_factory=list, repr=False, back_populates='path')
-    course_id: Mapped[int] = mapped_column(ForeignKey("Courses.id"), init=False, repr=False, default=None)
-    course: Mapped[Course] = relationship(default=None, init=False)
+    waypoints: List[Waypoint] = field(init=True, default_factory=list)
+    _waypoints: Mapped[list[Waypoint]] = relationship(init=True, default_factory=list, repr=False, back_populates='path')
+    course_id: Mapped[int] = mapped_column(ForeignKey("Courses.id"), init=True, repr=False, default=None)
+    course: Mapped[Course] = relationship(default=None, init=True, uselist=False, back_populates='paths')
 
     def add_waypoint(self, waypoint: Waypoint) -> Path:
         waypoint.path = self

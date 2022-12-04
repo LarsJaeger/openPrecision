@@ -8,7 +8,7 @@ from open_precision import utils
 from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.navigator import Navigator
-from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.manager import Manager
 from open_precision.core.model.course import Course
 from open_precision.core.model.position import Position
@@ -53,7 +53,7 @@ class PurePursuitNavigator(Navigator):
         # what's following now is a lot of spaghetti code
         if self._course is None:
             raise CourseNotSetException(self)
-        current_position = self._manager.plugins[PositionBuilder].current_position
+        current_position = self._manager.plugins[MachineStateBuilder].current_position
         waypoint_base_id = None
 
         if self._current_path_id is None:

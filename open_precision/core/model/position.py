@@ -24,7 +24,7 @@ class Position(DataModelBase, PersistenceModelBase):
     _location: Mapped[str] = mapped_column(init=False, default=None, repr=False)
 
     orientation: Orientation | None = field(default=None)
-    _orientation: Mapped[str] = mapped_column(init=False, default=None)
+    _orientation: Mapped[str] = mapped_column(init=False, default=None, repr=False)
 
     @property
     def location(self) -> Location | None:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from open_precision.core.model.orientation import Orientation
-from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
@@ -16,7 +16,7 @@ from open_precision.core.model.location import Location
 from open_precision.managers.persistence_manager import PersistenceManager
 
 
-class GpsAosPositionBuilder(PositionBuilder):
+class GpsAosMachineStateBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 

@@ -20,6 +20,9 @@ class DataManager:
         self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
+        self._data_update_mapping = {"target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
+                                     "course": lambda: self._manager.plugins[Navigator].course,
+                                     ""}
 
     async def start_update_loop(self):
         url = 'redis://redis:6379'
@@ -35,16 +38,15 @@ class DataManager:
             # handle actions and deliver responses
             action_responses: list = self._manager.action.handle_actions(amount=10)
             # send all the responses to the user interface
-            print("action responses: " + str(action_responses))
-
             for action_response in action_responses:
                 pass
                 await self._sio_queue.emit('action_response', action_response.to_json(),
                                             room=action_response.action.initiator)
 
-            target_machine_state = self._manager.plugins[Navigator].target_machine_state
-            await self._sio_queue.emit('target_machine_state', target_machine_state.to_json(),
-                                        room='target_machine_state')
+            # send current states to the user interface
+            for key, fn in self._data_update_mapping.items():
+                await self._sio_queue.emit(key, fn().to_json(),
+                                           room=key)
 
         except Exception as e:
             # TODO think about way to send errors to frontend -> error class and broadcast room

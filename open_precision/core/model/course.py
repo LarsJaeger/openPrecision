@@ -18,12 +18,12 @@ class Course(DataModelBase, PersistenceModelBase):
     __tablename__ = "Courses"
 
     """ A course consists of paths that contain waypoints"""
-    id: Mapped[int] = mapped_column(init=False, default=None, primary_key=True)
+    id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
 
     name: Mapped[str] = mapped_column(init=True, default=None)
     description: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
-    paths: List[Path] = field(init=False, default_factory=list)
-    _paths: Mapped[List[Path]] = relationship(default_factory=list, back_populates='course')
+    paths: List[Path] = field(init=True, default_factory=list)
+    _paths: Mapped[List[Path]] = relationship(init=True, default_factory=list, back_populates='course')
 
     def add_path(self, path: Path):
         # check if Path has at least two waypoints
@@ -40,13 +40,13 @@ class Course(DataModelBase, PersistenceModelBase):
     def paths(self, paths: list[Path]):
         if isinstance(paths, list):
             for path in paths:
-                self._check_path(path)
+                self._check_path(path=path)
                 path.course = self
             self._paths = paths
         else:
             self._paths = []
 
     @staticmethod
-    def _check_path(self, path: Path):
+    def _check_path(path: Path):
         if len(path.waypoints) < 2:
             raise NotAPathException(path)

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from open_precision.manager import Manager
 
 
-class PositionBuilder(Plugin, ABC):
+class MachineStateBuilder(Plugin, ABC):
     @abstractmethod
     def __init__(self, manager: Manager):
         # self._manager = manager

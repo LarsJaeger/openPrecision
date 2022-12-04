@@ -2,7 +2,7 @@
 # change 'template' to python file name of file to be tested
 import unittest
 
-from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.manager import Manager
 
 
@@ -28,7 +28,7 @@ class TestPositionBuilder(unittest.TestCase):
             while True:
                 counter += 1
                 print("a")
-                print(f"pos {counter}: {man.plugins[PositionBuilder].current_position}")
+                print(f"pos {counter}: {man.plugins[MachineStateBuilder].current_position}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 
