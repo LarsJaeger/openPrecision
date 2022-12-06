@@ -3,15 +3,18 @@ from __future__ import annotations
 import numpy as np
 
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
-from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
-from open_precision.manager import Manager
-from open_precision.core.model.data.course import Course
-from open_precision.core.model.data.path import Path
-from open_precision.core.model.data.position import Position
-from open_precision.core.model.data.waypoint import Waypoint
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
+from open_precision.core.model.course import Course
+from open_precision.core.model.path import Path
+from open_precision.core.model.position import Position
+from open_precision.core.model.waypoint import Waypoint
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from open_precision.manager import Manager
 
 
-class AHeadingParallelGenerator(CourseGenerator):
+class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
@@ -22,9 +25,9 @@ class AHeadingParallelGenerator(CourseGenerator):
         # get position
         # input('press enter to set first position')
         print("[INFO]: course generation started")
-        base_position: Position = self.man.plugins[PositionBuilder].current_position
+        base_position: Position = self.man.plugins[MachineStateBuilder].current_position
         while not base_position.is_valid():
-            base_position: Position = self.man.plugins[PositionBuilder].current_position
+            base_position: Position = self.man.plugins[MachineStateBuilder].current_position
             print("invalid_position")
         # get user input for working width
         # TODO get user input or read from config

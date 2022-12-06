@@ -1,5 +1,8 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
+//import * as THREE from 'three';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import {Action} from './data_model.js';
 
 // init app constants
 const colorLight = 0xFFFDFA;
@@ -105,31 +108,54 @@ function renderCourse(course) {
     }
 }
 
-requestAnimationFrame(render);
-// starting the connection to the backend
-var ws = new WebSocket("ws://localhost:8000/app_data");
-console.log('waiting for connection');
+const socket = io();//("ws://" + window.location.hostname + "/");
 
-ws.onopen = function(event) {
-    console.log('[open] Connection established');
-    ws.send('');
+document.getElementById("ab_a").onclick = function () {
+    // generate Course
+    let action = Action.create({function_identifier: 'plugins.Navigator.set_course_from_course_generator', args : [], kw_args: {'course_generator_identifier': 'a_heading_parallel'}});
+    socket.emit("action", JSON.stringify(action));
+    console.log("[INFO]: gen_course sent")
+};
+// action responses
+socket.on("action_response", (data) => {
+   console.log("[INFO]: action_response received: " + data);
+});
+
+// target_machine_state
+function updateTargetMachineState(data){
+    console.log("steering_angle: " + data.steering_angle);
 }
 
-ws.onmessage = function(event) {
-    console.log(event.data);
-    renderCourse(JSON.parse(event.data));
-    console.log("finished rendering")
-};
+socket.on("target_machine_state", (data) => {
+    updateTargetMachineState(JSON.parse(data));
+    console.log("[INFO]: (target_machine_state): Received message: " + data);
+});
 
-ws.onclose = function(event) {
-  if (event.wasClean) {
-    console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-  } else {
-    alert('[close] Connection died');
-  }
-};
+// course
+function updateCourse(data){
+    console.log("steering_angle: " + data.steering_angle);
+}
 
-ws.onerror = function(error) {
-  alert(`[error] ${error.message}`);
-};
+socket.on("course", (data) => {
+    updateCourse(JSON.parse(data));
+    console.log("[INFO]: (course): Received message: " + data);
+});
 
+
+// position
+function updateMachineState(data) {
+    console.log(data);
+    pointer.position.x = data.position.location.x;
+    pointer.position.y = data.position.location.y;
+    pointer.position.z = data.position.location.z;
+    pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
+}
+
+socket.io.on("machine_state", (data) => {
+    updateMachineState(JSON.parse(data));
+    console.log("[INFO]: (machine_state): Received message: " + data);
+});
+
+
+// request first frame
+requestAnimationFrame(render);

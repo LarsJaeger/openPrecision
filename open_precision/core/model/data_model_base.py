@@ -1,16 +1,18 @@
 import dataclasses
+import datetime
 import json
 
+from pyquaternion import Quaternion
 
-def _asdict_inner(obj, dict_factory=dict):
+
+def _todict_inner(obj, dict_factory=dict):
     # borrowed from module dataclasses with slight modifications
     if dataclasses._is_dataclass_instance(obj):
         result = []
         for f in dataclasses.fields(obj):
-            if 'to_json' in list(obj.__dataclass_fields__[f.name].metadata.keys()) and not \
-                    obj.__dataclass_fields__[f.name].metadata['to_json']:
+            if not obj.__dataclass_fields__[f.name].repr:
                 continue
-            value = _asdict_inner(getattr(obj, f.name), dict_factory)
+            value = _todict_inner(getattr(obj, f.name), dict_factory)
             result.append((f.name, value))
         return dict_factory(result)
     elif isinstance(obj, tuple) and hasattr(obj, '_fields'):
@@ -33,24 +35,48 @@ def _asdict_inner(obj, dict_factory=dict):
         #   namedtuples, we could no longer call asdict() on a data
         #   structure where a namedtuple was used as a dict key.
 
-        return type(obj)(*[_asdict_inner(v, dict_factory) for v in obj])
+        return type(obj)(*[_todict_inner(v, dict_factory) for v in obj])
     elif isinstance(obj, (list, tuple)):
         # Assume we can create an object of this type by passing in a
         # generator (which is not true for namedtuples, handled
         # above).
-        return type(obj)(_asdict_inner(v, dict_factory) for v in obj)
+        return type(obj)(_todict_inner(v, dict_factory) for v in obj)
     elif isinstance(obj, dict):
-        return type(obj)((_asdict_inner(k, dict_factory),
-                          _asdict_inner(v, dict_factory))
+        return type(obj)((_todict_inner(k, dict_factory),
+                          _todict_inner(v, dict_factory))
                          for k, v in obj.items())
+    elif isinstance(obj, Quaternion):
+        obj = Quaternion()
+        return {'x': obj.x, 'y': obj.y, 'z': obj.z, 'w': obj.w}
     else:
         return dataclasses.copy.deepcopy(obj)
 
 
+def _json_defaults(obj) -> str:
+    if isinstance(obj, datetime.datetime):
+        return obj.isoformat()
+    else:
+        raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+
+
 class DataModelBase:
+    def to_json(self):
+        return json.dumps(self.to_dict(), default=_json_defaults)
 
-    def as_json(self):
-        return json.dumps(self.as_dict())
+    def to_dict(self) -> dict:
+        return _todict_inner(self)
 
-    def as_dict(self) -> dict:
-        return _asdict_inner(self)
+    @classmethod
+    def from_json(cls, json_string: str):
+        """creates a new instance of the class from a json string"""
+        if json_string is None:
+            raise TypeError('json_string must not be None')
+
+        # do some manual assignments due to dataclasses not supporting initialization of inherited classes
+        json_obj = json.loads(json_string)
+        # remove all attrs that have an underscore attr (e.g. args is removed if _args exists)
+        for key in json_obj.items():
+            if key[0] == "_":
+                json_obj.pop(key[1:])
+        obj = cls(**json_obj)
+        return obj

@@ -1,23 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
-from sqlalchemy import Column, Float, Integer, ForeignKey
 
-from open_precision.core.model.data.data_model_base import DataModelBase
+from open_precision.core.model.data_model_base import DataModelBase
 
 
 @dataclass
 class Location(DataModelBase):
-    id: int | None = field(init=False, default=None)
-    position_id = Column(ForeignKey('Positions.id'))
-    waypoint_id = Column(ForeignKey('Waypoints.id'))
-
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
     z: float  # ECEF Z coordinate in meters
-    error: float | None  # position accuracy in meters
+    error: float  # position accuracy in meters
 
     def is_valid(self):
         return None not in [self.x, self.y, self.z]

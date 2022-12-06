@@ -43,7 +43,7 @@ class ConfigManager:
         self._save_config_file()  # TODO possibly cache and save
         return self
 
-    def get_value(self, origin_object: object, key: str) -> any | dict:
+    def get_value(self, origin_object: object, key: str) -> any:
         """returns value of key from origin_object's config"""
         address = type(origin_object).__name__
         if key is not None:
@@ -61,10 +61,12 @@ class ConfigManager:
     def _load_config_file(self):
         print("[LOG]: loading config file")
         with open(self._config_path) as config_file_stream:
+            print("test")
+            print([line for line in config_file_stream.readlines()])
             self._config = YAML().load(stream=config_file_stream)
         self._config = CommentedMap() if self._config is None else self._config
 
     def _save_config_file(self):
         print("[LOG]: saving config file")
-        with open(self._config_path, "r+") as config_file_stream:
+        with open(self._config_path, "w") as config_file_stream:
             YAML().dump(self._config, stream=config_file_stream)

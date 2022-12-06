@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import atexit
 import numpy as np
+
+import open_precision.utils.other
 from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
     InertialMeasurementUnit,
 )
 import qwiic_icm20948
-from open_precision import utils
 from open_precision.core.exceptions import SensorNotConnectedException
 from open_precision.manager import Manager
 
@@ -72,10 +73,10 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
     def update_values(self):
         if (
             self._last_update is None
-            or utils.millis() - self._last_update >= shortest_update_dt
+            or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
         ):
             self.imu.getAgmt()
-            self._last_update = utils.millis()
+            self._last_update = open_precision.utils.other.millis()
 
     def retrieve_scaled_acceleration(self):
         if self.imu.dataReady():
