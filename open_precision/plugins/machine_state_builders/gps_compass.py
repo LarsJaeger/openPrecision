@@ -13,6 +13,7 @@ from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_s
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
 from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
@@ -23,9 +24,6 @@ from open_precision.utils.math import norm_vector
 
 
 class GpsCompassPositionBuilder(MachineStateBuilder):
-    @property
-    def machine_state(self) -> MachineState | None:
-        pass
 
     def cleanup(self):
         pass
@@ -39,7 +37,7 @@ class GpsCompassPositionBuilder(MachineStateBuilder):
     def current_position(self) -> Position | None:
         uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
         gravity_vector: np.array = self._manager.plugins[AbsoluteOrientationSensor].gravity
-        mag_real_vector: np.array = self._manager.plugins[AbsoluteOrientationSensor].scaled_magnetometer
+        mag_real_vector: np.array = self._manager.plugins[InertialMeasurementUnit].scaled_magnetometer
         mag_wmm_vector: np.array = self._manager.plugins[WorldMagneticModelCalculator].field_vector
         gravity_model_vector = np.array([0.0, 0.0, -1.0])
 

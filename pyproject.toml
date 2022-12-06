@@ -21,6 +21,7 @@ sqlalchemy = {git = "https://github.com/sqlalchemy/sqlalchemy.git", rev = "main"
 aioredis = "^2.0.1"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
+sparkfun-ublox-gps = {git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git"}
 
 [tool.poetry.dev-dependencies]
 

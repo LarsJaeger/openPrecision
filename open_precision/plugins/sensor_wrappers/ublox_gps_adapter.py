@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import atexit
 import os
-import serial
-import externalTools.ublox_gps_fixed as ublox_gps
-import open_precision.utils.other
-from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
-    GlobalPositioningSystem,
-)
-from open_precision.manager import Manager
+from typing import TYPE_CHECKING
 
+import serial
+#import externalTools.ublox_gps_fixed as ublox_gps
+import open_precision.utils.other
 from open_precision.core.model.location import Location
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
+
+if TYPE_CHECKING:
+    from open_precision.manager import Manager
 
 shortest_update_dt = 100  # in ms
 
@@ -43,8 +44,8 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
     def update_values(self):
         if (
-            self._last_update is None
-            or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
+                self._last_update is None
+                or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
         ):
             self._message = self.gps.hp_geo_coords_ecef()
             print("message: " + str(self._message))

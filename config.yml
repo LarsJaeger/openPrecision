@@ -1,26 +1,35 @@
 VehicleManager:
   vehicles:
-    id: 0
-    name: example_vehicle
-    turn_radius_left: 69.1
-    turn_radius_right: 70.3
-    wheelbase: 3.2
+  - name: example_vehicle
     gps_receiver_offset:
     - 1
     - 2
     - 3
+    turn_radius_right: 70.3
+    turn_radius_left: 69.1
+    wheelbase: 3.2
   current_vehicle_id: 0
 PluginManager:
   loading_priority:
     CourseGenerator:
-    - AHeadingParallelGenerator
+    - AHeadingParallelCourseGenerator
+    MachineStateBuilder:
+    - GpsAosPositionBuilder
+    - GpsCompassPositionBuilder
     Navigator:
     - PurePursuitNavigator
-    PositionBuilder:
-    - GpsAosMachineStateBuilder
-    - GpsCompassMachineStateBuilder
-    UserInterface:
-    - FlaskWebUI
+    Plugin:
+    - AHeadingParallelCourseGenerator
+    - PurePursuitNavigator
+    - AOSDummySensor
+    - Bno055AosAdapter
+    - GPSDummySensor
+    - IMUDummySensor
+    - SparkfunIcm20948Adapter
+    - UbloxGPSAdapter
+    - WmmWrapper
+    - GpsAosPositionBuilder
+    - GpsCompassPositionBuilder
     AbsoluteOrientationSensor:
     - AOSDummySensor
     - Bno055AosAdapter
@@ -28,24 +37,7 @@ PluginManager:
     - GPSDummySensor
     - UbloxGPSAdapter
     InertialMeasurementUnit:
+    - IMUDummySensor
     - SparkfunIcm20948Adapter
     WorldMagneticModelCalculator:
     - WmmWrapper
-    Plugin:
-    - AHeadingParallelGenerator
-    - PurePursuitNavigator
-    - GpsAosMachineStateBuilder
-    - GpsCompassMachineStateBuilder
-    - AOSDummySensor
-    - Bno055AosAdapter
-    - GPSDummySensor
-    - SparkfunIcm20948Adapter
-    - WmmWrapper
-    - FlaskWebUI
-    MessageType: []
-    UserInterfaceBase:
-    - FastAPIUserInterface
-SparkfunIcm20948Adapter:
-  magnetometer_bias:
-WmmWrapper:
-  wmm_bin_path: example/wmm/bin/path

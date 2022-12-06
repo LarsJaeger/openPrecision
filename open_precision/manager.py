@@ -42,6 +42,8 @@ class Manager:
         for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
             self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
         self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
+
+        # starting user interface
         self._user_interface_delivery = UserInterfaceDelivery(self)
         asgi_thread = Thread(target=self._user_interface_delivery.run)
         asgi_thread.start()
