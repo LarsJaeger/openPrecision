@@ -27,7 +27,6 @@ class MachineStateBuilder(Plugin, ABC):
     @abstractmethod
     @PersistenceManager.persist_return
     def machine_state(self) -> MachineState | None:
-        # TODO: implement
         return self.current_position
 
     @property

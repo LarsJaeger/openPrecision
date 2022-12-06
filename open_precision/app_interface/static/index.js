@@ -143,17 +143,17 @@ socket.on("course", (data) => {
 
 
 // position
-function updatePosition(data) {
+function updateMachineState(data) {
     console.log(data);
-    pointer.position.x = data.location.x;
-    pointer.position.y = data.location.y;
-    pointer.position.z = data.location.z;
-    pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w));
+    pointer.position.x = data.position.location.x;
+    pointer.position.y = data.position.location.y;
+    pointer.position.z = data.position.location.z;
+    pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
 }
 
-socket.io.on("position", (data) => {
-    updatePosition(JSON.parse(data));
-    console.log("[INFO]: (position): Received message: " + data);
+socket.io.on("machine_state", (data) => {
+    updateMachineState(JSON.parse(data));
+    console.log("[INFO]: (machine_state): Received message: " + data);
 });
 
 

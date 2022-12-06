@@ -4,6 +4,8 @@ import math
 
 import numpy as np
 from pyquaternion import Quaternion
+
+from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
@@ -20,7 +22,11 @@ from open_precision.core.model.location import Location
 from open_precision.utils.math import norm_vector
 
 
-class GpsCompassMachineStateBuilder(MachineStateBuilder):
+class GpsCompassPositionBuilder(MachineStateBuilder):
+    @property
+    def machine_state(self) -> MachineState | None:
+        pass
+
     def cleanup(self):
         pass
 

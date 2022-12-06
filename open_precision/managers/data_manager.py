@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from socketio.asyncio_redis_manager import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
 
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
 if TYPE_CHECKING:
@@ -18,7 +19,9 @@ class DataManager:
         self._manager = manager
         self._sio_queue = None
         self._data_update_mapping = {"target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
-                                     "course": lambda: self._manager.plugins[Navigator].course}
+                                     "course": lambda: self._manager.plugins[Navigator].course,
+                                     "machine_state": lambda: self._manager.plugins[MachineStateBuilder].machine_state,
+                                     }
 
     async def start_update_loop(self):
         url = 'redis://redis:6379'

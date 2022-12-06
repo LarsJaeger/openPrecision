@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 
+from open_precision.core.model.machine_state import MachineState
 from open_precision.core.model.orientation import Orientation
+from open_precision.core.plugin_base_classes.position_builder import PositionBuilder
+
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
@@ -17,7 +20,11 @@ from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.utils.validation import validate_value
 
 
-class GpsAosMachineStateBuilder(MachineStateBuilder):
+class GpsAosPositionBuilder(MachineStateBuilder):
+    @property
+    def machine_state(self) -> MachineState | None:
+        return MachineState(steering_angle=0, position=self.current_position, speed=0)
+
     def cleanup(self):
         pass
 
