@@ -379,7 +379,7 @@ develop = false
 [package.source]
 type = "git"
 url = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git"
-reference = "HEAD"
+reference = "master"
 resolved_reference = "cd1581277b89e16eae8e53d5d1db49663d69c95d"
 
 [[package]]
@@ -392,7 +392,7 @@ python-versions = "*"
 
 [[package]]
 name = "SQLAlchemy"
-version = "2.0.0b2.dev0"
+version = "2.0.0b5.dev0"
 description = "Database Abstraction Library"
 category = "main"
 optional = false
@@ -401,14 +401,14 @@ develop = false
 
 [package.dependencies]
 greenlet = {version = "!=0.4.17", markers = "platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\""}
-typing-extensions = ">=4.1.0"
+typing-extensions = ">=4.2.0"
 
 [package.extras]
 aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
 aiosqlite = ["aiosqlite", "greenlet (!=0.4.17)", "typing_extensions (!=3.10.0.1)"]
 asyncio = ["greenlet (!=0.4.17)"]
 asyncmy = ["asyncmy (>=0.2.3,!=0.2.4)", "greenlet (!=0.4.17)"]
-mariadb-connector = ["mariadb (>=1.0.1,!=1.1.2)"]
+mariadb-connector = ["mariadb (>=1.0.1,!=1.1.2,!=1.1.5)"]
 mssql = ["pyodbc"]
 mssql-pymssql = ["pymssql"]
 mssql-pyodbc = ["pyodbc"]
@@ -466,7 +466,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "54ac57db78e534454718ff880fce2e276dcbd94cd462e61d5b839c162a5715cd"
+content-hash = "da3e4c0ffc00d82b0c63f4ac41d169aaeb91089ea9f0303065ee3d65b5b3c502"
 
 [metadata.files]
 adafruit-blinka = [
