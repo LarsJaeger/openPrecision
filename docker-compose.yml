@@ -1,8 +1,8 @@
 version: "3.9"  # optional since v1.27.0
 services:
   open_precision:
-    build: .
-    image: open_precision
+    # build: .
+    image: larsjaeger/open_precision
     restart: always
     ports:
       - "8000:8000"

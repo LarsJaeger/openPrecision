@@ -1,11 +1,11 @@
-FROM python:3 as base
+# FROM --platform=$BUILDPLATFORM python:3-alpine as dependency_loader
+# because of missing wheels for some arm architectures, the platform is set to linux/amd64
+FROM --platform=linux/amd64 python:3 as dependency_loader
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
-
-FROM base as dependency_loader
 # install git
-#RUN apt update
-#RUN apt install -y git
+# RUN apt update
+# RUN apt install -y git
 # install poetry
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
@@ -14,18 +14,18 @@ RUN python -c 'from urllib.request import urlopen; print(urlopen("https://instal
 COPY ./poetry.lock ./poetry.lock
 COPY ./pyproject.toml ./pyproject.toml
 RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes
-# RUN poetry build -f wheel -vvv
-# RUN pip download -r requirements.txt -d ./libraries
-RUN pip install -r requirements.txt --target=./libraries --no-dependencies
 
-FROM base as runtime
-ENV PYTHONPATH "${PYTHONPATH}:/app:/app/libraries"
+FROM --platform=$TARGETPLATFORM python:3 as runtime
+ENV PYTHONUNBUFFERED=true
+WORKDIR /app
+
+COPY --from=dependency_loader /app/requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt --no-dependencies
+
+ENV PYTHONPATH="${PYTHONPATH}:/app"
 COPY open_precision /app/open_precision
 COPY LICENSE /app/LICENSE
 COPY config.yml /app/config.yml
-COPY --from=dependency_loader /app/libraries /app/libraries
-# RUN pip install ./libraries/* --no-dependencies
-# RUN rm -rf ./libraries
 EXPOSE 8000
 # HEALTHCHECK --start-period=30s CMD python -c "import requests; requests.get('http://localhost:8000', timeout=2)"
 CMD python open_precision/__main__.py
