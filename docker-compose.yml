@@ -1,7 +1,18 @@
 version: "3.9"  # optional since v1.27.0
 services:
   open_precision:
-    # build: .
+    build:
+      context: .
+      target: runtime
+      dockerfile: Dockerfile
+      tags:
+        - larsjaeger/open_precision:latest
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+          - linux/arm/v7
+          - linux/arm/v6
     image: larsjaeger/open_precision
     restart: always
     ports:

@@ -6,7 +6,7 @@
 ## Building the Docker Image
 Requirements:
 - Docker
-- Poetry
+- buildx is setup
 
 1. Clone the repository
-2. Run `poetry export` to generate
+2. run `docker buildx bake -f docker-compose.yml`
