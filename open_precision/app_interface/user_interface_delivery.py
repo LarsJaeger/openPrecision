@@ -39,7 +39,7 @@ class UserInterfaceDelivery:
         # serve static files
         base_dir = os.path.dirname(__file__)
         static_files = {
-            '/': os.path.join(base_dir, os.path.relpath("static/index.html")),
+            '/': os.path.join(base_dir, os.path.relpath("../../frontend//index.html")),
             '/favicon.ico': os.path.join(base_dir, os.path.relpath("static/favicon.ico")),
             '/app': os.path.join(base_dir, os.path.relpath("static/index.html")),
             '/static': os.path.join(base_dir, os.path.relpath("static"))
