@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import os
-
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
+
 from open_precision.managers import plugin_manager
 
 
@@ -58,12 +57,21 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    def _load_config_file(self):
+    def _load_config_file(self, yaml: str = None):
+        """
+        loads config file from yaml string or file
+        :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
+        :return: None
+        """
         print("[LOG]: loading config file")
-        with open(self._config_path) as config_file_stream:
-            print("test")
-            print([line for line in config_file_stream.readlines()])
-            self._config = YAML().load(stream=config_file_stream)
+        if yaml is None:
+            with open(self._config_path) as config_file_stream:
+                # print([line for line in config_file_stream.readlines()])
+                self._config = YAML().load(stream=config_file_stream)
+        elif type(yaml) is str:
+            self._config = YAML().load(yaml)
+        else:
+            raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
 
     def _save_config_file(self):
