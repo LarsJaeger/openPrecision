@@ -124,8 +124,9 @@
 
 </script>
 
-<canvas id="c" bind:this={canvas}></canvas>
-
+<div class="visualizer">
+    <canvas id="c" bind:this={canvas}></canvas>
+</div>
 <style>
     #c {
         width: 100vw;

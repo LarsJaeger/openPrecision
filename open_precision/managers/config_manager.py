@@ -10,7 +10,7 @@ class ConfigManager:
     def __init__(self, config_path: str):
         self._config: CommentedMap = CommentedMap()
         self._config_path = config_path
-        self._load_config_file()
+        self.load_config()
         self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
@@ -57,7 +57,7 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    def _load_config_file(self, yaml: str = None):
+    def load_config(self, yaml: str = None):
         """
         loads config file from yaml string or file
         :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
@@ -66,7 +66,6 @@ class ConfigManager:
         print("[LOG]: loading config file")
         if yaml is None:
             with open(self._config_path) as config_file_stream:
-                # print([line for line in config_file_stream.readlines()])
                 self._config = YAML().load(stream=config_file_stream)
         elif type(yaml) is str:
             self._config = YAML().load(yaml)

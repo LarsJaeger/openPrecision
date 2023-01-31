@@ -1,6 +1,12 @@
 <script lang="ts">
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
+    import ActionButtons from "./lib/ActionButtons.svelte";
+    import StatusBar from "./lib/StatusBar.svelte";
+    import MetaButtons from "./lib/MetaButtons.svelte";
+    import {closeModal, Modals} from 'svelte-modals'
+    import {fade} from 'svelte/transition'
+
 
     const socket = io();//("ws://" + window.location.hostname + "/");
 
@@ -30,51 +36,25 @@
         visualizeMachineState(JSON.parse(data));
     });
 
-
     function sendAction(action) {
         const actionString = JSON.stringify(action);
         console.log("[INFO]: Sending action: " + actionString);
         socket.emit("action", actionString);
     }
-
-    function generateCourse() {
-        console.log("[INFO]: Generating course");
-        sendAction({
-            function_identifier: 'plugins.Navigator.set_course_from_course_generator',
-            args: [],
-            kw_args: {'course_generator_identifier': 'a_heading_parallel'}
-        });
-
-        console.log("[INFO]: gen_course sent");
-    }
 </script>
 
 <main>
+    <Modals>
+        <div
+                slot="backdrop"
+                class="backdrop"
+                transition:fade
+                on:click={closeModal}
+        />
+    </Modals>
+    <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
+    <MetaButtons/>
+    <ActionButtons socket={socket}/>
+    <StatusBar/>
 
-    <div>
-        <div class="visualizer">
-            <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
-        </div>
-        <div class="metaButtons">
-            <button class="metaButton material-symbols-outlined">info</button>
-            <button class="metaButton material-symbols-outlined">settings</button>
-        </div>
-        <div class="actionButtons">
-            <button style="top:0" class="actionButton disableControls" id="ab_a" on:click={generateCourse}>
-                <div class="actionButtonContent material-symbols-outline">gen</div>
-            </button>
-            <button style="top:0" class="actionButton disableControls" id="ab_b">
-                <div class="actionButtonContent material-symbols-outline">B</div>
-            </button>
-            <button style="top:0" class="actionButton disableControls" id="ab_c">
-                <div class="actionButtonContent material-symbols-outline">C</div>
-            </button>
-        </div>
-        <div class="statusBar">
-            <div class="statusBarItem disableControls">1</div>
-            <div class="statusBarItem disableControls">2</div>
-            <div class="statusBarItem disableControls">3</div>
-            <div class="statusBarItem disableControls">4</div>
-        </div>
-    </div>
 </main>
