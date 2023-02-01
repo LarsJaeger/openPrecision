@@ -1,6 +1,7 @@
 <script lang="ts">
     import {modals, openModal} from 'svelte-modals'
     import Modal from "./Modal.svelte";
+    import MetaButtons from "./MetaButtons.svelte";
     export let socket;
 
     function sendAction(action) {
@@ -22,8 +23,9 @@
 
     function loadConfig() {
         openModal(Modal, {
-			title: `Upload New Config`,
-			message: ""
+			header: "Upload New Config",
+			content: "blabla",
+            footer: "bla bla bla"
 		})
     }
 </script>

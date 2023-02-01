@@ -20,6 +20,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@appwrite.io/pink": "^0.0.2",
     "@threlte/core": "^5.0.8",
     "@threlte/extras": "^4.9.3",
     "@threlte/preprocess": "^0.0.2",

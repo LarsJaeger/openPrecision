@@ -1,66 +1,38 @@
 <script>
-  import { closeModal } from 'svelte-modals'
-
-  // provided by <Modals />
-  export let isOpen
-
-  export let title
-  export let message
+    export let header
+    export let content
+    export let footer
 
 </script>
-
-{#if isOpen}
-  <div role="dialog" class="modal">
-    <div class="contents">
-      <h2>{title}</h2>
-      <p>{message}</p>
-      <div class="actions">
-        <!-- <button on:click={closeModal}>OK</button> -->
-      </div>
-    </div>
-  </div>
-{/if}
-
-<style>
-  .modal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    /* allow click-through to backdrop */
-    pointer-events: none;
-  }
-
-  .contents {
-    min-width: 240px;
-    border-radius: 6px;
-    padding: 16px;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    pointer-events: auto;
-  }
-
-  h2 {
-    text-align: center;
-    font-size: 24px;
-  }
-
-  p {
-    text-align: center;
-    margin-top: 16px;
-  }
-
-  .actions {
-    margin-top: 32px;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-</style>
+<button class="button"><span>Open Modal</span></button>
+<dialog class="modal" id="dialog">
+    <form class="modal-form" method="dialog">
+        <header class="modal-header">
+            {#if (typeof header === 'string' || header instanceof String)}
+                {header}
+            {:else}
+                <svelte:component this={header}/>
+            {/if}
+            <button
+                    class="button is-text is-small is-only-icon"
+                    aria-label="Close modal"
+            >
+                <span class="icon-x" aria-hidden="true"></span>
+            </button>
+        </header>
+        <div class="modal-content u-small">
+            {#if (typeof content === 'string' || content instanceof String)}
+                {content}
+            {:else}
+                <svelte:component this={content}/>
+            {/if}
+        </div>
+        <div class="modal-footer">
+            {#if (typeof footer === 'string' || footer instanceof String)}
+                {footer}
+            {:else}
+                <svelte:component this={footer}/>
+            {/if}
+        </div>
+    </form>
+</dialog>

@@ -6,6 +6,7 @@
     import MetaButtons from "./lib/MetaButtons.svelte";
     import {closeModal, Modals} from 'svelte-modals'
     import {fade} from 'svelte/transition'
+    import Modal from "./lib/Modal.svelte";
 
 
     const socket = io();//("ws://" + window.location.hostname + "/");
@@ -44,17 +45,10 @@
 </script>
 
 <main>
-    <Modals>
-        <div
-                slot="backdrop"
-                class="backdrop"
-                transition:fade
-                on:click={closeModal}
-        />
-    </Modals>
     <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
     <MetaButtons/>
     <ActionButtons socket={socket}/>
     <StatusBar/>
+    <Modal header="header" content="content" footer="footer" />
 
 </main>
