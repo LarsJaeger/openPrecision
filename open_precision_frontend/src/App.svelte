@@ -4,9 +4,7 @@
     import ActionButtons from "./lib/ActionButtons.svelte";
     import StatusBar from "./lib/StatusBar.svelte";
     import MetaButtons from "./lib/MetaButtons.svelte";
-    import {closeModal, Modals} from 'svelte-modals'
-    import {fade} from 'svelte/transition'
-    import Modal from "./lib/Modal.svelte";
+    import Modals, {openModal} from "./lib/Modals.svelte";
 
 
     const socket = io();//("ws://" + window.location.hostname + "/");
@@ -45,10 +43,9 @@
 </script>
 
 <main>
+    <Modals />
     <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
     <MetaButtons/>
     <ActionButtons socket={socket}/>
     <StatusBar/>
-    <Modal header="header" content="content" footer="footer" />
-
 </main>

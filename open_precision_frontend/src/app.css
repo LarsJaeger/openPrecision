@@ -7,27 +7,6 @@
     --c-base-dark: #c96b03;
 }
 
-* {
-    /*background-color: var(--c-light);*/
-}
-
-html, body {
-    margin: 0;
-    height: 100%;
-}
-div,button{
-    z-index: 100;
-}
-
-.visualizer{
-    width: 100vw;
-    height: 100vh;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
 
 
 

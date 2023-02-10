@@ -1,4 +1,5 @@
-import "@appwrite.io/pink"; // optionally, add icons import "@appwrite.io/pink-icons";
+import "@appwrite.io/pink";
+import "@appwrite.io/pink-icons";
 import './app.css'
 
 import App from './App.svelte'

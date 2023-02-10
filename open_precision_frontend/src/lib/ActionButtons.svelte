@@ -1,7 +1,6 @@
 <script lang="ts">
-    import {modals, openModal} from 'svelte-modals'
-    import Modal from "./Modal.svelte";
-    import MetaButtons from "./MetaButtons.svelte";
+    import {openModal} from "./Modals.svelte";
+
     export let socket;
 
     function sendAction(action) {
@@ -22,22 +21,22 @@
     }
 
     function loadConfig() {
-        openModal(Modal, {
-			header: "Upload New Config",
-			content: "blabla",
-            footer: "bla bla bla"
-		})
+        openModal(
+            "Upload New Config",
+            "blabla",
+            "bla bla bla"
+        );
     }
 </script>
 
 <div class="actionButtons">
-<button style="top:0" class="actionButton disableControls" id="ab_a" on:click={generateCourse}>
-    <div class="actionButtonContent material-symbols-outline">gen</div>
-</button>
-<button style="top:0" class="actionButton disableControls" id="ab_b" on:click={loadConfig}>
-    <div class="actionButtonContent material-symbols-outline">B</div>
-</button>
-<button style="top:0" class="actionButton disableControls" id="ab_c">
-    <div class="actionButtonContent material-symbols-outline">C</div>
-</button>
+    <button style="top:0" class="actionButton disableControls" id="ab_a" on:click={generateCourse}>
+        <div class="actionButtonContent material-symbols-outline">gen</div>
+    </button>
+    <button style="top:0" class="actionButton disableControls" id="ab_b" on:click={loadConfig}>
+        <div class="actionButtonContent material-symbols-outline">B</div>
+    </button>
+    <button style="top:0" class="actionButton disableControls" id="ab_c">
+        <div class="actionButtonContent material-symbols-outline">C</div>
+    </button>
 </div>

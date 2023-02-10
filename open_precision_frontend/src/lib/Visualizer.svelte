@@ -124,17 +124,8 @@
 
 </script>
 
-<div class="visualizer">
-    <canvas id="c" bind:this={canvas}></canvas>
+<div>
+    <canvas class="u-full-screen-height u-width-full-line" bind:this={canvas}></canvas>
 </div>
 <style>
-    #c {
-        width: 100vw;
-        height: 100vh;
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-    }
 </style>

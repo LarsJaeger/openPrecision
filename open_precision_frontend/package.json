@@ -26,7 +26,6 @@
     "@threlte/preprocess": "^0.0.2",
     "@types/three": "^0.148.0",
     "socket.io-client": "^4.5.4",
-    "svelte-modals": "^1.2.1",
     "svelte-preprocess": "^5.0.1",
     "svelte-sequential-preprocessor": "^0.0.7",
     "three": "^0.148.0"
