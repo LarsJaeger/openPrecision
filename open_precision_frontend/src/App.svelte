@@ -45,7 +45,7 @@
 <main>
     <Modals />
     <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
-    <MetaButtons/>
+    <!--<MetaButtons/> -->
     <ActionButtons socket={socket}/>
-    <StatusBar/>
+    <!--<StatusBar/> -->
 </main>

@@ -34,19 +34,19 @@
         modals.add({title, contentComp, footerComp});
     }
 
-    function closeTopModal() {
+    export function closeTopModal() {
         modals.close(0);
     }
 </script>
 
 {#if $modals.length !== 0}
-    <div class="modal-backdrop">
+    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={closeTopModal} on:keypress>
         <!-- Modal content -->
-        <div class="modal is-big">
+        <div class=" modal is-big u-position-absolute">
             <form class="modal-form" method="dialog">
                 <header class="modal-header">
-                    <div class="avatar is-color-orange">
-                        <span class="icon-exclamation" aria-hidden="true"></span>
+                    <div class="avatar is-color-orange is-size-large">
+                        <span>{#if ($modals.length !== 1)}{$modals.length}{/if}<span class="icon-exclamation" aria-hidden="true"></span></span>
                     </div>
                     <h4 class="modal-title heading-level-5">
                         {$modals[0].title}
@@ -85,13 +85,5 @@
         height: 100%; /* Full height */
         background-color: rgb(0, 0, 0); /* Fallback color */
         background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content */
-    .margin-auto {
-        margin: auto;
-        /*padding: 20px; */
-        /*border: 1px solid #888;*/
-        /*width: 80%;*/
     }
 </style>

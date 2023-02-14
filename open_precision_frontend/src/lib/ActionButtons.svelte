@@ -1,5 +1,6 @@
 <script lang="ts">
     import {openModal} from "./Modals.svelte";
+    import configUpload from "./configUpload.svelte";
 
     export let socket;
 
@@ -23,20 +24,20 @@
     function loadConfig() {
         openModal(
             "Upload New Config",
-            "blabla",
-            "bla bla bla"
+            configUpload,
+            "footer"
         );
     }
 </script>
 
 <div class="actionButtons">
     <button style="top:0" class="actionButton disableControls" id="ab_a" on:click={generateCourse}>
-        <div class="actionButtonContent material-symbols-outline">gen</div>
+        <div class="actionButtonContent ">gen</div>
     </button>
     <button style="top:0" class="actionButton disableControls" id="ab_b" on:click={loadConfig}>
-        <div class="actionButtonContent material-symbols-outline">B</div>
+        <div class="actionButtonContent ">B</div>
     </button>
     <button style="top:0" class="actionButton disableControls" id="ab_c">
-        <div class="actionButtonContent material-symbols-outline">C</div>
+        <div class="actionButtonContent ">C</div>
     </button>
 </div>

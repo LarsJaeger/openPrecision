@@ -125,7 +125,7 @@
 </script>
 
 <div>
-    <canvas class="u-full-screen-height u-width-full-line" bind:this={canvas}></canvas>
+    <canvas class="u-position-absolute u-full-screen-height u-width-full-line u-z-index-0" bind:this={canvas}></canvas>
 </div>
 <style>
 </style>
