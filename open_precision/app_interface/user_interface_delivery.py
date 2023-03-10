@@ -39,10 +39,8 @@ class UserInterfaceDelivery:
         # serve static files
         base_dir = os.path.dirname(__file__)
         static_files = {
-            '/': os.path.join(base_dir, os.path.relpath("../../frontend//index.html")),
-            '/favicon.ico': os.path.join(base_dir, os.path.relpath("static/favicon.ico")),
-            '/app': os.path.join(base_dir, os.path.relpath("static/index.html")),
-            '/static': os.path.join(base_dir, os.path.relpath("static"))
+            '': "/app/open_precision_frontend",
+            '/': "/app/open_precision_frontend/index.html"
         }
 
         @self._server.event

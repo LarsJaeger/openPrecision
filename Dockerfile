@@ -14,8 +14,8 @@ COPY ./poetry.lock ./poetry.lock
 COPY ./pyproject.toml ./pyproject.toml
 RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes
 
-# install dependencies in seperate container because the final base image does not have docker installed
-FROM --platform=$TARGETPLATFORM python:3-slim as dependency_loader
+# install dependencies in seperate container because the final base image does not have git installed
+FROM --platform=$TARGETPLATFORM python:3 as dependency_loader
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 
@@ -39,7 +39,7 @@ COPY --from=dependency_loader /app/libraries /app/libraries
 ENV PYTHONPATH "${PYTHONPATH}:/app:/app/libraries"
 
 # copy frontend
-COPY --from=frontend_builder /app/dist /app/open_precision_frontend/dist
+COPY --from=frontend_builder /app/dist /app/open_precision_frontend
 
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 COPY open_precision /app/open_precision

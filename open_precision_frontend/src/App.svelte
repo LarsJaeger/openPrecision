@@ -4,33 +4,43 @@
     import ActionButtons from "./lib/ActionButtons.svelte";
     import StatusBar from "./lib/StatusBar.svelte";
     import MetaButtons from "./lib/MetaButtons.svelte";
-    import Modals, {openModal} from "./lib/Modals.svelte";
+    import Modals, {add} from "./lib/Modals/Modals.svelte";
+    import {socket} from "./stores";
+    import ActionResponseError from "./lib/Modals/ActionResponseError.svelte";
 
 
-    const socket = io();//("ws://" + window.location.hostname + "/");
+
 
     let visualizeMachineState;
     let visualizeCourse;
 
     // action responses
-    socket.on("action_response", (data) => {
-        console.log("[INFO]: action_response received: " + data);
+    $socket.on("action_response", (data) => {
+        let parsed_data = JSON.parse(data);
+        if (parsed_data.success == false) {
+            console.log("[INFO]: action_response received: success");
+            add("Action failed", ActionResponseError, {response: parsed_data.response});
+            console.log("[ERROR]: action_response: " + parsed_data.response);
+        }
+        else {
+            console.log("[INFO]: action_response received: error");
+        }
     });
 
     // target_machine_state
-    socket.on("target_machine_state", (data) => {
+    $socket.on("target_machine_state", (data) => {
         console.log("[INFO]: (target_machine_state): Received message: " + data);
         // updateTargetMachineState(JSON.parse(data));
     });
 
     // course
-    socket.on("course", (data) => {
+    $socket.on("course", (data) => {
         console.log("[INFO]: (course): Received message: " + data);
         visualizeCourse(JSON.parse(data));
     });
 
     // machine_state
-    socket.on("machine_state", (data) => {
+    $socket.on("machine_state", (data) => {
         console.log("[INFO]: (machine_state): Received message: " + data);
         visualizeMachineState(JSON.parse(data));
     });
@@ -38,7 +48,7 @@
     function sendAction(action) {
         const actionString = JSON.stringify(action);
         console.log("[INFO]: Sending action: " + actionString);
-        socket.emit("action", actionString);
+        $socket.emit("action", actionString);
     }
 </script>
 
@@ -46,6 +56,6 @@
     <Modals />
     <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
     <!--<MetaButtons/> -->
-    <ActionButtons socket={socket}/>
+    <ActionButtons />
     <!--<StatusBar/> -->
 </main>

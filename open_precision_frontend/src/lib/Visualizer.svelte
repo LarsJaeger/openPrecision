@@ -42,7 +42,6 @@
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
-
     // create main pointer
     const pointer = new THREE.Group();
 

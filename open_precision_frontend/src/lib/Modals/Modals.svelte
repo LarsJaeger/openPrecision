@@ -7,7 +7,8 @@
 
         return {
             subscribe,
-            add(item) {
+            add(title: string, bodyComponent: SvelteComponent, bodyProps: Object) {
+                let item = {title, bodyComponent, bodyProps};
                 update((prev) => {
                     return [item, ...prev];
                 })
@@ -30,17 +31,17 @@
 
     const modals = createModals();
 
-    export function openModal(title: string, contentComp: SvelteComponent, footerComp: SvelteComponent) {
-        modals.add({title, contentComp, footerComp});
+    export function add(title: string, bodyComponent: SvelteComponent, bodyProps: Object) {
+        modals.add(title, bodyComponent, bodyProps);
     }
 
-    export function closeTopModal() {
+    export function closeCurrent() {
         modals.close(0);
     }
 </script>
 
 {#if $modals.length !== 0}
-    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={closeTopModal} on:keypress>
+    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={closeCurrent} on:keypress>
         <!-- Modal content -->
         <div class=" modal is-big u-position-absolute">
             <form class="modal-form" method="dialog">
@@ -52,26 +53,15 @@
                         {$modals[0].title}
                     </h4>
                     <button class="button is-text is-big is-only-icon" aria-label="Close modal"
-                            on:click={closeTopModal}>
+                            on:click={closeCurrent}>
                         <span class="icon-x" aria-hidden="true"></span>
                     </button>
                 </header>
-
-                <div class="modal-content">
-                    {#if (typeof $modals[0].contentComp === 'string' || $modals[0].contentComp instanceof String)}
-                        {$modals[0].contentComp}
-                    {:else}
-                        <svelte:component this={$modals[0].contentComp}/>
-                    {/if}
-                </div>
-
-                <div class="modal-footer">
-                    {#if (typeof $modals[0].footerComp === 'string' || $modals[0].footerComp instanceof String)}
-                        {$modals[0].footerComp}
-                    {:else}
-                        <svelte:component this={$modals[0].footerComp}/>
-                    {/if}
-                </div>
+                {#if ($modals[0].bodyProps == null)}
+                    <svelte:component this={$modals[0].bodyComponent}/>
+                {:else}
+                    <svelte:component this={$modals[0].bodyComponent} {...$modals[0].bodyProps}/>
+                {/if}
             </form>
         </div>
     </div>
