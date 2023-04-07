@@ -29,6 +29,6 @@
 </div>
 <div class="modal-footer">
     <div class="u-flex u-main-end u-gap-16">
-        <button class="button" on:keypress={closeCurrent}><span class="text">OK</span></button>
+        <button class="button" on:click={closeCurrent} on:keypress><span class="text">OK</span></button>
     </div>
 </div>

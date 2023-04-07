@@ -38,10 +38,13 @@
     export function closeCurrent() {
         modals.close(0);
     }
+    export function clickOutside(e) {
+        if(e.target == this) closeCurrent();
+    }
 </script>
 
 {#if $modals.length !== 0}
-    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={closeCurrent} on:keypress>
+    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={clickOutside} on:keypress>
         <!-- Modal content -->
         <div class=" modal is-big u-position-absolute">
             <form class="modal-form" method="dialog">

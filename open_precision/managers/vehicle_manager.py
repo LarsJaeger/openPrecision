@@ -37,7 +37,29 @@ class VehicleManager:
 
     def load_data(self):
         # init objects from config data
-        self.vehicles: list[Vehicle] = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, "vehicles")]
+
+        # TODO remove after testing
+        # print(f"soppp: {self._manager.config.get_value(self, 'vehicles')}")
+        # self._vehicles: list[Vehicle] = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, "vehicles")]
+        # print(f"supppp: {self._vehicles}")
+
+        def make_vehicle_from_config_dict(conf_values: dict):
+            obj = Vehicle()
+            print("blub")
+            print(obj)
+            for key, value in conf_values.items():
+                print("bla")
+                print(type(value))
+                print(value)
+                setattr(obj, key, value)
+            print("blub2")
+            print(obj)
+            return obj
+        print("aaaaaaaa")
+        print(type(self._manager.config.get_value(self, "vehicles")[0]))
+        print(self._manager.config.get_value(self, "vehicles")[0])
+        self._vehicles: list[Vehicle] = [make_vehicle_from_config_dict(x) for x in self._manager.config.get_value(self, "vehicles")]
+
         self._current_vehicle_id: int = self._manager.config.get_value(
             self, "current_vehicle_id"
         )
@@ -50,6 +72,7 @@ class VehicleManager:
 
     @property
     def current_vehicle(self) -> Vehicle:
+        print(f"vehicles: {self._vehicles}")
         return self._vehicles[self._current_vehicle_id]
 
     @current_vehicle.setter

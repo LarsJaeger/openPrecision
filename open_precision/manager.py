@@ -26,8 +26,10 @@ class Manager:
         atexit.register(self._cleanup)
 
         # loading sub managers
-        self._config = ConfigManager(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                                  os.path.relpath('../config.yml')))
+        self._config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                         os.path.relpath('../config.yml'))
+
+        self._config = ConfigManager(self)
 
         self._persistence = PersistenceManager(self)
 
@@ -91,3 +93,8 @@ class Manager:
     @property
     def user_interface_delivery(self) -> UserInterfaceDelivery:
         return self._user_interface_delivery
+
+    @ActionManager.enable_action
+    def reload(self):
+        self._cleanup()
+        self.__init__()

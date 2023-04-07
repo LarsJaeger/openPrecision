@@ -1,22 +1,28 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any, Type
+
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
 
 from open_precision.managers import plugin_manager
 
+if TYPE_CHECKING:
+    from open_precision.manager import Manager
+
 
 class ConfigManager:
-    def __init__(self, config_path: str):
+    def __init__(self, manager: Manager):
+        self._manager: Manager = manager
         self._config: CommentedMap = CommentedMap()
-        self._config_path = config_path
+        self._config_path = self._manager._config_path
         self.load_config()
         self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
 
     def register_value(
-        self, origin_object: object, key: str, value: any
+            self, origin_object: object, key: str, value: any
     ) -> ConfigManager:
         """adds key/value pair to object's config if not already set"""
 
@@ -57,7 +63,7 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    def load_config(self, yaml: str = None):
+    def load_config(self, yaml: str = None, reload: bool = False):
         """
         loads config file from yaml string or file
         :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
@@ -72,6 +78,8 @@ class ConfigManager:
         else:
             raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
+        if reload:
+            self._manager.reload()
 
     def _save_config_file(self):
         print("[LOG]: saving config file")

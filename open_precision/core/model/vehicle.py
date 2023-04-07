@@ -31,5 +31,8 @@ class Vehicle(DataModelBase, PersistenceModelBase):
 
     @gps_receiver_offset.setter
     def gps_receiver_offset(self, gps_receiver_offset: np.ndarray[float]):
-        print(f"set: {json.dumps(gps_receiver_offset)}")
+        if type(gps_receiver_offset) is property:
+            #  initial value not specified, use default TODO create seperate setter decorator to integrate this with
+            #  the model
+            gps_receiver_offset = Vehicle._gps_receiver_offset
         self._gps_receiver_offset = json.dumps(gps_receiver_offset)

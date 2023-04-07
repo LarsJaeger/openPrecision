@@ -5,6 +5,7 @@
     function uploadFunction() {
         // get string of file content in variable "content"
         var file = document.getElementById("file-file").files[0];
+        if(!(file instanceof Blob)) return;
         var reader = new FileReader();
         reader.onload = function (evt) {
             var content = evt.target.result;
@@ -28,14 +29,14 @@
 <form class="form u-width-full-line">
   <ul class="form-list">
     <li class="form-item">
-      <input type="file" name="file" id="file-file" size="1" />
+      <input type="file" name="file" id="file-file" size="1" accept=".yml,.yaml"/>
     </li>
   </ul>
 </form>
 </div>
 <div class="modal-footer">
 <div class="u-flex u-main-end u-gap-16">
-    <button class="button" on:keypress={uploadFunction}><span class="text">Upload</span></button>
-    <button class="button is-secondary" on:keypress={closeCurrent}><span class="text">Cancel</span></button>
+    <button class="button" on:click={uploadFunction} on:keypress><span class="text">Upload</span></button>
+    <button class="button is-secondary" on:click={closeCurrent} on:keypress><span class="text">Cancel</span></button>
 </div>
 </div>
