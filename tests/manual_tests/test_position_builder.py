@@ -3,7 +3,7 @@
 import unittest
 
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
-from open_precision.manager import Manager
+from open_precision.managers.system_manager import SystemManager
 
 
 class TestPositionBuilder(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestPositionBuilder(unittest.TestCase):
         """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
-        man = Manager()
+        man = SystemManager()
         counter = 0
         try:
             while True:

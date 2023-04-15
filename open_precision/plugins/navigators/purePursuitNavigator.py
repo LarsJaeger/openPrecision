@@ -9,7 +9,7 @@ from open_precision.core.exceptions import CourseNotSetException
 from open_precision.core.model.machine_state import MachineState
 from open_precision.core.plugin_base_classes.navigator import Navigator
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
-from open_precision.manager import Manager
+from open_precision.managers.system_manager import SystemManager
 from open_precision.core.model.course import Course
 from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
@@ -22,9 +22,9 @@ class PurePursuitNavigator(Navigator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         super().__init__(manager)
-        self._manager: Manager = manager
+        self._manager: SystemManager = manager
         self._course: Course | None = None
         self._current_path_id: int | None = None
 

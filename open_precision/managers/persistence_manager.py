@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -10,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, registry
 from open_precision.core.model.persistence_model_base import PersistenceModelBase
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 def subclasses_recursive(cls: type) -> list[type]:
@@ -51,7 +50,7 @@ class PersistenceManager:
 
         return wrapper
 
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
         # init persistent relational db
         self._engine = create_engine('sqlite:///data.sqlite',

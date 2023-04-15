@@ -11,7 +11,7 @@ from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class Navigator(Plugin, ABC):
@@ -19,7 +19,7 @@ class Navigator(Plugin, ABC):
     order to the target point (or line)"""
 
     @abstractmethod
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

@@ -6,12 +6,12 @@ from open_precision.core.model.vehicle import Vehicle
 from open_precision.managers.persistence_manager import PersistenceManager
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class VehicleManager:
-    def __init__(self, manager: Manager):
-        self._manager: Manager = manager
+    def __init__(self, manager: SystemManager):
+        self._manager: SystemManager = manager
         self._manager.config.register_value(
             self,
             "vehicles",

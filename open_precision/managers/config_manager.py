@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Type
+from typing import TYPE_CHECKING
 
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
@@ -8,12 +8,12 @@ from ruamel.yaml import YAML, CommentedMap
 from open_precision.managers import plugin_manager
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class ConfigManager:
-    def __init__(self, manager: Manager):
-        self._manager: Manager = manager
+    def __init__(self, manager: SystemManager):
+        self._manager: SystemManager = manager
         self._config: CommentedMap = CommentedMap()
         self._config_path = self._manager._config_path
         self.load_config()

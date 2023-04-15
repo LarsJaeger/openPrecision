@@ -20,7 +20,7 @@ from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class GpsAosPositionBuilder(MachineStateBuilder):
@@ -31,7 +31,7 @@ class GpsAosPositionBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
 
         """get available sensors"""

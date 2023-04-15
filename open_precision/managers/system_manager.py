@@ -21,13 +21,13 @@ def _get_plugin_name_mapping(plugins: dict) -> dict:
     return {plugin.__name__: plugin for plugin in plugins.keys()}
 
 
-class Manager:
+class SystemManager:
     def __init__(self):
         atexit.register(self._cleanup)
 
         # loading sub managers
         self._config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                         os.path.relpath('../config.yml'))
+                                         os.path.relpath('../../config.yml'))
 
         self._config = ConfigManager(self)
 

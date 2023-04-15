@@ -3,11 +3,11 @@ from __future__ import print_function
 
 import sys
 
-from open_precision.manager import Manager
+from open_precision.managers.system_manager import SystemManager
 
 
 def main():
-    man = Manager()
+    man = SystemManager()
 
 
 if __name__ == "__main__":

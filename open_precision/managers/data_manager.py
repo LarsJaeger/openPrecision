@@ -10,11 +10,11 @@ from open_precision.core.plugin_base_classes.machine_state_builder import Machin
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class DataManager:
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
