@@ -330,6 +330,17 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "ruamel-yaml-string"
+version = "0.1.0"
+description = "add dump_to_string/dumps method that returns YAML document as string"
+category = "main"
+optional = false
+python-versions = ">=3"
+
+[package.dependencies]
+"ruamel.yaml" = ">=0.17.17"
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -464,7 +475,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a267362c09508ae463c535806e520a81449cd1549c1296c1725f978cb5eeb304"
+content-hash = "2d10967ecbfc0cee059cb08618590528024ff74d2a92b013c7dd8e41c7e02730"
 
 [metadata.files]
 adafruit-blinka = [
@@ -694,6 +705,10 @@ ruamel-yaml-clib = [
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win32.whl", hash = "sha256:d5e51e2901ec2366b79f16c2299a03e74ba4531ddcfacc1416639c557aef0ad8"},
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win_amd64.whl", hash = "sha256:184faeaec61dbaa3cace407cffc5819f7b977e75360e8d5ca19461cd851a5fc5"},
     {file = "ruamel.yaml.clib-0.2.7.tar.gz", hash = "sha256:1f08fd5a2bea9c4180db71678e850b995d2a5f4537be0e94557668cf0f5f9497"},
+]
+ruamel-yaml-string = [
+    {file = "ruamel.yaml.string-0.1.0-py2.py3-none-any.whl", hash = "sha256:800761f9c0e28145fc59afd48e6075e117b5b7e69e6d9b3bd2bf53b31be954cf"},
+    {file = "ruamel.yaml.string-0.1.0.tar.gz", hash = "sha256:1dbdd04647d7e5efd9b35ca27df8cb397ea440dd5070760d854c88cd3e5a1b49"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},

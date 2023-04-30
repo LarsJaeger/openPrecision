@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import io
+import shutil
+import traceback
 from typing import TYPE_CHECKING
 
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
+from ruamel.yaml.representer import RepresenterError
 
 from open_precision.managers import plugin_manager
+from open_precision.managers.action_manager import ActionManager
 
 if TYPE_CHECKING:
     from open_precision.managers.system_manager import SystemManager
@@ -63,6 +68,7 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
+    @ActionManager.enable_action
     def load_config(self, yaml: str = None, reload: bool = False):
         """
         loads config file from yaml string or file
@@ -83,5 +89,25 @@ class ConfigManager:
 
     def _save_config_file(self):
         print("[LOG]: saving config file")
-        with open(self._config_path, "w") as config_file_stream:
-            YAML().dump(self._config, stream=config_file_stream)
+        try:
+            config_buffer = io.StringIO()
+            YAML().dump(self._config, stream=config_buffer)
+            with open(self._config_path, "w") as config_file_stream:
+                shutil.copyfileobj(config_buffer, config_file_stream)
+        except RepresenterError as e:
+            print("[ERROR]: could not parse config file: ")
+            print(self._config)
+            print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            return
+
+    @ActionManager.enable_action
+    def get_config_string(self) -> str:
+        try:
+            config_buffer = io.StringIO()
+            YAML().dump(self._config, stream=config_buffer)
+            return config_buffer.getvalue()
+        except RepresenterError as e:
+            print("[ERROR]: could not parse config file: ")
+            print(self._config)
+            print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            return ""

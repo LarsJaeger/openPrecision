@@ -27,7 +27,7 @@ class SystemManager:
 
         # loading sub managers
         self._config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                         os.path.relpath('../../config.yml'))
+                                         os.path.relpath('../config.yml'))
 
         self._config = ConfigManager(self)
 

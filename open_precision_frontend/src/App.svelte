@@ -1,3 +1,12 @@
+<script context="module">
+    let waiting_for_ar = {};
+    export function sendAction(socket, action, resultProcessingF) {
+        const actionString = JSON.stringify(action);
+        console.log("[INFO]: Sending action: " + actionString);
+        socket.emit("action", actionString);
+        waiting_for_ar[action] = resultProcessingF;
+    }
+</script>
 <script lang="ts">
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
@@ -9,21 +18,25 @@
     import ActionResponseError from "./lib/Modals/ActionResponseError.svelte";
 
 
-
-
     let visualizeMachineState;
     let visualizeCourse;
+
 
     // action responses
     $socket.on("action_response", (data) => {
         let parsed_data = JSON.parse(data);
         if (parsed_data.success == false) {
-            console.log("[INFO]: action_response received: success");
+            console.log("[INFO]: action_response received: error");
             add("Action failed", ActionResponseError, {response: parsed_data.response});
             console.log("[ERROR]: action_response: " + parsed_data.response);
         }
         else {
-            console.log("[INFO]: action_response received: error");
+            console.log("[INFO]: action_response received: success");
+            // check if answer is in waiting_for_ar and execute its fn
+            if (waiting_for_ar[parsed_data.action] && typeof waiting_for_ar[parsed_data.action] !== null) {
+                waiting_for_ar[parsed_data.action](parsed_data.response);
+                delete waiting_for_ar[parsed_data.action];
+            }
         }
     });
 
@@ -44,12 +57,6 @@
         console.log("[INFO]: (machine_state): Received message: " + data);
         visualizeMachineState(JSON.parse(data));
     });
-
-    function sendAction(action) {
-        const actionString = JSON.stringify(action);
-        console.log("[INFO]: Sending action: " + actionString);
-        $socket.emit("action", actionString);
-    }
 </script>
 
 <main>

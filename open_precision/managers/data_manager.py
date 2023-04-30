@@ -1,11 +1,13 @@
 from __future__ import annotations
 import asyncio
+import json
 import traceback
 from typing import TYPE_CHECKING
 
 from socketio.asyncio_redis_manager import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
 
+from open_precision.core.model.data_model_base import DataModelBase
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
@@ -45,7 +47,12 @@ class DataManager:
 
             # send current states to the user interface
             for key, fn in self._data_update_mapping.items():
-                await self._sio_queue.emit(key, fn().to_json(),
+                exec_result = fn()
+                if isinstance(exec_result, DataModelBase):
+                    parsed_result = exec_result.to_json()
+                else:
+                    parsed_result = json.dumps(exec_result)
+                await self._sio_queue.emit(key, parsed_result,
                                            room=key)
 
         except Exception as e:
