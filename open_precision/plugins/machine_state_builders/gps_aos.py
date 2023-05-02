@@ -20,7 +20,7 @@ from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class GpsAosPositionBuilder(MachineStateBuilder):
@@ -31,7 +31,7 @@ class GpsAosPositionBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
 
         """get available sensors"""
@@ -43,7 +43,8 @@ class GpsAosPositionBuilder(MachineStateBuilder):
         orientation: Orientation = self._manager.plugins[AbsoluteOrientationSensor].orientation
         gps_receiver_offset = self._manager.vehicles.current_vehicle.gps_receiver_offset
 
-        for var in [uncorrected_location, orientation, gps_receiver_offset]:
+        for i, var in enumerate([uncorrected_location, orientation, gps_receiver_offset]):
+            print(f"index {i}: {var}")
             validate_value(var, lambda x: True if x is not None else False, rule_description="value cannot be None")
 
         corrected_location = uncorrected_location + orientation.rotate(

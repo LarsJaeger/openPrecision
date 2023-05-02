@@ -35,7 +35,9 @@ class Position(DataModelBase, PersistenceModelBase):
 
     @property
     def location(self) -> Location | None:
-        return Location(**json.loads(self._location)) # TODO update to use .from_json() method
+        if self._location is None:
+            return None
+        return Location.from_json(self._location)
 
     @location.setter
     def location(self, location: Location):
@@ -43,7 +45,9 @@ class Position(DataModelBase, PersistenceModelBase):
 
     @property
     def orientation(self) -> Orientation | None:
-        return Orientation(**json.loads(self._orientation))
+        if self._orientation is None:
+            return None
+        return Orientation.from_json(self._orientation)
 
     @orientation.setter
     def orientation(self, orientation: Orientation):

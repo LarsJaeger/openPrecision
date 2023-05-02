@@ -4,7 +4,7 @@ import json
 from dataclasses import field
 
 import numpy as np
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, InstrumentedAttribute
 
 from open_precision.core.model.data_model_base import DataModelBase
 from open_precision.core.model.persistence_model_base import PersistenceModelBase
@@ -31,5 +31,13 @@ class Vehicle(DataModelBase, PersistenceModelBase):
 
     @gps_receiver_offset.setter
     def gps_receiver_offset(self, gps_receiver_offset: np.ndarray[float]):
-        print(f"set: {json.dumps(gps_receiver_offset)}")
-        self._gps_receiver_offset = json.dumps(gps_receiver_offset)
+        if type(gps_receiver_offset) is property:
+            #  initial value not specified, use default TODO create seperate setter decorator to integrate this with
+            #  the model
+            gps_receiver_offset = Vehicle._gps_receiver_offset
+        if type(gps_receiver_offset) is np.ndarray:
+            gps_receiver_offset = gps_receiver_offset.tolist()
+        try:
+            self._gps_receiver_offset = json.dumps(gps_receiver_offset)
+        except (TypeError, OverflowError):
+            self._gps_receiver_offset = gps_receiver_offset

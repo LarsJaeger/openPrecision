@@ -3,7 +3,6 @@ from __future__ import annotations
 import traceback
 from typing import TYPE_CHECKING
 
-import json
 import redis
 
 from open_precision.core.model.action import Action
@@ -11,7 +10,7 @@ from open_precision.core.model.action_response import ActionResponse
 from open_precision.managers.persistence_manager import PersistenceManager
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class ActionManager:
@@ -25,7 +24,7 @@ class ActionManager:
     def check_action_enabled(func):
         return hasattr(func, 'action_enabled')
 
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
         self._redis = redis.Redis(host='redis', port=6379, db=1)
 
@@ -64,6 +63,7 @@ class ActionManager:
             # execute function
             success = None
             try:
+                print(f"Executing action {action.function_identifier} with args {action.args} and kw_args {action.kw_args}")
                 return_value = obj(*action.args, **action.kw_args)
                 success = True
             except Exception as e:

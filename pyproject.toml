@@ -17,11 +17,12 @@ adafruit-circuitpython-bno055 = "^5.4.1"
 spidev = {version = "^3.5", optional = true}
 redis = "^4.3.4"
 uvicorn = "^0.18.2"
-sqlalchemy = {git = "https://github.com/sqlalchemy/sqlalchemy.git", rev = "main"}
 aioredis = "^2.0.1"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
 sparkfun-ublox-gps = {git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git", rev = "master"}
+sqlalchemy = "^2.0.9"
+ruamel-yaml-string = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 

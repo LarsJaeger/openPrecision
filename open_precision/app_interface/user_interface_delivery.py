@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os.path
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -13,7 +12,7 @@ from socketio.asyncio_server import AsyncServer
 from open_precision.core.model.action import Action
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class MessageType(Enum):
@@ -29,7 +28,7 @@ class MessageType(Enum):
 
 
 class UserInterfaceDelivery:
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
         url = 'redis://redis:6379'
         self._server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
@@ -39,10 +38,8 @@ class UserInterfaceDelivery:
         # serve static files
         base_dir = os.path.dirname(__file__)
         static_files = {
-            '/': os.path.join(base_dir, os.path.relpath("static/index.html")),
-            '/favicon.ico': os.path.join(base_dir, os.path.relpath("static/favicon.ico")),
-            '/app': os.path.join(base_dir, os.path.relpath("static/index.html")),
-            '/static': os.path.join(base_dir, os.path.relpath("static"))
+            '': "/app/open_precision_frontend",
+            '/': "/app/open_precision_frontend/index.html"
         }
 
         @self._server.event

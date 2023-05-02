@@ -9,12 +9,12 @@ from open_precision.core.plugin_base_classes.plugin import Plugin
 from open_precision.managers.persistence_manager import PersistenceManager
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class MachineStateBuilder(Plugin, ABC):
     @abstractmethod
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

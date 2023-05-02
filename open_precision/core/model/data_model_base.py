@@ -78,5 +78,7 @@ class DataModelBase:
         for key in json_obj.items():
             if key[0] == "_":
                 json_obj.pop(key[1:])
-        obj = cls(**json_obj)
+        obj = cls()
+        for key, value in json_obj.items():
+            setattr(obj, key, value)
         return obj

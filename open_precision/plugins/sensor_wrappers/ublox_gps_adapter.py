@@ -11,13 +11,13 @@ from open_precision.core.model.location import Location
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
 
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 shortest_update_dt = 100  # in ms
 
 
 class UbloxGPSAdapter(GlobalPositioningSystem):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
         self._manager.config.register_value(self, "enable_rtk_correction", True)
         self._manager.config.register_value(

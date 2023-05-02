@@ -10,3 +10,4 @@ Requirements:
 
 1. Clone the repository
 2. run `docker buildx bake -f docker-compose.yml`
+3. 

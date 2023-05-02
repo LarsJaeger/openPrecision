@@ -38,6 +38,8 @@ class Action(DataModelBase, PersistenceModelBase):
 
     @args.setter
     def args(self, args: List):
+        if type(args) is property:
+            args = []
         self._args = json.dumps(args)
 
     @property
@@ -46,4 +48,7 @@ class Action(DataModelBase, PersistenceModelBase):
 
     @kw_args.setter
     def kw_args(self, kw_args: Dict):
-        self._args = json.dumps(kw_args)
+        if type(kw_args) is property:
+            kw_args = {}
+        self._kw_args = json.dumps(kw_args)
+

@@ -1,23 +1,33 @@
 from __future__ import annotations
 
-import os
+import io
+import shutil
+import traceback
+from typing import TYPE_CHECKING
 
 from flatten_dict import flatten, unflatten
 from ruamel.yaml import YAML, CommentedMap
+from ruamel.yaml.representer import RepresenterError
+
 from open_precision.managers import plugin_manager
+from open_precision.managers.action_manager import ActionManager
+
+if TYPE_CHECKING:
+    from open_precision.managers.system_manager import SystemManager
 
 
 class ConfigManager:
-    def __init__(self, config_path: str):
+    def __init__(self, manager: SystemManager):
+        self._manager: SystemManager = manager
         self._config: CommentedMap = CommentedMap()
-        self._config_path = config_path
-        self._load_config_file()
+        self._config_path = self._manager._config_path
+        self.load_config()
         self.classes = plugin_manager.get_classes_in_package("open_precision")
         for cls in self.classes:
             YAML().register_class(cls)  # register class
 
     def register_value(
-        self, origin_object: object, key: str, value: any
+            self, origin_object: object, key: str, value: any
     ) -> ConfigManager:
         """adds key/value pair to object's config if not already set"""
 
@@ -58,15 +68,48 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    def _load_config_file(self):
+    @ActionManager.enable_action
+    def load_config(self, yaml: str = None, reload: bool = False):
+        """
+        loads config file from yaml string or file
+        :param reload: reinitializing backend after loading config if this is set to True
+        :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
+        :return: None
+        """
         print("[LOG]: loading config file")
-        with open(self._config_path) as config_file_stream:
-            print("test")
-            print([line for line in config_file_stream.readlines()])
-            self._config = YAML().load(stream=config_file_stream)
+        if yaml is None:
+            with open(self._config_path) as config_file_stream:
+                self._config = YAML(typ='safe').load(stream=config_file_stream)
+        elif type(yaml) is str:
+            self._config = YAML(typ='safe').load(yaml)
+        else:
+            raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
+        self._save_config_file()
+        if reload:
+            self._manager.reload()
 
     def _save_config_file(self):
         print("[LOG]: saving config file")
-        with open(self._config_path, "w") as config_file_stream:
-            YAML().dump(self._config, stream=config_file_stream)
+        try:
+            config_buffer = io.StringIO()
+            YAML(typ='safe').dump(self._config, stream=config_buffer)
+            with open(self._config_path, "w") as config_file_stream:
+                shutil.copyfileobj(config_buffer, config_file_stream)
+        except RepresenterError as e:
+            print("[ERROR]: could not parse config file: ")
+            print(self._config)
+            print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            return
+
+    @ActionManager.enable_action
+    def get_config_string(self) -> str:
+        try:
+            config_buffer = io.StringIO()
+            YAML().dump(self._config, stream=config_buffer)
+            return config_buffer.getvalue()
+        except RepresenterError as e:
+            print("[ERROR]: could not parse config file: ")
+            print(self._config)
+            print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            return ""

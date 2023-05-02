@@ -11,15 +11,15 @@ from open_precision.core.model.waypoint import Waypoint
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from open_precision.manager import Manager
+    from open_precision.managers.system_manager import SystemManager
 
 
 class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: Manager):
-        self.man: Manager = manager
+    def __init__(self, manager: SystemManager):
+        self.man: SystemManager = manager
 
     def generate_course(self) -> Course:
         # get position

@@ -9,13 +9,13 @@ from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_u
 )
 import qwiic_icm20948
 from open_precision.core.exceptions import SensorNotConnectedException
-from open_precision.manager import Manager
+from open_precision.managers.system_manager import SystemManager
 
 shortest_update_dt = 10  # in ms
 
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
-    def __init__(self, manager: Manager):
+    def __init__(self, manager: SystemManager):
         self._manager = manager
         print("[SparkfunIcm20948Adapter] started initialisation")
         manager.config.register_value(self, "magnetometer_bias", None)
