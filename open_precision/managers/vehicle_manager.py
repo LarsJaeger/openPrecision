@@ -18,7 +18,7 @@ class VehicleManager:
             [
                 {
                     "name": "example_vehicle",
-                    "gps_receiver_offset": [1, 2, 3],
+                    "gps_receiver_offset": [1., 2., 3.],
                     "turn_radius_right": 70.3,
                     "turn_radius_left": 69.1,
                     "wheelbase": 3.2,
@@ -37,11 +37,6 @@ class VehicleManager:
 
     def load_data(self):
         # init objects from config data
-
-        # TODO remove after testing
-        # print(f"soppp: {self._manager.config.get_value(self, 'vehicles')}")
-        # self._vehicles: list[Vehicle] = [Vehicle(**kwargs) for kwargs in self._manager.config.get_value(self, "vehicles")]
-        # print(f"supppp: {self._vehicles}")
 
         def make_vehicle_from_config_dict(conf_values: dict):
             obj = Vehicle()

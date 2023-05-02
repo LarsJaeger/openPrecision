@@ -63,6 +63,7 @@ class ActionManager:
             # execute function
             success = None
             try:
+                print(f"Executing action {action.function_identifier} with args {action.args} and kw_args {action.kw_args}")
                 return_value = obj(*action.args, **action.kw_args)
                 success = True
             except Exception as e:

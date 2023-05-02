@@ -32,7 +32,7 @@ class DataManager:
                                       cors_allowed_origins="*")
         while not self._signal_stop:
             await self.update()
-            await asyncio.sleep(10)
+            # await asyncio.sleep(10)
 
     async def update(self):
         try:
@@ -57,8 +57,9 @@ class DataManager:
 
         except Exception as e:
             # TODO think about way to send errors to frontend -> error class and broadcast room
-            print("[ERROR] Error during update:" + ''.join(
-                traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            # print("[ERROR] Error during update:" + ''.join(
+            #     traceback.format_exception(e, value=e, tb=e.__traceback__)))
+            pass
 
     async def stop(self):
         self._signal_stop = True

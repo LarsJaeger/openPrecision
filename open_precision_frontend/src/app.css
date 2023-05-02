@@ -5,6 +5,9 @@
     --c-base-light: #fca647;
     --c-base: #FB8604;
     --c-base-dark: #c96b03;
+    --color-primary-100: 31 96% 63%;
+    --color-primary-200: 31 96% 53%;
+    --color-primary-300: 31 97% 40%;
 }
 
 
@@ -32,40 +35,6 @@
     text-decoration: none;
     display: inline-block;
     font-size: 3vw;
-}
-.actionButtons {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 1vw;
-    align-items: center;
-    justify-items: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 2%;
-}
-.actionButton{
-
-    background-color: var(--c-base);
-    border: 4px solid ;
-    border-radius: 8px;
-    color: var(--c-light);
-    border-color: var(--c-base);
-    padding: 1vw;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 300%;
-}
-.actionButton:hover{
-    background-color: var(--c-base-light);
-}
-.actionButton:active{
-    background-color: var(--c-base-dark);
-}
-.actionButtonContent{
-    width: 100%;
-    height: 120%;
 }
 .statusBar{
     display: grid;

@@ -1,13 +1,17 @@
 <script context="module">
     let waiting_for_ar = {};
     export function sendAction(socket, action, resultProcessingF) {
+        // set id of action to random int if not set yet
+        if (!action.id || action.id === null) {
+            action.id = Math.floor(Math.random() * 1000000);
+        }
         const actionString = JSON.stringify(action);
         console.log("[INFO]: Sending action: " + actionString);
+        waiting_for_ar[action.id] = resultProcessingF;
         socket.emit("action", actionString);
-        waiting_for_ar[action] = resultProcessingF;
     }
 </script>
-<script lang="ts">
+<script>
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
     import ActionButtons from "./lib/ActionButtons.svelte";
@@ -25,17 +29,19 @@
     // action responses
     $socket.on("action_response", (data) => {
         let parsed_data = JSON.parse(data);
-        if (parsed_data.success == false) {
+        if (parsed_data.success === false) {
             console.log("[INFO]: action_response received: error");
             add("Action failed", ActionResponseError, {response: parsed_data.response});
-            console.log("[ERROR]: action_response: " + parsed_data.response);
+                console.log("[ERROR]: action_response: " + data);
         }
         else {
-            console.log("[INFO]: action_response received: success");
+            console.log("[INFO]: action_response received: " + data);
             // check if answer is in waiting_for_ar and execute its fn
-            if (waiting_for_ar[parsed_data.action] && typeof waiting_for_ar[parsed_data.action] !== null) {
-                waiting_for_ar[parsed_data.action](parsed_data.response);
-                delete waiting_for_ar[parsed_data.action];
+            console.log(waiting_for_ar)
+            if (waiting_for_ar[parsed_data.action.id] && waiting_for_ar[parsed_data.action.id] !== null) {
+                console.log("[INFO]: action_response: executing callback")
+                waiting_for_ar[parsed_data.action.id](parsed_data.response);
+                delete waiting_for_ar[parsed_data.action.id];
             }
         }
     });

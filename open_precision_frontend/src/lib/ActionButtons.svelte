@@ -29,14 +29,16 @@
     }
 </script>
 
-<div class="actionButtons">
-    <button style="top:0" class="actionButton disableControls" id="ab_a" on:click={generateCourse}>
-        <div class="actionButtonContent ">gen</div>
+<div class="u-position-absolute u-grid u-main-center u-cross-center u-gap-16" style="right: 2%; transform: translateY(-50%); top: 50%;">
+    <button class="grid-item-1 button is-big u-padding-16" id="ab_a" on:click={generateCourse}>
+        <span class="icon-plus is-big" aria-hidden="true"></span>
+        <span class="text u-font-size-32">Generate Course</span>
     </button>
-    <button style="top:0" class="actionButton disableControls" id="ab_b" on:click={loadConfig}>
-        <div class="actionButtonContent ">B</div>
+    <button class="grid-item-1 button is-big u-padding-16" id="ab_b" on:click={loadConfig}>
+        <span class="icon-cog" aria-hidden="true"></span>
+        <span class="text u-font-size-32">Configure</span>
     </button>
-    <button style="top:0" class="actionButton disableControls" id="ab_c">
-        <div class="actionButtonContent ">C</div>
+    <button class="grid-item-1 button is-big u-padding-16" id="ab_c">
+        <span class="text u-font-size-32">C</span>
     </button>
 </div>

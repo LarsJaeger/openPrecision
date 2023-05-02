@@ -2,22 +2,26 @@
     import {closeCurrent} from "./Modals.svelte";
     import {sendAction} from "../../App.svelte";
     import {socket} from "../../stores.ts";
-
+    import CodePanel from "../CodePanel.svelte";
+    import {onMount} from 'svelte';
 
     // set response lines
-    let responseLines = [];
+    export let responseLines = "";
 
     function setResponseLines(configString) {
-        responseLines = configString.split('\n');
+        responseLines = configString;
+        console.log("set response lines");
     }
 
-    sendAction($socket, {
-            function_identifier: 'config.get_config_string',
-            args: [],
-            kw_args: {}
-        },
-        setResponseLines
-    );
+    function request_and_update_config() { //arg has to be there
+        sendAction($socket, {
+                function_identifier: 'config.get_config_string',
+                args: [],
+                kw_args: {}
+            },
+            setResponseLines
+        );
+    }
 
     function uploadFunction() {
         // get string of file content in variable "content"
@@ -30,47 +34,50 @@
                 function_identifier: 'config.load_config',
                 args: [],
                 kw_args: {'yaml': content}
-            })
-            // do something with content
+            }, request_and_update_config)
         }
         reader.onerror = function (evt) {
             // do something with error
         }
         reader.readAsText(file, "UTF-8");
-
-        // close modal
-        closeCurrent();
     }
-</script>
-<div class="modal-content">
-<form class="form u-width-full-line">
-  <ul class="form-list">
-      <li class="form-item">
-          <input type="file" name="file" id="file-file" size="1" accept=".yml,.yaml"/>
-          <section class="code-panel u-min-width-100-percent theme-dark">
-              <header class="code-panel-header">
-                  <div class="u-flex u-gap-16 u-margin-inline-start-auto">
-                      <button class="button is-text">
-                          <span class="icon-external-link" aria-hidden="true"></span>
-                          <span class="text">Raw data</span>
-                      </button>
 
-                  </div>
-              </header>
-              <code class="code-panel-content grid-code">
-                  {#each responseLines as line}
-                      <div class="grid-code-line-number"></div>
-                      <pre>{line}</pre>
-                  {/each}
-              </code>
-          </section>
-      </li>
-  </ul>
-</form>
-</div>
-<div class="modal-footer">
-<div class="u-flex u-main-end u-gap-16">
-    <button class="button" on:click={uploadFunction} on:keypress><span class="text">Upload</span></button>
-    <button class="button is-secondary" on:click={closeCurrent} on:keypress><span class="text">Cancel</span></button>
-</div>
+    onMount(async () => {
+        request_and_update_config();
+        document.getElementById('file-file').addEventListener('change', () => {
+            if (document.getElementById('file-file').files.length === 0) return;
+            uploadFunction();
+        });
+    });
+
+
+</script>
+<!-- align vertically -->
+<div>
+    <div class="modal-content">
+        <CodePanel bind:lines={responseLines} heading="Current Config:"/>
+        <label for="file-file">
+            <div
+                    class="box is-border-dashed is-no-shadow u-padding-24"
+                    style="--box-border-radius:var(--border-radius-xsmall);"
+            >
+                <div class="upload-file-box u-flex u-main-center u-cross-center">
+                    <div class="upload-file-box-image">
+                        <span class="icon-upload" aria-hidden="true"></span>
+                    </div>
+                    <div class="u-min-width-0 u-text-center">
+                        <h5 class="upload-file-box-title heading-level-7 u-inline">
+                            <span>Drag and drop files here or click to upload</span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </label>
+        <input class="u-hide" type="file" name="file" id="file-file" size="1" accept=".yml,.yaml"/>
+    </div>
+    <div class="modal-footer u-cross-child-end">
+        <div class="u-flex u-main-end u-gap-16">
+            <button class="button" on:click={closeCurrent} on:keypress><span class="text">OK</span></button>
+        </div>
+    </div>
 </div>

@@ -44,9 +44,9 @@
 </script>
 
 {#if $modals.length !== 0}
-    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-main-center u-full-screen-height u-width-full-line u-z-index-20" on:click={clickOutside} on:keypress>
+    <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-full-screen-height u-width-full-line u-z-index-20" on:click={clickOutside} on:keypress>
         <!-- Modal content -->
-        <div class=" modal is-big u-position-absolute">
+        <div class="modal u-flex u-flex-wrap u-max-width-100-percent u-overflow-x-auto u-overflow-y-auto">
             <form class="modal-form" method="dialog">
                 <header class="modal-header">
                     <div class="avatar is-color-orange is-size-large">

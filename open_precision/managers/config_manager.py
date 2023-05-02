@@ -72,18 +72,20 @@ class ConfigManager:
     def load_config(self, yaml: str = None, reload: bool = False):
         """
         loads config file from yaml string or file
+        :param reload: reinitializing backend after loading config if this is set to True
         :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
         :return: None
         """
         print("[LOG]: loading config file")
         if yaml is None:
             with open(self._config_path) as config_file_stream:
-                self._config = YAML().load(stream=config_file_stream)
+                self._config = YAML(typ='safe').load(stream=config_file_stream)
         elif type(yaml) is str:
-            self._config = YAML().load(yaml)
+            self._config = YAML(typ='safe').load(yaml)
         else:
             raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
+        self._save_config_file()
         if reload:
             self._manager.reload()
 
@@ -91,7 +93,7 @@ class ConfigManager:
         print("[LOG]: saving config file")
         try:
             config_buffer = io.StringIO()
-            YAML().dump(self._config, stream=config_buffer)
+            YAML(typ='safe').dump(self._config, stream=config_buffer)
             with open(self._config_path, "w") as config_file_stream:
                 shutil.copyfileobj(config_buffer, config_file_stream)
         except RepresenterError as e:
