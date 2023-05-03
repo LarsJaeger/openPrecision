@@ -31,5 +31,19 @@ services:
     networks:
       - internal
     command: redis-server --loglevel warning
+  neo4j:
+    image: neo4j:latest
+    restart: always
+    expose:
+      - 7474
+      - 7473
+      - 7687
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/import:/var/lib/neo4j/import
+      - ./neo4j/plugins:/plugins
+    networks:
+      - internal
 networks:
   internal: {}
