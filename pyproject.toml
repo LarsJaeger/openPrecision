@@ -23,6 +23,7 @@ websockets = "^10.3"
 sparkfun-ublox-gps = {git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git", rev = "master"}
 sqlalchemy = "^2.0.9"
 ruamel-yaml-string = "^0.1.0"
+neomodel = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
 
