@@ -82,3 +82,7 @@ class DataModelBase:
         for key, value in json_obj.items():
             setattr(obj, key, value)
         return obj
+
+    @classmethod
+    def signature(cls):
+        return {attr for attr in list(dir(cls)) if not attr.startswith("__") and not attr.endswith("__")}

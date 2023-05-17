@@ -7,6 +7,7 @@ https://arrows.app/#/import/json=eyJncmFwaCI6eyJzdHlsZSI6eyJmb250LWZhbWlseSI6InN
 
 The model consists of nodes and data classes (they **don't** need to be a dataclasses.dataclass)).
 Both types of classes need to inherit from DataModelBase, which supplies serialization and deserialization methods.
+All model classes must be in the data_model_classes list below.
 
 ## Nodes
 
@@ -20,27 +21,94 @@ Every data class also needs a corresponding property class that maps the data cl
 These Property classes should be defined in the same module as the corresponding data class and must inherit from neomodel.Property (and implement the inflate and deflate methods).
 The inflate method takes the value stored in the database and returns the data class, the deflate method takes the data class and returns the value that should be stored in the database.
 """
+import json
 
 import neomodel
 from neomodel.properties import validator
 
+from open_precision.core.model.data.action import Action
+from open_precision.core.model.data.action_response import ActionResponse
+from open_precision.core.model.data.course import Course
+from open_precision.core.model.data.data_model_base import DataModelBase
+from open_precision.core.model.data.location import Location
+from open_precision.core.model.data.orientation import Orientation
+from open_precision.core.model.data.path import Path
+from open_precision.core.model.data.position import Position
+from open_precision.core.model.data.vehicle import Vehicle
+from open_precision.core.model.data.vehicle_state import VehicleState
+from open_precision.core.model.data.waypoint import Waypoint
 
-class JSONProperty(neomodel.JSONProperty):
+data_model_classes = [Action, ActionResponse, Course, Location, Orientation, Path, Position, Vehicle, VehicleState,
+                      Waypoint]
+# generate class signature mapping for deserialization of json to data model classes
+signature_class_mapping = {cls.signature(): cls for cls in data_model_classes}
+
+
+# extend the json.JSONEncoder class
+class CustomJSONEncoder(json.JSONEncoder):
+
+    # overload method default
+    def default(self, obj):
+        # Match all the types you want to handle in your converter
+        if isinstance(obj, DataModelBase):
+            return obj.to_json()
+
+        return json.JSONEncoder.default(self, obj)
+
+
+class CustomJSONDecoder(json.JSONDecoder):
+    def __init__(self, *args, **kwargs):
+        json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
+
+    def object_hook(self, obj):
+        # TODO test
+        # handle your custom classes
+        if isinstance(obj, dict):
+            keys = set(obj.keys())
+            for signature, cls in signature_class_mapping:
+                if signature == keys:
+                    return cls(**obj)
+
+        # handling the resolution of nested objects
+        if isinstance(obj, dict):
+            for key in list(obj):
+                obj[key] = self.object_hook(obj[key])
+
+            return obj
+
+        if isinstance(obj, list):
+            for i in range(0, len(obj)):
+                obj[i] = self.object_hook(obj[i])
+
+            return obj
+
+        # resolving simple strings objects
+        # dates
+        if isinstance(obj, str):
+            obj = self._extract_date(obj)
+
+        return obj
+
+
+class CustomJSONProperty(neomodel.JSONProperty):
     """
-    Property for storing JSON objects in Neo4j
-    JSON values are stored as a string.
+    Property for storing specific data types as JSON objects in Neo4j
     """
 
-    # TODO finish this
+    # TODO move this to data_model_base.py
 
-    def __init__(self, cls: type, *args, **kwargs):
-        self.cls = cls
+    def __init__(self, *args, **kwargs):
+        """
+        :param cls: type of the data class that should be stored as JSON, must be a subclass of DataModelBase
+        :param args:
+        :param kwargs:
+        """
         super().__init__(*args, **kwargs)
 
     @validator
-    def inflate(self, value: str) -> any:
-        return super().loads(value)
+    def inflate(self, value: str) -> DataModelBase:
+        return CustomJSONDecoder().decode(value)
 
     @validator
-    def deflate(self, value: any) -> str:
-        return json.dumps(value)
+    def deflate(self, value: DataModelBase) -> str:
+        return CustomJSONEncoder().encode(value)

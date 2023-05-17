@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Any, Dict
+from typing import List, Any, Dict
 
 from neomodel import UniqueIdProperty, StructuredNode, JSONProperty, Property, RelationshipFrom, cardinality
 
 from open_precision.core.model.data.data_model_base import DataModelBase
-
-if TYPE_CHECKING:
-    pass
 
 
 class Action(StructuredNode, DataModelBase):
