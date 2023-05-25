@@ -1,59 +1,31 @@
-from __future__ import annotations
+from dataclasses import dataclass
 
-import json
-from dataclasses import field
-from typing import TYPE_CHECKING
+from neomodel.properties import validator, Property
 
-from pyquaternion import Quaternion
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column, Mapped, relationship
-
-from open_precision.core.model.data_model_base import DataModelBase
-from open_precision.core.model.location import Location
-from open_precision.core.model.orientation import Orientation
-from open_precision.core.model.persistence_model_base import PersistenceModelBase
-
-if TYPE_CHECKING:
-    from open_precision.core.model.machine_state import MachineState
+from open_precision.core.model import DataModelBase
+from open_precision.core.model import Location
+from open_precision.core.model import Orientation
 
 
-class Position(DataModelBase, PersistenceModelBase):
-    """position of vehicle: location describes the location of the center of the rear axle; orientation is a
-    quaternion describing rotation from x+ = north, z- = gravity to x+ = main driving direction, y+ = left, z+ = up"""
+@dataclass(kw_only=True)
+class Position(DataModelBase):
+    """
+    A position consists of a location and an orientation.
+    """
+    location: Location
+    orientation: Orientation
 
-    __tablename__ = "Positions"
 
-    id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
+class PositionProperty(Property, DataModelBase):
+    """
+    Property for storing Position objects in Neo4j.
+    Position values are stored as a list of 8 floats. The first 4 are the location, the last 4 are the orientation.
+    """
 
-    location: Location | None = field(init=True, default=None)
-    _location: Mapped[str] = mapped_column(init=True, default=None, repr=False)
+    @validator
+    def inflate(self, value: list[float]) -> Position:
+        return Position(location=Location(value[0], value[1], value[2], value[3]), orientation=Orientation(value[-4:]))
 
-    orientation: Orientation | None = field(init=True, default=None)
-    _orientation: Mapped[str] = mapped_column(init=True, default=None, repr=False)
-
-    machine_state: Mapped[MachineState] = relationship(init=True, default=None, uselist=False, repr=False, back_populates="position")  # in JSON format
-
-    @property
-    def location(self) -> Location | None:
-        if self._location is None:
-            return None
-        return Location.from_json(self._location)
-
-    @location.setter
-    def location(self, location: Location):
-        self._location = location.to_json()
-
-    @property
-    def orientation(self) -> Orientation | None:
-        if self._orientation is None:
-            return None
-        return Orientation.from_json(self._orientation)
-
-    @orientation.setter
-    def orientation(self, orientation: Orientation):
-        if (not isinstance(orientation, Orientation)) and isinstance(orientation, Quaternion):
-            orientation = Orientation(orientation)
-        self._orientation = orientation.to_json()
-
-    def is_valid(self):
-        return self.location.is_valid() and (self.orientation is not None)
+    @validator
+    def deflate(self, value: Position) -> list[float]:
+        return [value.location.x, value.location.y, value.location.z, value.location.error] + value.q.tolist()

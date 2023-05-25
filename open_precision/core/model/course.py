@@ -1,52 +1,16 @@
-from __future__ import annotations
+from dataclasses import dataclass
 
-from dataclasses import field
-from typing import TYPE_CHECKING, List
+from neomodel import StructuredNode, UniqueIdProperty, Property, RelationshipTo, cardinality
 
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-
-from open_precision.core.exceptions import NotAPathException
-from open_precision.core.model.data_model_base import DataModelBase
-from open_precision.core.model.path import Path
-from open_precision.core.model.persistence_model_base import PersistenceModelBase
-
-if TYPE_CHECKING:
-    pass
+from open_precision.core.model import DataModelBase
 
 
-class Course(DataModelBase, PersistenceModelBase):
-    __tablename__ = "Courses"
+@dataclass(kw_only=True)
+class Course(StructuredNode, DataModelBase):
+    id: str = UniqueIdProperty()
+    name: str = Property(required=True)
+    description: str = Property(required=False)
 
-    """ A course consists of paths that contain waypoints"""
-    id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
-
-    name: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
-    description: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
-    paths: List[Path] = field(init=True, default_factory=list)
-    _paths: Mapped[List[Path]] = relationship(init=True, default_factory=list, back_populates='course')
-
-    def add_path(self, path: Path):
-        # check if Path has at least two waypoints
-        self._check_path(path)
-        path.course = self
-        self._paths.append(path)
-        return self
-
-    @property
-    def paths(self):
-        return self._paths
-
-    @paths.setter
-    def paths(self, paths: list[Path]):
-        if isinstance(paths, list):
-            for path in paths:
-                self._check_path(path=path)
-                path.course = self
-            self._paths = paths
-        else:
-            self._paths = []
-
-    @staticmethod
-    def _check_path(path: Path):
-        if len(path.waypoints) < 2:
-            raise NotAPathException(path)
+    CONTAINS: RelationshipTo = RelationshipTo('open_precision.core.model.data.course_element.CourseElement',
+                                              'CONTAINS',
+                                              cardinality=cardinality.ZeroOrMore)

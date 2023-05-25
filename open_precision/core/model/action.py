@@ -1,54 +1,22 @@
 from __future__ import annotations
 
-import json
-from dataclasses import field
-from typing import TYPE_CHECKING, List, Any, Dict
+from dataclasses import dataclass
+from typing import List, Any, Dict
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from neomodel import UniqueIdProperty, StructuredNode, JSONProperty, Property, RelationshipFrom, cardinality
 
-from open_precision.core.model.data_model_base import DataModelBase
-from open_precision.core.model.persistence_model_base import PersistenceModelBase
-
-if TYPE_CHECKING:
-    from open_precision.core.model.action_response import ActionResponse
+from open_precision.core.model import DataModelBase
 
 
-class Action(DataModelBase, PersistenceModelBase):
-    __tablename__ = "Actions"
-
-    id: Mapped[int] = mapped_column(init=True, primary_key=True, default=None)
-
-    initiator: Mapped[str] = mapped_column(init=True, default=None, nullable=True)
-    function_identifier: Mapped[str] = mapped_column(init=True,
-                                                     default=None)  # consists of the name of the class and the name
+@dataclass(kw_only=True)
+class Action(StructuredNode, DataModelBase):
+    id: str = UniqueIdProperty()
+    initiator: str = Property(required=True)
+    function_identifier: str = Property(required=True)  # consists of the name of the class and the name
     # of the function separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
+    args: List[Any] = JSONProperty(required=True)
+    kw_args: Dict[str, Any] = JSONProperty(required=True)
 
-    args: List[Any] = field(init=True, default_factory=list)
-    _args: Mapped[str] = mapped_column(init=True, default=None, repr=False, nullable=True)  # json of the arguments
-
-    kw_args: Dict[str, Any] = field(init=True, default_factory=dict)
-    _kw_args: Mapped[str] = mapped_column(init=True, default=None, repr=False, nullable=True) # json of the keyword arguments
-
-    action_response: Mapped[ActionResponse] = relationship(init=True, default=None, repr=False, uselist=False, back_populates='action')
-
-    @property
-    def args(self) -> List[Any]:
-        return json.loads(self._args) if self._args is not None else []
-
-    @args.setter
-    def args(self, args: List):
-        if type(args) is property:
-            args = []
-        self._args = json.dumps(args)
-
-    @property
-    def kw_args(self) -> Dict[Any, Any]:
-        return json.loads(self._kw_args) if self._kw_args is not None else {}
-
-    @kw_args.setter
-    def kw_args(self, kw_args: Dict):
-        if type(kw_args) is property:
-            kw_args = {}
-        self._kw_args = json.dumps(kw_args)
-
+    RESPONDS_TO: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.action_response.ActionResponse',
+                                                     'RESPONDS_TO',
+                                                     cardinality=cardinality.ZeroOrOne)

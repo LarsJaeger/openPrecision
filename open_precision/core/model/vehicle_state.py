@@ -1,9 +1,12 @@
+from dataclasses import dataclass
+
 from neomodel import UniqueIdProperty, Property, StructuredNode
 
-from open_precision.core.model.data.data_model_base import DataModelBase
-from open_precision.core.model.data.position import Position, PositionProperty
+from open_precision.core.model import DataModelBase
+from open_precision.core.model.position import Position, PositionProperty
 
 
+@dataclass(kw_only=True)
 class VehicleState(StructuredNode, DataModelBase):
     id: str = UniqueIdProperty()
 
