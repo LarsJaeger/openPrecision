@@ -11,7 +11,9 @@ All model classes must be in the data_model_classes list below.
 
 ## Nodes
 
-Nodes are classes that inherit from . They are stored in the graph database (neo4j) and can be queried.
+Nodes are classes that inherit from StructuredNode. They are stored and queried in the graph database (neo4j).
+To store them in the data base, use the .save() method of the object you want to store. To learn more about persistence,
+look up the neomodel documentation.
 The object graph mapper is neomodel, classes that should represent classes must inherit from neomodel.StructuredNode.
 The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data type is stored.
 
@@ -27,6 +29,7 @@ from typing import List
 import neomodel
 from neomodel.properties import validator
 
+signature_class_mapping = {}  # will be set by map_model function
 
 class DataModelBase:
     def to_json(self):
@@ -34,6 +37,7 @@ class DataModelBase:
 
     @classmethod
     def signature(cls):
+        """Used to identify the class in the CustomJSONDecoder"""
         return {attr for attr in list(dir(cls)) if not attr.startswith("__") and not attr.endswith("__")}
 
 
@@ -95,21 +99,22 @@ class CustomJSONProperty(neomodel.JSONProperty):
         return CustomJSONEncoder().encode(value)
 
 
-from open_precision.core.model.action import Action
-from open_precision.core.model.action_response import ActionResponse
-from open_precision.core.model.course import Course
-from open_precision.core.model.location import Location
-from open_precision.core.model.orientation import Orientation
-from open_precision.core.model.path import Path
-from open_precision.core.model.position import Position
-from open_precision.core.model.vehicle import Vehicle
-from open_precision.core.model.vehicle_state import VehicleState
-from open_precision.core.model.waypoint import Waypoint
+def map_model():
+    from open_precision.core.model.action import Action
+    from open_precision.core.model.action_response import ActionResponse
+    from open_precision.core.model.course import Course
+    from open_precision.core.model.location import Location
+    from open_precision.core.model.orientation import Orientation
+    from open_precision.core.model.path import Path
+    from open_precision.core.model.position import Position
+    from open_precision.core.model.vehicle import Vehicle
+    from open_precision.core.model.vehicle_state import VehicleState
+    from open_precision.core.model.waypoint import Waypoint
 
-data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
-                                           Vehicle, VehicleState,
-                                           Waypoint]
-for cls in data_model_classes:
-    neomodel.install_labels(cls)
-# generate class signature mapping for deserialization of json to data model classes
-signature_class_mapping = {cls.signature(): cls for cls in data_model_classes}
+    data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
+                                               Vehicle, VehicleState,
+                                               Waypoint]
+    for cls in data_model_classes:
+        neomodel.install_labels(cls)
+    # generate class signature mapping for deserialization of json to data model classes
+    signature_class_mapping = {cls.signature(): cls for cls in data_model_classes}

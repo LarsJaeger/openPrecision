@@ -16,5 +16,14 @@ def async_partial(f, *args):
     return f2
 
 
+def is_iterable(obj: any):
+    try:
+        iterator = iter(obj)
+    except TypeError:
+        return False
+    else:
+        return True
+
+
 def millis():
     return int(round(time_.time() * 1000))
