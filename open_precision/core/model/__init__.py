@@ -27,18 +27,17 @@ import json
 from typing import List
 
 import neomodel
+from neomodel import StructuredNode
 from neomodel.properties import validator
 
+from open_precision.utils.other import get_attrs_recursive
+
 signature_class_mapping = {}  # will be set by map_model function
+
 
 class DataModelBase:
     def to_json(self):
         return CustomJSONEncoder().encode(self)
-
-    @classmethod
-    def signature(cls):
-        """Used to identify the class in the CustomJSONDecoder"""
-        return {attr for attr in list(dir(cls)) if not attr.startswith("__") and not attr.endswith("__")}
 
 
 # extend the json.JSONEncoder class
@@ -58,18 +57,16 @@ class CustomJSONDecoder(json.JSONDecoder):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
     def object_hook(self, obj):
-        # TODO test
-        # handle your custom classes
-        if isinstance(obj, dict):
-            keys = set(obj.keys())
-            for signature, cls in signature_class_mapping:
-                if signature == keys:
-                    return cls(**obj)
-
         # handling the resolution of nested objects
         if isinstance(obj, dict):
-            for key in list(obj):
+            keys_set = set(obj.keys())
+            for key in keys_set:
                 obj[key] = self.object_hook(obj[key])
+
+            # check if the dict is a signature of a class
+            for signature, cls in signature_class_mapping.items():
+                if signature == keys_set:
+                    return cls(**obj)
 
             return obj
 
@@ -117,4 +114,5 @@ def map_model():
     for cls in data_model_classes:
         neomodel.install_labels(cls)
     # generate class signature mapping for deserialization of json to data model classes
-    signature_class_mapping = {cls.signature(): cls for cls in data_model_classes}
+    signature_class_mapping = {get_attrs_recursive(cls, excluded_classes=[DataModelBase, StructuredNode]): cls for cls
+                               in data_model_classes}

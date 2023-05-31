@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import time as time_
+from itertools import chain
 
 
 def async_partial(f, *args):
@@ -23,6 +24,18 @@ def is_iterable(obj: any):
         return False
     else:
         return True
+
+
+def get_attrs_recursive(cls, excluded_classes: list[type] = None) -> set[str]:
+    if excluded_classes is None:
+        excluded_classes = []
+
+    own_attrs = {attr for attr in cls.__dict__ if not attr.startswith('__')}
+    if cls.__bases__:
+        bases = [base for base in cls.__bases__ if base not in excluded_classes]
+        return set(chain(*[get_attrs_recursive(base, excluded_classes) for base in bases], own_attrs))
+    else:
+        return own_attrs
 
 
 def millis():
