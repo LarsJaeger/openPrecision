@@ -22,22 +22,34 @@ Data classes that will not be explicitly stored as single nodes in the graph but
 Every data class also needs a corresponding property class that maps the data class attributes to a neo4j supported data type.
 These Property classes should be defined in the same module as the corresponding data class and must inherit from neomodel.Property (and implement the inflate and deflate methods).
 The inflate method takes the value stored in the database and returns the data class, the deflate method takes the data class and returns the value that should be stored in the database.
+
+#JSON Serialization
+Use the to_json method of DataModelBase objects or the CustomJSONEncoder class to serialize the object to json.
+Use the from_json method of DataModelBase class or the CustomJSONDecoder class to deserialize the json string to an object.
+The CustomJSONDecoder uses duck typing to determine the class of the object (more specifically, it uses the names of the class attributes (except relationships)).
+
+Both serialization and deserialization ignore all relationships.
 """
 import json
 from typing import List
 
 import neomodel
-from neomodel import StructuredNode
+from neomodel import StructuredNode, RelationshipDefinition
 from neomodel.properties import validator
 
-from open_precision.utils.other import get_attrs_recursive
+from open_precision.utils.other import get_attributes
 
-signature_class_mapping = {}  # will be set by map_model function
+signature_class_mapping: dict  # will be set by map_model function
+class_signature_mapping: dict  # will be set by map_model function
 
 
 class DataModelBase:
     def to_json(self):
         return CustomJSONEncoder().encode(self)
+
+    @classmethod
+    def from_json(cls, json_string: str):
+        return CustomJSONDecoder().decode(json_string)
 
 
 # extend the json.JSONEncoder class
@@ -45,10 +57,11 @@ class CustomJSONEncoder(json.JSONEncoder):
 
     # overload method default
     def default(self, obj):
-        # Match all the types you want to handle in your converter
         if isinstance(obj, DataModelBase):
-            return obj.to_json()
-
+            # use class_signature_mapping to get the signature of the class
+            signature = class_signature_mapping[obj.__class__]
+            obj_dict = {k: getattr(obj, k) for k in signature}
+            return json.JSONEncoder.default(self, obj_dict)
         return json.JSONEncoder.default(self, obj)
 
 
@@ -97,6 +110,8 @@ class CustomJSONProperty(neomodel.JSONProperty):
 
 
 def map_model():
+    global signature_class_mapping, class_signature_mapping
+
     from open_precision.core.model.action import Action
     from open_precision.core.model.action_response import ActionResponse
     from open_precision.core.model.course import Course
@@ -114,5 +129,12 @@ def map_model():
     for cls in data_model_classes:
         neomodel.install_labels(cls)
     # generate class signature mapping for deserialization of json to data model classes
-    signature_class_mapping = {get_attrs_recursive(cls, excluded_classes=[DataModelBase, StructuredNode]): cls for cls
-                               in data_model_classes}
+    signature_class_mapping = {get_attributes(cls,
+                                              base_filter=lambda x: x not in [DataModelBase, StructuredNode],
+                                              property_name_filter=lambda x: not x.startswith("_"),
+                                              property_type_filter=lambda x: not issubclass(x, RelationshipDefinition))
+                               : cls
+                               for cls in data_model_classes}
+
+    class_signature_mapping = {v: k for k, v in
+                               signature_class_mapping.items()}  # reverse lookup table for signature_class_mapping

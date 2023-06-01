@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import time as time_
 from itertools import chain
+from typing import Callable
 
 
 def async_partial(f, *args):
@@ -26,14 +27,25 @@ def is_iterable(obj: any):
         return True
 
 
-def get_attrs_recursive(cls, excluded_classes: list[type] = None) -> set[str]:
-    if excluded_classes is None:
-        excluded_classes = []
+def get_attributes(cls,
+                   base_filter: Callable[[type], bool] = lambda x: True,
+                   property_name_filter: Callable[[str], bool] = lambda x: True,
+                   property_type_filter: Callable[[type], bool] = lambda x: True) -> set[str]:
+    """
+    Get all attributes of a class and its base classes recursively.
+    :param cls:
+    :param base_filter: function to filter base classes, inherited paths will be ignored above classes that do not pass the filter
+    :param property_name_filter: function to filter property names, properties will be ignored if filter returns False
+    :param property_type_filter: function to filter property types, properties will be ignored if filter returns False
+    :return: a set of all property names of the class (including inherited ones)
+    """
 
-    own_attrs = {attr for attr in cls.__dict__ if not attr.startswith('__')}
+    own_attrs = {attr for attr, val in cls.__dict__.items() if property_name_filter(attr) and property_type_filter(val)}
     if cls.__bases__:
-        bases = [base for base in cls.__bases__ if base not in excluded_classes]
-        return set(chain(*[get_attrs_recursive(base, excluded_classes) for base in bases], own_attrs))
+        bases = [base for base in cls.__bases__ if base_filter(base)]
+        return set(chain(*[get_attributes(base, base_filter, property_name_filter, property_type_filter)
+                           for base in bases],
+                         own_attrs))
     else:
         return own_attrs
 
