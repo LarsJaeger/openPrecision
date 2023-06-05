@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from open_precision.core.model import persist_return
 from open_precision.core.model.location import Location
 from open_precision.core.model.orientation import Orientation
 from open_precision.core.model.position import Position
@@ -15,11 +16,10 @@ from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_s
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
-from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class GpsAosPositionBuilder(MachineStateBuilder):
@@ -30,13 +30,13 @@ class GpsAosPositionBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         self._manager = manager
 
         """get available sensors"""
 
     @property
-    @PersistenceManager.persist_return
+    @persist_return
     def current_position(self) -> Position | None:
         uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
         orientation: Orientation = self._manager.plugins[AbsoluteOrientationSensor].orientation

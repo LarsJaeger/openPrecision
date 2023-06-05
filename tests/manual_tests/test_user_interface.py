@@ -2,7 +2,7 @@
 # change 'template' to python file name of file to be tested
 import unittest
 
-from open_precision.managers.system_manager import SystemManager
+from open_precision.manager_hub import ManagerHub
 
 
 class TestPositionBuilder(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestPositionBuilder(unittest.TestCase):
         """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
-        man = SystemManager()
+        man = ManagerHub()
 
 
 def main():

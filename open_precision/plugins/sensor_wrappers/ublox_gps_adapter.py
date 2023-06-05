@@ -5,19 +5,20 @@ import os
 from typing import TYPE_CHECKING
 
 import serial
-#import externalTools.ublox_gps_fixed as ublox_gps
+
+# import externalTools.ublox_gps_fixed as ublox_gps
 import open_precision.utils.other
 from open_precision.core.model.location import Location
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 shortest_update_dt = 100  # in ms
 
 
 class UbloxGPSAdapter(GlobalPositioningSystem):
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         self._manager = manager
         self._manager.config.register_value(self, "enable_rtk_correction", True)
         self._manager.config.register_value(

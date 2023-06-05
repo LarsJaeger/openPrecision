@@ -1,29 +1,29 @@
 from __future__ import annotations
-import asyncio
+
 import json
-import traceback
 from typing import TYPE_CHECKING
 
+from open_precision.core.model.data_model_base import DataModelBase
 from socketio.asyncio_redis_manager import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
 
-from open_precision.core.model.data_model_base import DataModelBase
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class DataManager:
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
-        self._data_update_mapping = {"target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
-                                     "course": lambda: self._manager.plugins[Navigator].course,
-                                     "machine_state": lambda: self._manager.plugins[MachineStateBuilder].machine_state,
-                                     }
+        self._data_update_mapping = {
+            "target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
+            "course": lambda: self._manager.plugins[Navigator].course,
+            "machine_state": lambda: self._manager.plugins[MachineStateBuilder].machine_state,
+            }
 
     async def start_update_loop(self):
         url = 'redis://redis:6379'
@@ -37,13 +37,13 @@ class DataManager:
     async def update(self):
         try:
             # handle actions and deliver responses
-            action_responses: list = self._manager.action.handle_actions(amount=10)
+            action_responses: list = self._manager.system_task_manager.handle_actions(amount=10)
             # send all the responses to the user interface
             for action_response in action_responses:
                 if action_response.success is False:
                     print("[WARNING] Error during update:" + action_response.response)
                 await self._sio_queue.emit('action_response', action_response.to_json(),
-                                            room=action_response.action.initiator)
+                                           room=action_response.system_task_manager.initiator)
 
             # send current states to the user interface
             for key, fn in self._data_update_mapping.items():

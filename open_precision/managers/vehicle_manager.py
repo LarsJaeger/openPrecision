@@ -2,16 +2,17 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from typing import TYPE_CHECKING
+
+from open_precision.core.model import persist_arg
 from open_precision.core.model.vehicle import Vehicle
-from open_precision.managers.persistence_manager import PersistenceManager
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class VehicleManager:
-    def __init__(self, manager: SystemManager):
-        self._manager: SystemManager = manager
+    def __init__(self, manager: ManagerHub):
+        self._manager: ManagerHub = manager
         self._manager.config.register_value(
             self,
             "vehicles",
@@ -71,7 +72,7 @@ class VehicleManager:
         return self._vehicles[self._current_vehicle_id]
 
     @current_vehicle.setter
-    @PersistenceManager.persist_arg
+    @persist_arg
     def current_vehicle(self, new_vehicle_id: int):
         self._current_vehicle_id = new_vehicle_id
 
@@ -80,6 +81,6 @@ class VehicleManager:
         return self._vehicles
 
     @vehicles.setter
-    @PersistenceManager.persist_arg
+    @persist_arg
     def vehicles(self, new_vehicles: list[Vehicle]):
         self._vehicles = new_vehicles

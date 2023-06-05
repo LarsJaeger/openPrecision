@@ -4,14 +4,14 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from open_precision.core.model.machine_state import MachineState
+
+from open_precision.core.model import persist_arg, persist_return
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.plugin import Plugin
-from open_precision.managers.action_manager import ActionManager
-from open_precision.managers.persistence_manager import PersistenceManager
 from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class Navigator(Plugin, ABC):
@@ -19,7 +19,7 @@ class Navigator(Plugin, ABC):
     order to the target point (or line)"""
 
     @abstractmethod
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass
@@ -35,17 +35,16 @@ class Navigator(Plugin, ABC):
 
     @course.setter
     @abstractmethod
-    @PersistenceManager.persist_arg
+    @persist_arg
     def course(self, course: CourseGenerator):
         pass
 
     @property
     @abstractmethod
-    @PersistenceManager.persist_return
+    @persist_return
     def target_machine_state(self) -> MachineState | None:
         pass
 
-    @ActionManager.enable_action
     def set_course_from_course_generator(self, course_generator_identifier: str = 'a_heading_parallel'):
         """sets the course generator to the one with the given identifier,
         possible identifiers are: 'a_heading_parallel'"""

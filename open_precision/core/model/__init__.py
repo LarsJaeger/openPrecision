@@ -31,16 +31,57 @@ The CustomJSONDecoder uses duck typing to determine the class of the object (mor
 Both serialization and deserialization ignore all relationships.
 """
 import json
+from functools import wraps
 from typing import List
 
 import neomodel
 from neomodel import StructuredNode, RelationshipDefinition
 from neomodel.properties import validator
 
-from open_precision.utils.other import get_attributes
+from open_precision.utils.other import get_attributes, is_iterable
 
 signature_class_mapping: dict  # will be set by map_model function
 class_signature_mapping: dict  # will be set by map_model function
+
+
+def persist_return(func: callable) -> callable:
+    """this decorator will persist the return value of the decorated function when it is called"""
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        val = func(self, *args, **kwargs)
+        if is_iterable(val):
+            [item.save() for item in val]
+        else:
+            val.save()
+        return val
+
+    return wrapper
+
+
+def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
+    """
+    this decorator will persist the argument of the decorated function when it is called
+    :param func: the function to decorate
+    :param position_or_kw: the position or keyword of the argument to persist, defaults to 0
+    """
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if isinstance(position_or_kw, str):
+            val = kwargs[position_or_kw]
+        elif isinstance(position_or_kw, int):
+            val = args[0]
+        else:
+            raise TypeError("position_or_kw must be either an int or a str")
+
+        if is_iterable(val):
+            [item.save() for item in val]
+        else:
+            val.save()
+        return func(self, *args, **kwargs)
+
+    return wrapper
 
 
 class DataModelBase:
@@ -73,6 +114,7 @@ class CustomJSONDecoder(json.JSONDecoder):
         # handling the resolution of nested objects
         if isinstance(obj, dict):
             keys_set = set(obj.keys())
+
             for key in keys_set:
                 obj[key] = self.object_hook(obj[key])
 
@@ -80,8 +122,8 @@ class CustomJSONDecoder(json.JSONDecoder):
             for signature, cls in signature_class_mapping.items():
                 if signature == keys_set:
                     return cls(**obj)
-
-            return obj
+            else:
+                return obj
 
         if isinstance(obj, list):
             for i in range(0, len(obj)):
@@ -109,7 +151,7 @@ class CustomJSONProperty(neomodel.JSONProperty):
         return CustomJSONEncoder().encode(value)
 
 
-def map_model():
+def map_model(database_url: str):
     global signature_class_mapping, class_signature_mapping
 
     from open_precision.core.model.action import Action
@@ -122,6 +164,8 @@ def map_model():
     from open_precision.core.model.vehicle import Vehicle
     from open_precision.core.model.vehicle_state import VehicleState
     from open_precision.core.model.waypoint import Waypoint
+
+    neomodel.config.DATABASE_URL = database_url
 
     data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
                                                Vehicle, VehicleState,

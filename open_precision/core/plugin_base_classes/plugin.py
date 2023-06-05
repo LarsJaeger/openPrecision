@@ -4,12 +4,12 @@ from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class Plugin(ABC):
     @abstractmethod
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

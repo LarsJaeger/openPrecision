@@ -6,15 +6,15 @@ import numpy as np
 
 import open_precision.utils.math
 from open_precision.core.exceptions import CourseNotSetException
-from open_precision.core.model.machine_state import MachineState
-from open_precision.core.plugin_base_classes.navigator import Navigator
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
-from open_precision.managers.system_manager import SystemManager
+from open_precision.core.model import persist_arg, persist_return
 from open_precision.core.model.course import Course
-from open_precision.core.model.position import Position
 from open_precision.core.model.location import Location
+from open_precision.core.model.position import Position
+from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.model.waypoint import Waypoint
-from open_precision.managers.persistence_manager import PersistenceManager
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
+from open_precision.core.plugin_base_classes.navigator import Navigator
+from open_precision.manager_hub import ManagerHub
 from open_precision.utils.math import intersections_of_circle_and_line_segment
 
 
@@ -22,9 +22,9 @@ class PurePursuitNavigator(Navigator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         super().__init__(manager)
-        self._manager: SystemManager = manager
+        self._manager: ManagerHub = manager
         self._course: Course | None = None
         self._current_path_id: int | None = None
 
@@ -33,14 +33,14 @@ class PurePursuitNavigator(Navigator):
         return self._course
 
     @course.setter
-    @PersistenceManager.persist_arg
+    @persist_arg
     def course(self, course: Course):
         self._course = course
-        
+
     @property
-    @PersistenceManager.persist_return
-    def target_machine_state(self) -> MachineState | None:
-        target_machine_state = MachineState(steering_angle=self._steering_angle, speed=None)
+    @persist_return
+    def target_machine_state(self) -> VehicleState | None:
+        target_machine_state = VehicleState(steering_angle=self._steering_angle, speed=None)
         return target_machine_state
 
     @property

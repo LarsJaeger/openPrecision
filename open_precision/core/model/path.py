@@ -15,7 +15,7 @@ class Path(StructuredNode, DataModelBase):
                                                   'REQUIRES',
                                                   cardinality=cardinality.ZeroOrMore)
 
-    CONTAINS: RelationshipFrom = RelationshipTo('open_precision.core.model.data.path.Path',
+    CONTAINS: RelationshipFrom = RelationshipTo('open_precision.core.model.data.waypoint.Waypoint',
                                                 'CONTAINS',
                                                 cardinality=cardinality.ZeroOrMore)
 

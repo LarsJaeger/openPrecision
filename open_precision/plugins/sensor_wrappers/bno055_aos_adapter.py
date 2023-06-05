@@ -1,18 +1,20 @@
 from __future__ import annotations
 
 import atexit
+
 import adafruit_bno055
 import busio
 import numpy as np
 from pyquaternion import Quaternion
+
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.managers.system_manager import SystemManager
+from open_precision.manager_hub import ManagerHub
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         self._manager = manager
         self._manager.config.register_value(self, "debug", False)
         print("[Bno055AosAdapter] starting initialisation")

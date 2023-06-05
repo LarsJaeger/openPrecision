@@ -10,15 +10,14 @@ from ruamel.yaml import YAML, CommentedMap
 from ruamel.yaml.representer import RepresenterError
 
 from open_precision.managers import plugin_manager
-from open_precision.managers.action_manager import ActionManager
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class ConfigManager:
-    def __init__(self, manager: SystemManager):
-        self._manager: SystemManager = manager
+    def __init__(self, manager: ManagerHub):
+        self._manager: ManagerHub = manager
         self._config: CommentedMap = CommentedMap()
         self._config_path = self._manager._config_path
         self.load_config()
@@ -68,7 +67,6 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    @ActionManager.enable_action
     def load_config(self, yaml: str = None, reload: bool = False):
         """
         loads config file from yaml string or file
@@ -102,7 +100,6 @@ class ConfigManager:
             print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
             return
 
-    @ActionManager.enable_action
     def get_config_string(self) -> str:
         try:
             config_buffer = io.StringIO()

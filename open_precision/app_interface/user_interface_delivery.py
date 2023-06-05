@@ -12,7 +12,7 @@ from socketio.asyncio_server import AsyncServer
 from open_precision.core.model.action import Action
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class MessageType(Enum):
@@ -28,7 +28,7 @@ class MessageType(Enum):
 
 
 class UserInterfaceDelivery:
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: ManagerHub):
         self._manager = manager
         url = 'redis://redis:6379'
         self._server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
@@ -61,7 +61,7 @@ class UserInterfaceDelivery:
                 print(f'[ERROR]: {e}, while parsing action {data}')
                 return
             data.initiator = sid
-            self._manager.action.queue_action(data)
+            self._manager.system_task_manager.queue_action(data)
 
         self._app = socketio.ASGIApp(self._server, static_files=static_files)
 

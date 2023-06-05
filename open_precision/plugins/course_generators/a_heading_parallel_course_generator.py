@@ -1,25 +1,26 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 
-from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
+from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
+from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.manager_hub import ManagerHub
 
 
 class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: SystemManager):
-        self.man: SystemManager = manager
+    def __init__(self, manager: ManagerHub):
+        self.man: ManagerHub = manager
 
     def generate_course(self) -> Course:
         # get position

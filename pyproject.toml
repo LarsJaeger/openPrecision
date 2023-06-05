@@ -14,16 +14,15 @@ flatten-dict = "^0.4.2"
 sparkfun-qwiic-icm20948 = "^0.0.1"
 adafruit-python-shell = "^1.3.3"
 adafruit-circuitpython-bno055 = "^5.4.1"
-spidev = {version = "^3.5", optional = true}
-redis = "^4.3.4"
+spidev = { version = "^3.5", optional = true }
 uvicorn = "^0.18.2"
-aioredis = "^2.0.1"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
-sparkfun-ublox-gps = {git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git", rev = "master"}
-sqlalchemy = "^2.0.9"
+sparkfun-ublox-gps = { git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git", rev = "master" }
 ruamel-yaml-string = "^0.1.0"
 neomodel = "^5.0.0"
+fastapi = "^0.96.0"
+aioprocessing = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 
