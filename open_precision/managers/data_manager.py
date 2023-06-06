@@ -11,11 +11,11 @@ from open_precision.core.plugin_base_classes.machine_state_builder import Machin
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class DataManager:
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
@@ -23,7 +23,7 @@ class DataManager:
             "target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
             "course": lambda: self._manager.plugins[Navigator].course,
             "machine_state": lambda: self._manager.plugins[MachineStateBuilder].machine_state,
-            }
+        }
 
     async def start_update_loop(self):
         url = 'redis://redis:6379'

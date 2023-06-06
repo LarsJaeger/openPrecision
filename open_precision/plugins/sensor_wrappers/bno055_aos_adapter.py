@@ -10,11 +10,11 @@ from pyquaternion import Quaternion
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
         self._manager.config.register_value(self, "debug", False)
         print("[Bno055AosAdapter] starting initialisation")

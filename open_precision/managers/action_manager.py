@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Any, Callable
 from aioprocessing import AioQueue, AioPipe
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
-async def queue_func(queue: AioQueue, func: Callable[[ManagerHub], Any]) -> any:
+async def queue_func(queue: AioQueue, func: Callable[[SystemHub], Any]) -> any:
     # create pipe
     pipe_out, pipe_in = AioPipe(duplex=False)
     # put action and pipe in queue
@@ -20,11 +20,11 @@ async def queue_func(queue: AioQueue, func: Callable[[ManagerHub], Any]) -> any:
 
 
 class SystemTaskManager:
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
         self.task_queue = AioQueue()
 
-    def queue_system_task(self, func: Callable[[ManagerHub], Any]) -> Any:
+    def queue_system_task(self, func: Callable[[SystemHub], Any]) -> Any:
         return queue_func(self.task_queue, func)
 
     def handle_tasks(self, amount: int = -1) -> None:

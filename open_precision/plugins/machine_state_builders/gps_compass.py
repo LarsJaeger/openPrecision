@@ -18,7 +18,7 @@ from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_u
 from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 from open_precision.utils.math import norm_vector
 
 
@@ -27,7 +27,7 @@ class GpsCompassPositionBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
 
         """get available sensors"""

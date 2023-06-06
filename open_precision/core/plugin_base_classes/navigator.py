@@ -11,7 +11,7 @@ from open_precision.core.plugin_base_classes.plugin import Plugin
 from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class Navigator(Plugin, ABC):
@@ -19,7 +19,7 @@ class Navigator(Plugin, ABC):
     order to the target point (or line)"""
 
     @abstractmethod
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

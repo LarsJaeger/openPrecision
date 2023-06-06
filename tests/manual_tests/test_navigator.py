@@ -6,7 +6,7 @@ import unittest
 
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.navigator import Navigator
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 
 
 class TestPositionBuilder(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestPositionBuilder(unittest.TestCase):
         """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
-        man = ManagerHub()
+        man = SystemHub()
         man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
         try:
             while True:

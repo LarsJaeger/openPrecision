@@ -2,7 +2,7 @@ import numpy as np
 from pyquaternion import Quaternion
 
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 
 
 class AOSDummySensor(AbsoluteOrientationSensor):
@@ -14,7 +14,7 @@ class AOSDummySensor(AbsoluteOrientationSensor):
     def gravity(self) -> np.ndarray | None:
         return np.array([0, 0, -1], dtype=np.float64)
 
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         pass
 
     def cleanup(self):

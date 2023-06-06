@@ -18,7 +18,7 @@ def _get_plugin_name_mapping(plugins: dict) -> dict:
     return {plugin.__name__: plugin for plugin in plugins.keys()}
 
 
-class ManagerHub:
+class SystemHub:
     def __init__(self):
         atexit.register(self._cleanup)
 

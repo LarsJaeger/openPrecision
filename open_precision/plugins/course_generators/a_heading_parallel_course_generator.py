@@ -12,15 +12,15 @@ from open_precision.core.plugin_base_classes.course_generator import CourseGener
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: ManagerHub):
-        self.man: ManagerHub = manager
+    def __init__(self, manager: SystemHub):
+        self.man: SystemHub = manager
 
     def generate_course(self) -> Course:
         # get position

@@ -12,12 +12,12 @@ from ruamel.yaml.representer import RepresenterError
 from open_precision.managers import plugin_manager
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class ConfigManager:
-    def __init__(self, manager: ManagerHub):
-        self._manager: ManagerHub = manager
+    def __init__(self, manager: SystemHub):
+        self._manager: SystemHub = manager
         self._config: CommentedMap = CommentedMap()
         self._config_path = self._manager._config_path
         self.load_config()

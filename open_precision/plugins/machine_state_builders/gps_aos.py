@@ -19,7 +19,7 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class GpsAosPositionBuilder(MachineStateBuilder):
@@ -30,7 +30,7 @@ class GpsAosPositionBuilder(MachineStateBuilder):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
 
         """get available sensors"""

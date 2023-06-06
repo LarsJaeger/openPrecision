@@ -14,7 +14,7 @@ from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.model.waypoint import Waypoint
 from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.navigator import Navigator
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 from open_precision.utils.math import intersections_of_circle_and_line_segment
 
 
@@ -22,9 +22,9 @@ class PurePursuitNavigator(Navigator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         super().__init__(manager)
-        self._manager: ManagerHub = manager
+        self._manager: SystemHub = manager
         self._course: Course | None = None
         self._current_path_id: int | None = None
 

@@ -7,12 +7,12 @@ from open_precision.core.model import persist_arg
 from open_precision.core.model.vehicle import Vehicle
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class VehicleManager:
-    def __init__(self, manager: ManagerHub):
-        self._manager: ManagerHub = manager
+    def __init__(self, manager: SystemHub):
+        self._manager: SystemHub = manager
         self._manager.config.register_value(
             self,
             "vehicles",

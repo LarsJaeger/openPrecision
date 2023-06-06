@@ -9,12 +9,12 @@ from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.plugin_base_classes.plugin import Plugin
 
 if TYPE_CHECKING:
-    from open_precision.manager_hub import ManagerHub
+    from open_precision.system_hub import SystemHub
 
 
 class MachineStateBuilder(Plugin, ABC):
     @abstractmethod
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

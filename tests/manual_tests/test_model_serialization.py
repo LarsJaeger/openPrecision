@@ -3,12 +3,12 @@ import unittest
 from open_precision.core.model.action import Action
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.navigator import Navigator
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        man = ManagerHub()
+        man = SystemHub()
         man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
         print(f"a: {man.plugins[Navigator].course}")
         print(f"b: {man.plugins[Navigator].course.asdict()}")

@@ -10,13 +10,13 @@ from open_precision.core.exceptions import SensorNotConnectedException
 from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
     InertialMeasurementUnit,
 )
-from open_precision.manager_hub import ManagerHub
+from open_precision.system_hub import SystemHub
 
 shortest_update_dt = 10  # in ms
 
 
 class SparkfunIcm20948Adapter(InertialMeasurementUnit):
-    def __init__(self, manager: ManagerHub):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
         print("[SparkfunIcm20948Adapter] started initialisation")
         manager.config.register_value(self, "magnetometer_bias", None)
