@@ -77,9 +77,9 @@ class ConfigManager:
         print("[LOG]: loading config file")
         if yaml is None:
             with open(self._config_path) as config_file_stream:
-                self._config = YAML(typ='safe').load(stream=config_file_stream)
+                self._config = YAML().load(stream=config_file_stream)
         elif type(yaml) is str:
-            self._config = YAML(typ='safe').load(yaml)
+            self._config = YAML().load(yaml)
         else:
             raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
@@ -91,7 +91,7 @@ class ConfigManager:
         print("[LOG]: saving config file")
         try:
             config_buffer = io.StringIO()
-            YAML(typ='safe').dump(self._config, stream=config_buffer)
+            YAML().dump(self._config, stream=config_buffer)
             with open(self._config_path, "w") as config_file_stream:
                 shutil.copyfileobj(config_buffer, config_file_stream)
         except RepresenterError as e:

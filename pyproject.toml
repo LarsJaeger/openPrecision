@@ -23,6 +23,7 @@ ruamel-yaml-string = "^0.1.0"
 neomodel = "^5.0.0"
 fastapi = "^0.96.0"
 aioprocessing = "^2.0.1"
+redis = "^4.5.5"
 
 [tool.poetry.dev-dependencies]
 

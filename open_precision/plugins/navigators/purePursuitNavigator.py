@@ -12,8 +12,8 @@ from open_precision.core.model.location import Location
 from open_precision.core.model.position import Position
 from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.model.waypoint import Waypoint
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.navigator import Navigator
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
 from open_precision.system_hub import SystemHub
 from open_precision.utils.math import intersections_of_circle_and_line_segment
 
@@ -53,7 +53,7 @@ class PurePursuitNavigator(Navigator):
         # what's following now is a lot of spaghetti code
         if self._course is None:
             raise CourseNotSetException(self)
-        current_position = self._manager.plugins[MachineStateBuilder].current_position
+        current_position = self._manager.plugins[VehicleStateBuilder].current_position
         waypoint_base_id = None
 
         if self._current_path_id is None:

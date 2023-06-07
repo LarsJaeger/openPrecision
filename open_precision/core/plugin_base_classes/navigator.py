@@ -3,9 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from open_precision.core.model.machine_state import MachineState
-
 from open_precision.core.model import persist_arg, persist_return
+from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.plugin import Plugin
 from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
@@ -20,7 +19,7 @@ class Navigator(Plugin, ABC):
 
     @abstractmethod
     def __init__(self, manager: SystemHub):
-        # self._manager = manager
+        self._manager = manager
         # atexit.register(self.cleanup)
         pass
 
@@ -42,7 +41,7 @@ class Navigator(Plugin, ABC):
     @property
     @abstractmethod
     @persist_return
-    def target_machine_state(self) -> MachineState | None:
+    def target_machine_state(self) -> VehicleState | None:
         pass
 
     def set_course_from_course_generator(self, course_generator_identifier: str = 'a_heading_parallel'):

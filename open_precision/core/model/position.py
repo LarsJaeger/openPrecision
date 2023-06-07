@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from neomodel.properties import validator, Property
 
 from open_precision.core.model import DataModelBase
-from open_precision.core.model import Location
-from open_precision.core.model import Orientation
+from open_precision.core.model.location import Location
+from open_precision.core.model.orientation import Orientation
 
 
 @dataclass(kw_only=True)

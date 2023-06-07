@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
 
 
-class MachineStateBuilder(Plugin, ABC):
+class VehicleStateBuilder(Plugin, ABC):
     @abstractmethod
     def __init__(self, manager: SystemHub):
         # self._manager = manager
@@ -26,8 +26,8 @@ class MachineStateBuilder(Plugin, ABC):
     @property
     @abstractmethod
     @persist_return
-    def machine_state(self) -> VehicleState | None:
-        return self.current_position
+    def vehicle_state(self) -> VehicleState | None:
+        pass
 
     @property
     @abstractmethod

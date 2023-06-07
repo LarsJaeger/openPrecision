@@ -6,3 +6,8 @@ config_router = APIRouter(
     dependencies=[],
     responses={404: {"description": "Not found"}},
 )
+
+
+@config_router.get("/get")
+async def get_config():
+    return {"config": "config"}

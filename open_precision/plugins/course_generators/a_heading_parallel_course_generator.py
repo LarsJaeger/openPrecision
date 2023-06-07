@@ -9,7 +9,7 @@ from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
@@ -26,9 +26,9 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
         # get position
         # input('press enter to set first position')
         print("[INFO]: course generation started")
-        base_position: Position = self.man.plugins[MachineStateBuilder].current_position
+        base_position: Position = self.man.plugins[VehicleStateBuilder].current_position
         while not base_position.is_valid():
-            base_position: Position = self.man.plugins[MachineStateBuilder].current_position
+            base_position: Position = self.man.plugins[VehicleStateBuilder].current_position
             print("invalid_position")
         # get user input for working width
         # TODO get user input or read from config

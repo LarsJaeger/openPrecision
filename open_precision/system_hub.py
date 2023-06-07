@@ -7,10 +7,10 @@ from threading import Thread
 
 from open_precision.api import API
 from open_precision.managers import plugin_manager
-from open_precision.managers.action_manager import SystemTaskManager
 from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.data_manager import DataManager
 from open_precision.managers.plugin_manager import PluginManager
+from open_precision.managers.system_task_manager import SystemTaskManager
 from open_precision.managers.vehicle_manager import VehicleManager
 
 

@@ -27,7 +27,7 @@ class SystemTaskManager:
     def queue_system_task(self, func: Callable[[SystemHub], Any]) -> Any:
         return queue_func(self.task_queue, func)
 
-    def handle_tasks(self, amount: int = -1) -> None:
+    async def handle_tasks(self, amount: int = -1) -> None:
         """
         Executes the passed amount of tasks from the queue.
         :param amount: amount of tasks to execute;
@@ -39,7 +39,7 @@ class SystemTaskManager:
         """
         if amount == -1:
             while not self.task_queue.empty():
-                self.handle_tasks(0)
+                await self.handle_tasks(0)
         elif amount == 0:
             amount = self.task_queue.qsize()
 

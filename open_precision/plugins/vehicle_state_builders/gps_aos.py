@@ -9,22 +9,22 @@ from open_precision.core.model.location import Location
 from open_precision.core.model.orientation import Orientation
 from open_precision.core.model.position import Position
 from open_precision.core.model.vehicle_state import VehicleState
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
 
 
-class GpsAosPositionBuilder(MachineStateBuilder):
+class GpsAosPositionBuilder(VehicleStateBuilder):
     @property
-    def machine_state(self) -> VehicleState | None:
+    def vehicle_state(self) -> VehicleState | None:
         return VehicleState(steering_angle=0, position=self.current_position, speed=0)
 
     def cleanup(self):
