@@ -27,9 +27,8 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
         # input('press enter to set first position')
         print("[INFO]: course generation started")
         base_position: Position = self.man.plugins[VehicleStateBuilder].current_position
-        while not base_position.is_valid():
-            base_position: Position = self.man.plugins[VehicleStateBuilder].current_position
-            print("invalid_position")
+        if base_position is None:
+            raise ValueError("base position cannot be None")
         # get user input for working width
         # TODO get user input or read from config
         working_width: float = 3.0
