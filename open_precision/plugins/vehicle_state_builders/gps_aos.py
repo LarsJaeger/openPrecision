@@ -36,7 +36,6 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
         """get available sensors"""
 
     @property
-    @persist_return
     def current_position(self) -> Position | None:
         uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
         orientation: Orientation = self._manager.plugins[AbsoluteOrientationSensor].orientation
