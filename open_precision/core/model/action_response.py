@@ -18,5 +18,5 @@ class ActionResponse(StructuredNode, DataModelBase):
     success: bool = Property(required=True)
     response: any = JSONProperty(required=True)  # json of either the return value or the exception
 
-    RESPONDS_TO: Action = RelationshipTo('open_precision.core.model.data.action.Action', 'RESPONDS_TO',
+    RESPONDS_TO: Action = RelationshipTo('open_precision.core.model.action.Action', 'RESPONDS_TO',
                                          cardinality=cardinality.ZeroOrOne)

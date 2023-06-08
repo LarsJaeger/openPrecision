@@ -11,6 +11,6 @@ class Course(StructuredNode, DataModelBase):
     name: str = Property(required=True)
     description: str = Property(required=False)
 
-    CONTAINS: RelationshipTo = RelationshipTo('open_precision.core.model.data.path.Path',
+    CONTAINS: RelationshipTo = RelationshipTo('open_precision.core.model.path.Path',
                                               'CONTAINS',
                                               cardinality=cardinality.ZeroOrMore)

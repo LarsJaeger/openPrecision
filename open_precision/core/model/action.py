@@ -17,6 +17,6 @@ class Action(StructuredNode, DataModelBase):
     args: List[Any] = JSONProperty(required=True)
     kw_args: Dict[str, Any] = JSONProperty(required=True)
 
-    RESPONDS_TO: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.action_response.ActionResponse',
+    RESPONDS_TO: RelationshipFrom = RelationshipFrom('open_precision.core.model.action_response.ActionResponse',
                                                      'RESPONDS_TO',
                                                      cardinality=cardinality.ZeroOrOne)

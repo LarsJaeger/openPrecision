@@ -11,20 +11,20 @@ class Path(StructuredNode, DataModelBase):
 
     # incoming relationships
 
-    REQUIRES: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.path.Path',
+    REQUIRES: RelationshipFrom = RelationshipFrom('open_precision.core.model.path.Path',
                                                   'REQUIRES',
                                                   cardinality=cardinality.ZeroOrMore)
 
-    CONTAINS: RelationshipFrom = RelationshipTo('open_precision.core.model.data.waypoint.Waypoint',
+    CONTAINS: RelationshipFrom = RelationshipTo('open_precision.core.model.waypoint.Waypoint',
                                                 'CONTAINS',
                                                 cardinality=cardinality.ZeroOrMore)
 
     # outgoing relationships
 
-    IS_CONTAINED_BY: RelationshipTo = RelationshipTo('open_precision.core.model.data.course.Course',
+    IS_CONTAINED_BY: RelationshipTo = RelationshipTo('open_precision.core.model.course.Course',
                                                      'CONTAINS',
                                                      cardinality=cardinality.ZeroOrMore)
 
-    IS_REQUIRED_BY: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.path.Path',
+    IS_REQUIRED_BY: RelationshipFrom = RelationshipFrom('open_precision.core.model.path.Path',
                                                         'REQUIRES',
                                                         cardinality=cardinality.ZeroOrMore)

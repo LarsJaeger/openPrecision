@@ -13,20 +13,20 @@ class Waypoint(StructuredNode, DataModelBase):
 
     # incoming relationships
 
-    PREDECESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.waypoint.Waypoint',
+    PREDECESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.waypoint.Waypoint',
                                                      'SUCCESSOR',
                                                      cardinality=cardinality.ZeroOrOne)
 
-    IS_CONTAINED_BY_PATH: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.path.Path',
+    IS_CONTAINED_BY_PATH: RelationshipFrom = RelationshipFrom('open_precision.core.model.path.Path',
                                                               'CONTAINS',
                                                               cardinality=cardinality.ZeroOrMore)
 
-    IS_CONTAINED_BY_COURSE: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.course.Course',
+    IS_CONTAINED_BY_COURSE: RelationshipFrom = RelationshipFrom('open_precision.core.model.course.Course',
                                                                 'CONTAINS',
                                                                 cardinality=cardinality.ZeroOrMore)
 
     # outgoing relationships
 
-    SUCCESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.data.waypoint.Waypoint',
+    SUCCESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.waypoint.Waypoint',
                                                    'SUCCESSOR',
                                                    cardinality=cardinality.ZeroOrOne)
