@@ -25,11 +25,23 @@ services:
       - redis
   redis:
     image: redis:alpine
-    restart: always
+    restart: unless-stopped
     expose:
       - 6379
     networks:
       - internal
     command: redis-server --loglevel warning
+  neo4j:
+    image: neo4j:latest
+    restart: always
+    expose:
+      - 7474
+      - 7473
+      - 7687
+    environment:
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_AUTH=neo4j/password
+    networks:
+      - internal
 networks:
   internal: {}

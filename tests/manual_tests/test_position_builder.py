@@ -2,8 +2,8 @@
 # change 'template' to python file name of file to be tested
 import unittest
 
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
-from open_precision.managers.system_manager import SystemManager
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.system_hub import SystemHub
 
 
 class TestPositionBuilder(unittest.TestCase):
@@ -22,13 +22,13 @@ class TestPositionBuilder(unittest.TestCase):
         """This teardown will only be executed once after all manual_tests are done"""
 
     def test_method(self):
-        man = SystemManager()
+        man = SystemHub()
         counter = 0
         try:
             while True:
                 counter += 1
                 print("a")
-                print(f"pos {counter}: {man.plugins[MachineStateBuilder].current_position}")
+                print(f"pos {counter}: {man.plugins[VehicleStateBuilder].current_position}")
         except KeyboardInterrupt:
             print("KeyboardInterrupt")
 

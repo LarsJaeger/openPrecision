@@ -1,38 +1,32 @@
-from __future__ import annotations
+from dataclasses import dataclass
 
-import json
-from dataclasses import field
-from typing import TYPE_CHECKING
+from neomodel import StructuredNode, UniqueIdProperty, cardinality, RelationshipFrom
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-
-from open_precision.core.model.data_model_base import DataModelBase
-from open_precision.core.model.location import Location
-from open_precision.core.model.persistence_model_base import PersistenceModelBase
-
-if TYPE_CHECKING:
-    from open_precision.core.model.path import Path
+from open_precision.core.model import DataModelBase
+from open_precision.core.model.location import Location, LocationProperty
 
 
-class Waypoint(DataModelBase, PersistenceModelBase):
-    __tablename__ = "Waypoints"
+@dataclass(kw_only=True)
+class Waypoint(StructuredNode, DataModelBase):
+    id: str = UniqueIdProperty()
+    location: Location = LocationProperty(required=True)
 
-    id: Mapped[int] = mapped_column(init=True, default=None, primary_key=True)
+    # incoming relationships
 
-    priority: Mapped[int] = mapped_column(init=True, default=None)  # higher priority = more important
-    # and vice versa
+    PREDECESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.waypoint.Waypoint',
+                                                     'SUCCESSOR',
+                                                     cardinality=cardinality.ZeroOrOne)
 
-    location: Location | None = field(init=True, default=None)
-    _location: Mapped[str] = mapped_column(init=True, default=None)
+    IS_CONTAINED_BY_PATH: RelationshipFrom = RelationshipFrom('open_precision.core.model.path.Path',
+                                                              'CONTAINS',
+                                                              cardinality=cardinality.ZeroOrMore)
 
-    path_id: Mapped[int] = mapped_column(ForeignKey("Paths.id"), init=True, default=None)
-    path: Mapped[Path] = relationship(init=True, default=None)
+    IS_CONTAINED_BY_COURSE: RelationshipFrom = RelationshipFrom('open_precision.core.model.course.Course',
+                                                                'CONTAINS',
+                                                                cardinality=cardinality.ZeroOrMore)
 
-    @property
-    def location(self) -> Location | None:
-        return Location(**json.loads(self._location))
+    # outgoing relationships
 
-    @location.setter
-    def location(self, location: Location):
-        self._location = location.to_json()
+    SUCCESSOR: RelationshipFrom = RelationshipFrom('open_precision.core.model.waypoint.Waypoint',
+                                                   'SUCCESSOR',
+                                                   cardinality=cardinality.ZeroOrOne)

@@ -10,15 +10,14 @@ from ruamel.yaml import YAML, CommentedMap
 from ruamel.yaml.representer import RepresenterError
 
 from open_precision.managers import plugin_manager
-from open_precision.managers.action_manager import ActionManager
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.system_hub import SystemHub
 
 
 class ConfigManager:
-    def __init__(self, manager: SystemManager):
-        self._manager: SystemManager = manager
+    def __init__(self, manager: SystemHub):
+        self._manager: SystemHub = manager
         self._config: CommentedMap = CommentedMap()
         self._config_path = self._manager._config_path
         self.load_config()
@@ -68,7 +67,6 @@ class ConfigManager:
     def cleanup(self):
         self._save_config_file()
 
-    @ActionManager.enable_action
     def load_config(self, yaml: str = None, reload: bool = False):
         """
         loads config file from yaml string or file
@@ -79,9 +77,9 @@ class ConfigManager:
         print("[LOG]: loading config file")
         if yaml is None:
             with open(self._config_path) as config_file_stream:
-                self._config = YAML(typ='safe').load(stream=config_file_stream)
+                self._config = YAML().load(stream=config_file_stream)
         elif type(yaml) is str:
-            self._config = YAML(typ='safe').load(yaml)
+            self._config = YAML().load(yaml)
         else:
             raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
@@ -93,7 +91,7 @@ class ConfigManager:
         print("[LOG]: saving config file")
         try:
             config_buffer = io.StringIO()
-            YAML(typ='safe').dump(self._config, stream=config_buffer)
+            YAML().dump(self._config, stream=config_buffer)
             with open(self._config_path, "w") as config_file_stream:
                 shutil.copyfileobj(config_buffer, config_file_stream)
         except RepresenterError as e:
@@ -102,7 +100,6 @@ class ConfigManager:
             print(" ".join(traceback.format_exception(e, value=e, tb=e.__traceback__)))
             return
 
-    @ActionManager.enable_action
     def get_config_string(self) -> str:
         try:
             config_buffer = io.StringIO()

@@ -25,27 +25,6 @@
     let visualizeMachineState;
     let visualizeCourse;
 
-
-    // action responses
-    $socket.on("action_response", (data) => {
-        let parsed_data = JSON.parse(data);
-        if (parsed_data.success === false) {
-            console.log("[INFO]: action_response received: error");
-            add("Action failed", ActionResponseError, {response: parsed_data.response});
-                console.log("[ERROR]: action_response: " + data);
-        }
-        else {
-            console.log("[INFO]: action_response received: " + data);
-            // check if answer is in waiting_for_ar and execute its fn
-            console.log(waiting_for_ar)
-            if (waiting_for_ar[parsed_data.action.id] && waiting_for_ar[parsed_data.action.id] !== null) {
-                console.log("[INFO]: action_response: executing callback")
-                waiting_for_ar[parsed_data.action.id](parsed_data.response);
-                delete waiting_for_ar[parsed_data.action.id];
-            }
-        }
-    });
-
     // target_machine_state
     $socket.on("target_machine_state", (data) => {
         console.log("[INFO]: (target_machine_state): Received message: " + data);
@@ -59,8 +38,8 @@
     });
 
     // machine_state
-    $socket.on("machine_state", (data) => {
-        console.log("[INFO]: (machine_state): Received message: " + data);
+    $socket.on("vehicle_state", (data) => {
+        console.log("[INFO]: (vehicle_state): Received message: " + data);
         visualizeMachineState(JSON.parse(data));
     });
 </script>

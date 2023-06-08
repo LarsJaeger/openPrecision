@@ -5,7 +5,8 @@ import math
 import numpy as np
 from pyquaternion import Quaternion
 
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
+from open_precision.core.model.location import Location
+from open_precision.core.model.position import Position
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
@@ -16,18 +17,17 @@ from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_u
 from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
-from open_precision.managers.system_manager import SystemManager
-from open_precision.core.model.position import Position
-from open_precision.core.model.location import Location
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.system_hub import SystemHub
 from open_precision.utils.math import norm_vector
 
 
-class GpsCompassPositionBuilder(MachineStateBuilder):
+class GpsCompassPositionBuilder(VehicleStateBuilder):
 
     def cleanup(self):
         pass
 
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
 
         """get available sensors"""

@@ -5,15 +5,12 @@ import atexit
 import os.path
 from threading import Thread
 
-import uvicorn
-
-from open_precision.app_interface.user_interface_delivery import UserInterfaceDelivery
+from open_precision.api import API
 from open_precision.managers import plugin_manager
-from open_precision.managers.action_manager import ActionManager
-from open_precision.managers.data_manager import DataManager
-from open_precision.managers.persistence_manager import PersistenceManager
-from open_precision.managers.plugin_manager import PluginManager
 from open_precision.managers.config_manager import ConfigManager
+from open_precision.managers.data_manager import DataManager
+from open_precision.managers.plugin_manager import PluginManager
+from open_precision.managers.system_task_manager import SystemTaskManager
 from open_precision.managers.vehicle_manager import VehicleManager
 
 
@@ -21,7 +18,11 @@ def _get_plugin_name_mapping(plugins: dict) -> dict:
     return {plugin.__name__: plugin for plugin in plugins.keys()}
 
 
-class SystemManager:
+class SystemHub:
+    """
+    reponsible for dependency injection, instance management and starting the system
+    """
+
     def __init__(self):
         atexit.register(self._cleanup)
 
@@ -31,13 +32,11 @@ class SystemManager:
 
         self._config = ConfigManager(self)
 
-        self._persistence = PersistenceManager(self)
-
         self._data = DataManager(self)
 
         self._vehicles = VehicleManager(self)
 
-        self._action = ActionManager(self)
+        self._system_task_manager = SystemTaskManager(self)
 
         # loading plugins, but loading UserInterface last
         self._plugins = {}
@@ -46,14 +45,14 @@ class SystemManager:
         self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
 
         # starting user interface
-        self._user_interface_delivery = UserInterfaceDelivery(self)
-        asgi_thread = Thread(target=self._user_interface_delivery.run)
-        asgi_thread.start()
+        self._api = API(self._system_task_manager.queue_system_task)
+        api_thread = Thread(target=self._api.run)
+        api_thread.start()
         asyncio.run(self._data.start_update_loop())
-        asgi_thread.join()
+        api_thread.join()
 
     def _cleanup(self) -> None:
-        # TODO evaluate if necessary
+        # TODO replace with context managers
         try:
             for plugin in self._plugins:
                 plugin.cleanup(plugin)
@@ -79,22 +78,17 @@ class SystemManager:
         return self._plugin_name_mapping
 
     @property
-    def persistence(self) -> PersistenceManager:
-        return self._persistence
-
-    @property
     def data(self) -> DataManager:
         return self._data
 
     @property
-    def action(self) -> ActionManager:
-        return self._action
+    def system_task_manager(self) -> SystemTaskManager:
+        return self._system_task_manager
 
     @property
-    def user_interface_delivery(self) -> UserInterfaceDelivery:
-        return self._user_interface_delivery
+    def api(self) -> API:
+        return self._api
 
-    @ActionManager.enable_action
     def reload(self):
         self._cleanup()
         self.__init__()

@@ -1,34 +1,34 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 
-from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
-from open_precision.core.plugin_base_classes.machine_state_builder import MachineStateBuilder
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
+from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
+from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.system_hub import SystemHub
 
 
 class AHeadingParallelCourseGenerator(CourseGenerator):
     def cleanup(self):
         pass
 
-    def __init__(self, manager: SystemManager):
-        self.man: SystemManager = manager
+    def __init__(self, manager: SystemHub):
+        self.man: SystemHub = manager
 
     def generate_course(self) -> Course:
         # get position
         # input('press enter to set first position')
         print("[INFO]: course generation started")
-        base_position: Position = self.man.plugins[MachineStateBuilder].current_position
-        while not base_position.is_valid():
-            base_position: Position = self.man.plugins[MachineStateBuilder].current_position
-            print("invalid_position")
+        base_position: Position = self.man.plugins[VehicleStateBuilder].current_position
+        if base_position is None:
+            raise ValueError("base position cannot be None")
         # get user input for working width
         # TODO get user input or read from config
         working_width: float = 3.0

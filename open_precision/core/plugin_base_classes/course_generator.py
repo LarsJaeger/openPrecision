@@ -7,14 +7,14 @@ from open_precision.core.model.course import Course
 from open_precision.core.plugin_base_classes.plugin import Plugin
 
 if TYPE_CHECKING:
-    from open_precision.managers.system_manager import SystemManager
+    from open_precision.system_hub import SystemHub
 
 
 class CourseGenerator(Plugin, ABC):
     """Generates a Path and outputs next position based on position (and last actions)"""
 
     @abstractmethod
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: SystemHub):
         # self._manager = manager
         # atexit.register(self.cleanup)
         pass

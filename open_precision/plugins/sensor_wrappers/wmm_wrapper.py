@@ -14,7 +14,7 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
 from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
-from open_precision.managers.system_manager import SystemManager
+from open_precision.system_hub import SystemHub
 
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
@@ -35,7 +35,7 @@ shortest_update_dt = 100000  # in ms
 
 
 class WmmWrapper(WorldMagneticModelCalculator):
-    def __init__(self, manager: SystemManager):
+    def __init__(self, manager: SystemHub):
         self._manager = manager
         self._manager.config.register_value(
             self, "wmm_bin_path", "example/wmm/bin/path"

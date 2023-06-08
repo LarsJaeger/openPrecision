@@ -3,11 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from neomodel import Property
+from neomodel.properties import validator
 
-from open_precision.core.model.data_model_base import DataModelBase
+from open_precision.core.model import DataModelBase
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Location(DataModelBase):
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
@@ -107,3 +109,17 @@ class Location(DataModelBase):
 
     def to_numpy(self) -> np.array:
         return np.array([self.x, self.y, self.z], dtype=np.float64)
+
+
+class LocationProperty(Property):
+    """
+    A property that stores a Location object as a list of floats.
+    """
+
+    @validator
+    def inflate(self, value: list[float]) -> Location:
+        return Location(x=value[0], y=value[1], z=value[2], error=value[3])
+
+    @validator
+    def deflate(self, value: Location):
+        return [value.x, value.y, value.z, value.error]
