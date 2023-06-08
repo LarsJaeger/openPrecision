@@ -43,7 +43,6 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
         gps_receiver_offset = self._manager.vehicles.current_vehicle.gps_receiver_offset
 
         for i, var in enumerate([uncorrected_location, orientation, gps_receiver_offset]):
-            print(f"index {i}: {var}")
             validate_value(var, lambda x: True if x is not None else False, rule_description="value cannot be None")
 
         corrected_location = uncorrected_location + orientation.rotate(

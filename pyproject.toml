@@ -22,8 +22,10 @@ sparkfun-ublox-gps = { git = "https://github.com/DanNsk/Qwiic_Ublox_Gps_Py.git",
 ruamel-yaml-string = "^0.1.0"
 neomodel = "^5.0.0"
 fastapi = "^0.96.0"
-aioprocessing = "^2.0.1"
 redis = "^4.5.5"
+fastapi-utils = "^0.2.1"
+dill = "^0.3.6"
+aioprocessing = { extras = ["dill"], version = "^2.0.1" }
 
 [tool.poetry.dev-dependencies]
 

@@ -19,6 +19,10 @@ def _get_plugin_name_mapping(plugins: dict) -> dict:
 
 
 class SystemHub:
+    """
+    reponsible for dependency injection, instance management and starting the system
+    """
+
     def __init__(self):
         atexit.register(self._cleanup)
 
@@ -41,7 +45,7 @@ class SystemHub:
         self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
 
         # starting user interface
-        self._api = API(self._system_task_manager.task_queue)
+        self._api = API(self._system_task_manager.queue_system_task)
         api_thread = Thread(target=self._api.run)
         api_thread.start()
         asyncio.run(self._data.start_update_loop())

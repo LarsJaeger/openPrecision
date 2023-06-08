@@ -68,11 +68,9 @@ class VehicleManager:
 
     @property
     def current_vehicle(self) -> Vehicle:
-        print(f"vehicles: {self._vehicles}")
         return self._vehicles[self._current_vehicle_id]
 
     @current_vehicle.setter
-    @persist_arg
     def current_vehicle(self, new_vehicle_id: int):
         self._current_vehicle_id = new_vehicle_id
 

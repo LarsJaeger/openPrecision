@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import traceback
 from typing import TYPE_CHECKING, Any, Callable
 
 from aioprocessing import AioQueue, AioPipe
@@ -16,7 +17,12 @@ async def queue_func(queue: AioQueue, func: Callable[[SystemHub], Any]) -> any:
     # wait for result
     await pipe_out.coro_poll()
     # return result
-    return pipe_out.coro_recv()
+    ret = await pipe_out.coro_recv()
+    # raise Exception if result is an exception
+    if isinstance(ret, tuple) and isinstance(ret[0], Exception):
+        print(ret[1])
+        raise ret[0]
+    return ret
 
 
 class SystemTaskManager:
@@ -24,8 +30,8 @@ class SystemTaskManager:
         self._manager = manager
         self.task_queue = AioQueue()
 
-    def queue_system_task(self, func: Callable[[SystemHub], Any]) -> Any:
-        return queue_func(self.task_queue, func)
+    async def queue_system_task(self, func: Callable[[SystemHub], Any]) -> Any:
+        return await queue_func(self.task_queue, func)
 
     async def handle_tasks(self, amount: int = -1) -> None:
         """
@@ -40,6 +46,7 @@ class SystemTaskManager:
         if amount == -1:
             while not self.task_queue.empty():
                 await self.handle_tasks(0)
+
         elif amount == 0:
             amount = self.task_queue.qsize()
 
@@ -55,7 +62,7 @@ class SystemTaskManager:
             try:
                 ret = func(self._manager)
             except Exception as e:
-                ret = e
+                ret = e, traceback.format_exc()
             # Send the result back
             with conn as conn:
                 await conn.coro_send(ret)
