@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import atexit
 import os.path
+import traceback
 from threading import Thread
 
 from open_precision.api import API
@@ -60,6 +61,7 @@ class SystemHub:
             self.config.cleanup()
         except Exception as ex:
             print("Error during cleanup:", ex)
+            print(traceback.format_exc())
 
     @property
     def config(self) -> ConfigManager:
