@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-import atexit
 import os.path
-import traceback
 from threading import Thread
 
 from open_precision.api import API
@@ -25,7 +23,6 @@ class SystemHub:
     """
 
     def __init__(self):
-        atexit.register(self._cleanup)
 
         # loading sub managers
         self._config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -51,17 +48,6 @@ class SystemHub:
         api_thread.start()
         asyncio.run(self._data.start_update_loop())
         api_thread.join()
-
-    def _cleanup(self) -> None:
-        # TODO replace with context managers
-        try:
-            for plugin in self._plugins:
-                plugin.cleanup(plugin)
-            self.vehicles.cleanup()
-            self.config.cleanup()
-        except Exception as ex:
-            print("Error during cleanup:", ex)
-            print(traceback.format_exc())
 
     @property
     def config(self) -> ConfigManager:
