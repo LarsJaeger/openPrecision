@@ -1,7 +1,6 @@
 <script>
     import {closeCurrent} from "./Modals.svelte";
-    import {sendAction} from "../../App.svelte";
-    import {socket} from "../../stores.ts";
+    import {apiAddress} from "../../App.svelte";
     import CodePanel from "../CodePanel.svelte";
     import {onMount} from 'svelte';
 
@@ -9,18 +8,25 @@
     export let responseLines = "";
 
     function setResponseLines(configString) {
+        console.log(configString);
         responseLines = configString;
         console.log("set response lines");
     }
 
-    function request_and_update_config() { //arg has to be there
-        sendAction($socket, {
-                function_identifier: 'config.get_config_string',
-                args: [],
-                kw_args: {}
-            },
-            setResponseLines
-        );
+    async function request_and_update_config() { //arg has to be there
+        await fetch(apiAddress + "/v1/config/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(async (response) => {
+            let data = await response.json()
+            console.log(data);
+            setResponseLines(data.content);
+            console.log("[INFO]: local config updated");
+        }).catch((error) => {
+            console.log("[ERROR]: " + error);
+        });
     }
 
     function uploadFunction() {
@@ -30,11 +36,22 @@
         var reader = new FileReader();
         reader.onload = function (evt) {
             var content = evt.target.result;
-            sendAction($socket, {
-                function_identifier: 'config.load_config',
-                args: [],
-                kw_args: {'yaml': content}
-            }, request_and_update_config)
+
+            console.log("[INFO]: Updating config");
+            fetch(apiAddress + "/v1/config/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "content": content
+                })
+            }).then((response) => {
+                console.log("[INFO]: remote config updated");
+            }).catch((error) => {
+                console.log("[ERROR]: " + error);
+            });
+
         }
         reader.onerror = function (evt) {
             // do something with error
@@ -43,7 +60,7 @@
     }
 
     onMount(async () => {
-        request_and_update_config();
+        await request_and_update_config();
         document.getElementById('file-file').addEventListener('change', () => {
             if (document.getElementById('file-file').files.length === 0) return;
             uploadFunction();

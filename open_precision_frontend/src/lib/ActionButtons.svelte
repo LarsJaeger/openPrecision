@@ -8,15 +8,27 @@
 <script lang="ts">
     import {add} from "./Modals/Modals.svelte";
     import configUpload from "./Modals/ConfigUpload.svelte";
+    import {apiAddress} from "../App.svelte";
     import {socket} from "../stores.ts";
 
     function generateCourse() {
         console.log("[INFO]: Generating course");
-        sendAction($socket, {
+        fetch(apiAddress + "/v1/course/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            console.log("[INFO]: Course generated");
+        }).catch((error) => {
+            console.log("[ERROR]: " + error);
+        });
+
+        /*sendAction($socket, {
             function_identifier: 'plugins.Navigator.set_course_from_course_generator',
             args: [],
             kw_args: {'course_generator_identifier': 'a_heading_parallel'}
-        });
+        });*/
 
         console.log("[INFO]: gen_course sent");
     }

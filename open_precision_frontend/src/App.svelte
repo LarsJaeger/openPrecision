@@ -1,15 +1,6 @@
-<script context="module">
-    let waiting_for_ar = {};
-    export function sendAction(socket, action, resultProcessingF) {
-        // set id of action to random int if not set yet
-        if (!action.id || action.id === null) {
-            action.id = Math.floor(Math.random() * 1000000);
-        }
-        const actionString = JSON.stringify(action);
-        console.log("[INFO]: Sending action: " + actionString);
-        waiting_for_ar[action.id] = resultProcessingF;
-        socket.emit("action", actionString);
-    }
+<script context="module" lang="ts">
+    export let apiAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length) + "/api";
+    console.log("[INFO]: using API address: " + apiAddress);
 </script>
 <script>
     import Visualizer from "./lib/Visualizer.svelte";
