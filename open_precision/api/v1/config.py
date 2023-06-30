@@ -32,7 +32,7 @@ async def get_config(queue_system_task=Depends(queue_system_task_dependency)) ->
     return ConfigSchema(content=config_string)
 
 
-@config_router.put("/")
+@config_router.post("/")
 async def set_config(config: ConfigSchema, reload: bool = False,
                      queue_system_task=Depends(queue_system_task_dependency)):
     def set_config_inner(hub: SystemHub):

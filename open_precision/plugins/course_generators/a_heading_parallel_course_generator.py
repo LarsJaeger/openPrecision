@@ -44,7 +44,9 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
 
             loc2 = loc1 + (base_position.orientation.rotate(np.array([1, 0, 0], dtype=np.float64)) * 1000)
             current_path = Path().add_waypoint(Waypoint(location=loc1)).add_waypoint(Waypoint(location=loc2))
+            print(f"[INFO]: added path before {current_path}")
             course.add_path(current_path)
+            print(f"[INFO]: added path after {current_path}")
 
         print("[INFO]: course generation finished")
         return course

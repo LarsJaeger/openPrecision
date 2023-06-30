@@ -30,6 +30,8 @@ The CustomJSONDecoder uses duck typing to determine the class of the object (mor
 
 Both serialization and deserialization ignore all relationships.
 """
+from __future__ import annotations
+
 import json
 from functools import wraps
 from typing import List

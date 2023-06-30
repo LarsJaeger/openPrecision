@@ -8,9 +8,7 @@
     export let responseLines = "";
 
     function setResponseLines(configString) {
-        console.log(configString);
         responseLines = configString;
-        console.log("set response lines");
     }
 
     async function request_and_update_config() { //arg has to be there
@@ -20,8 +18,7 @@
                 "Content-Type": "application/json"
             }
         }).then(async (response) => {
-            let data = await response.json()
-            console.log(data);
+            let data = await response.json();
             setResponseLines(data.content);
             console.log("[INFO]: local config updated");
         }).catch((error) => {
