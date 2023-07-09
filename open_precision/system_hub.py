@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import os.path
+import time
 from threading import Thread
 
 from open_precision.api import API
+from open_precision.core.model import map_model
 from open_precision.managers import plugin_manager
 from open_precision.managers.config_manager import ConfigManager
 from open_precision.managers.data_manager import DataManager
@@ -29,6 +31,15 @@ class SystemHub:
                                          os.path.relpath('../config.yml'))
 
         self._config = ConfigManager(self)
+
+
+        # map model
+        print("[INFO]: sleeping for 10 sec")
+        time.sleep(10)
+        print("[INFO]: starting model mapping")
+        self._config.register_value(self, "neo4j_address", "bolt://neo4j:password@neo4j:7687")
+        map_model(database_url=self._config.get_value(self, "neo4j_address"))
+        print("[INFO]: finished model mapping")
 
         self._data = DataManager(self)
 

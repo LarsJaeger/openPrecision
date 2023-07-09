@@ -15,7 +15,8 @@ Nodes are classes that inherit from StructuredNode. They are stored and queried 
 To store them in the data base, use the .save() method of the object you want to store. To learn more about persistence,
 look up the neomodel documentation.
 The object graph mapper is neomodel, classes that should represent classes must inherit from neomodel.StructuredNode.
-The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data type is stored.
+The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data
+type is stored.
 
 ## Data classes
 Data classes that will not be explicitly stored as single nodes in the graph but can be stored as properties of nodes.
@@ -23,7 +24,7 @@ Every data class also needs a corresponding property class that maps the data cl
 These Property classes should be defined in the same module as the corresponding data class and must inherit from neomodel.Property (and implement the inflate and deflate methods).
 The inflate method takes the value stored in the database and returns the data class, the deflate method takes the data class and returns the value that should be stored in the database.
 
-#JSON Serialization
+# JSON Serialization
 Use the to_json method of DataModelBase objects or the CustomJSONEncoder class to serialize the object to json.
 Use the from_json method of DataModelBase class or the CustomJSONDecoder class to deserialize the json string to an object.
 The CustomJSONDecoder uses duck typing to determine the class of the object (more specifically, it uses the names of the class attributes (except relationships)).
@@ -33,8 +34,10 @@ Both serialization and deserialization ignore all relationships.
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from functools import wraps
-from typing import List
+from types import FunctionType
+from typing import List, Type, Callable
 
 import neomodel
 from neomodel import StructuredNode, RelationshipDefinition
@@ -98,13 +101,19 @@ class DataModelBase:
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
 
+    def __init__(self, depth: int = 0, *args, **kwargs):
+        self.depth = depth
+        super().__init__(*args, **kwargs)
     # overload method default
+
     def default(self, obj):
         if isinstance(obj, DataModelBase):
             # use class_signature_mapping to get the signature of the class
             signature = class_signature_mapping[obj.__class__]
             obj_dict = {k: getattr(obj, k) for k in signature}
-            return json.JSONEncoder.default(self, obj_dict)
+            return obj_dict
+        if isinstance(obj, Exception):
+            raise obj
         return json.JSONEncoder.default(self, obj)
 
 
@@ -167,18 +176,21 @@ def map_model(database_url: str):
     from open_precision.core.model.vehicle_state import VehicleState
     from open_precision.core.model.waypoint import Waypoint
 
-    neomodel.config.DATABASE_URL = database_url
+    neomodel.db.set_connection(database_url)
 
     data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
                                                Vehicle, VehicleState,
                                                Waypoint]
+
+    neomodel.remove_all_labels()
     for cls in data_model_classes:
         neomodel.install_labels(cls)
+
     # generate class signature mapping for deserialization of json to data model classes
     signature_class_mapping = {get_attributes(cls,
                                               base_filter=lambda x: x not in [DataModelBase, StructuredNode],
-                                              property_name_filter=lambda x: not x.startswith("_"),
-                                              property_type_filter=lambda x: not issubclass(x, RelationshipDefinition))
+                                              property_name_filter=lambda x: (not x.startswith("_")) and (x not in ["DoesNotExist", "id"] if issubclass(cls, StructuredNode) else True),
+                                              property_type_filter=lambda x: (not issubclass(x, RelationshipDefinition)) and (x is not FunctionType))
                                : cls
                                for cls in data_model_classes}
 

@@ -8,9 +8,8 @@ from open_precision.core.model import DataModelBase
 from open_precision.core.model.position import Position, PositionProperty
 
 
-@dataclass(kw_only=True)
 class VehicleState(StructuredNode, DataModelBase):
-    id: str = UniqueIdProperty()
+    uuid: str = UniqueIdProperty()
 
     steering_angle: float | None = Property()  # in degrees, positive means clockwise (to the right if driving forward)
     speed: float | None = Property()  # in m/s, negative values mean reverse

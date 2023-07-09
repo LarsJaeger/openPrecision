@@ -14,7 +14,7 @@ class Location(DataModelBase):
     x: float  # ECEF X coordinate in meters
     y: float  # ECEF Y coordinate in meters
     z: float  # ECEF Z coordinate in meters
-    error: float  # position accuracy in meters
+    error: float | None = None  # position accuracy in meters
 
     def is_valid(self):
         return None not in [self.x, self.y, self.z]
@@ -118,8 +118,10 @@ class LocationProperty(Property):
 
     @validator
     def inflate(self, value: list[float]) -> Location:
-        return Location(x=value[0], y=value[1], z=value[2], error=value[3])
+        return Location(x=value[0], y=value[1], z=value[2], error=value[3] if len(value) == 4 else None)
 
     @validator
     def deflate(self, value: Location):
+        if value.error is None:
+            return [value.x, value.y, value.z]
         return [value.x, value.y, value.z, value.error]

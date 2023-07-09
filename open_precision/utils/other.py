@@ -30,7 +30,7 @@ def is_iterable(obj: any):
 def get_attributes(cls,
                    base_filter: Callable[[type], bool] = lambda x: True,
                    property_name_filter: Callable[[str], bool] = lambda x: True,
-                   property_type_filter: Callable[[type], bool] = lambda x: True) -> set[str]:
+                   property_type_filter: Callable[[type], bool] = lambda x: True) -> frozenset[str]:
     """
     Get all attributes of a class and its base classes recursively.
     :param cls:
@@ -40,10 +40,10 @@ def get_attributes(cls,
     :return: a set of all property names of the class (including inherited ones)
     """
 
-    own_attrs = {attr for attr, val in cls.__dict__.items() if property_name_filter(attr) and property_type_filter(val)}
+    own_attrs = frozenset({attr for attr, val in cls.__dict__.items() if property_name_filter(attr) and property_type_filter(type(val))})
     if cls.__bases__:
         bases = [base for base in cls.__bases__ if base_filter(base)]
-        return set(chain(*[get_attributes(base, base_filter, property_name_filter, property_type_filter)
+        return frozenset(chain(*[get_attributes(base, base_filter, property_name_filter, property_type_filter)
                            for base in bases],
                          own_attrs))
     else:

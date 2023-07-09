@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from open_precision.core.model import persist_return
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
@@ -22,6 +23,7 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
     def __init__(self, manager: SystemHub):
         self.man: SystemHub = manager
 
+    @persist_return
     def generate_course(self) -> Course:
         # get position
         # input('press enter to set first position')

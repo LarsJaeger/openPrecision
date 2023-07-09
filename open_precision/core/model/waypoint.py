@@ -8,9 +8,8 @@ from open_precision.core.model import DataModelBase
 from open_precision.core.model.location import Location, LocationProperty
 
 
-@dataclass(kw_only=True)
 class Waypoint(StructuredNode, DataModelBase):
-    id: str = UniqueIdProperty()
+    uuid: str = UniqueIdProperty()
     location: Location = LocationProperty(required=True)
 
     # incoming relationships

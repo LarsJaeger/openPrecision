@@ -3,16 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Any, Dict
 
-from neomodel import UniqueIdProperty, StructuredNode, JSONProperty, Property, RelationshipFrom, cardinality
+from neomodel import UniqueIdProperty, StructuredNode, JSONProperty, Property, RelationshipFrom, cardinality, \
+    StringProperty
 
 from open_precision.core.model import DataModelBase
 
 
-@dataclass(kw_only=True)
 class Action(StructuredNode, DataModelBase):
-    id: str = UniqueIdProperty()
-    initiator: str = Property(required=True)
-    function_identifier: str = Property(required=True)  # consists of the name of the class and the name
+    uuid: str = UniqueIdProperty()
+    initiator: str = StringProperty(required=True)
+    function_identifier: str = StringProperty(required=True)  # consists of the name of the class and the name
     # of the function separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
     args: List[Any] = JSONProperty(required=True)
     kw_args: Dict[str, Any] = JSONProperty(required=True)
