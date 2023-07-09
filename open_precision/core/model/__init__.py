@@ -37,10 +37,10 @@ import json
 from dataclasses import dataclass
 from functools import wraps
 from types import FunctionType
-from typing import List, Type, Callable
+from typing import List, Type, Callable, Dict, Any
 
 import neomodel
-from neomodel import StructuredNode, RelationshipDefinition
+from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager
 from neomodel.properties import validator
 
 from open_precision.utils.other import get_attributes, is_iterable
@@ -90,8 +90,8 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 
 
 class DataModelBase:
-    def to_json(self):
-        return CustomJSONEncoder().encode(self)
+    def to_json(self, with_rels: List[RelationshipManager] = None):
+        return CustomJSONEncoder(with_rels=with_rels).encode(self)
 
     @classmethod
     def from_json(cls, json_string: str):
@@ -101,23 +101,29 @@ class DataModelBase:
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
 
-    def __init__(self, depth: int = 0, *args, **kwargs):
-        self.depth = depth
+    def __init__(self, with_rels: List[RelationshipManager] = None, *args, **kwargs):
+        self.with_conns: List[RelationshipManager] = with_rels if with_rels else []
         super().__init__(*args, **kwargs)
+
     # overload method default
 
     def default(self, obj):
         if isinstance(obj, DataModelBase):
-            # use class_signature_mapping to get the signature of the class
-            signature = class_signature_mapping[obj.__class__]
-            obj_dict = {k: getattr(obj, k) for k in signature}
-            return obj_dict
-        if isinstance(obj, Exception):
-            raise obj
+            return {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
+        elif isinstance(obj, RelationshipManager):
+            if obj in self.with_conns:
+                return list(obj)
+            else:
+                return None
+
         return json.JSONEncoder.default(self, obj)
 
 
 class CustomJSONDecoder(json.JSONDecoder):
+    """
+    JSON decoder that is able to reconstruct subclasses of DataModelBase from JSON by matching keys with class attribute
+    names. Relationship fields will be ignored.
+    """
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
@@ -132,6 +138,8 @@ class CustomJSONDecoder(json.JSONDecoder):
             # check if the dict is a signature of a class
             for signature, cls in signature_class_mapping.items():
                 if signature == keys_set:
+                    # remove relation information from dict
+                    obj = {k: v for k,v in obj.items() if not issubclass(type(getattr(cls, k)), RelationshipDefinition)}
                     return cls(**obj)
             else:
                 return obj
@@ -189,8 +197,10 @@ def map_model(database_url: str):
     # generate class signature mapping for deserialization of json to data model classes
     signature_class_mapping = {get_attributes(cls,
                                               base_filter=lambda x: x not in [DataModelBase, StructuredNode],
-                                              property_name_filter=lambda x: (not x.startswith("_")) and (x not in ["DoesNotExist", "id"] if issubclass(cls, StructuredNode) else True),
-                                              property_type_filter=lambda x: (not issubclass(x, RelationshipDefinition)) and (x is not FunctionType))
+                                              property_name_filter=lambda x: (not x.startswith("_")) and (
+                                                  x not in ["DoesNotExist", "id"] if issubclass(cls,
+                                                                                                StructuredNode) else True),
+                                              property_type_filter=lambda x: x is not FunctionType)
                                : cls
                                for cls in data_model_classes}
 
