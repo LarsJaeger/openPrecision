@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
         path.add_waypoint(waypoint)
         print(list(course.CONTAINS))
         print(list(path.IS_CONTAINED_BY))
-        course_json = course.to_json()
+        course_json = course.to_json(with_rels=[Course.CONTAINS])
         print(course_json)
         reconstr_course = DataModelBase.from_json(course_json)
         print("reconstr. type: " + str(type(reconstr_course)))

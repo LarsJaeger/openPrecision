@@ -90,7 +90,7 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 
 
 class DataModelBase:
-    def to_json(self, with_rels: List[RelationshipManager] = None):
+    def to_json(self, with_rels: List[RelationshipDefinition] = None):
         return CustomJSONEncoder(with_rels=with_rels).encode(self)
 
     @classmethod
@@ -101,8 +101,10 @@ class DataModelBase:
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
 
-    def __init__(self, with_rels: List[RelationshipManager] = None, *args, **kwargs):
-        self.with_conns: List[RelationshipManager] = with_rels if with_rels else []
+    def __init__(self, with_rels: List[RelationshipDefinition] = None, *args, **kwargs):
+        self.with_rels: List[RelationshipDefinition] = with_rels if with_rels else []
+        # replace definition object with actual definition
+        self.with_rels: List[dict] = [x.definition for x in self.with_rels]
         super().__init__(*args, **kwargs)
 
     # overload method default
@@ -111,7 +113,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         if isinstance(obj, DataModelBase):
             return {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
         elif isinstance(obj, RelationshipManager):
-            if obj in self.with_conns:
+            if obj.definition in self.with_rels:
                 return list(obj)
             else:
                 return None
