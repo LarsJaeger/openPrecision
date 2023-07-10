@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from socketio.asyncio_redis_manager import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
@@ -19,10 +19,10 @@ class DataManager:
         self._signal_stop = False
         self._manager = manager
         self._sio_queue = None
-        self._data_update_mapping = {
-            "target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state,
-            "course": lambda: self._manager.plugins[Navigator].course,
-            "vehicle_state": lambda: self._manager.plugins[VehicleStateBuilder].vehicle_state,
+        self._data_update_mapping: Dict[str, Callable[[], Any]] = {
+            "target_machine_state": lambda: self._manager.plugins[Navigator].target_machine_state.to_json(with_rels=[Course.CONTAINS]),
+            "course": lambda: self._manager.plugins[Navigator].course.to_json(),
+            "vehicle_state": lambda: self._manager.plugins[VehicleStateBuilder].vehicle_state.to_json(),
         }
 
     async def start_update_loop(self):
@@ -39,16 +39,14 @@ class DataManager:
             # handle actions and deliver responses
             await self._manager.system_task_manager.handle_tasks(amount=10)
 
-            # send current states to the user interface
+            data_update_mem = {k: None for k in self._data_update_mapping.keys()}
+
+            # send current states to the user interface if changes occured
             for key, fn in self._data_update_mapping.items():
                 exec_result = fn()
-                if isinstance(exec_result, DataModelBase):
-                    parsed_result = exec_result.to_json()
-                else:
-                    parsed_result = json.dumps(exec_result)
-                await self._sio_queue.emit(key, parsed_result,
-                                           room=key)
-
+                if data_update_mem[key] != exec_result:
+                    await self._sio_queue.emit(key, exec_result,
+                                               room=key)
         except Exception as e:
             await self._sio_queue.emit('error', str(e),
                                        room='error')
