@@ -40,7 +40,7 @@ from types import FunctionType
 from typing import List, Type, Callable, Dict, Any
 
 import neomodel
-from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager
+from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager, RelationshipTo, RelationshipFrom
 from neomodel.properties import validator
 
 from open_precision.utils.other import get_attributes, is_iterable
@@ -89,9 +89,47 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
     return wrapper
 
 
+def _resolve_object_conns(obj: Any,
+                          with_conns: List[RelationshipDefinition],
+                          walked_connections: List
+                          ):
+    objects = []
+    connections = []
+
+    objects = {}
+
+    for field, value in obj.__dict__.items():
+        if isinstance(value, RelationshipManager) and value.definition in with_conns:
+            relationship = getattr(obj.__class__, field)
+            if isinstance(relationship, RelationshipTo):
+                a = "from"
+                b = "to"
+            elif isinstance(relationship, RelationshipFrom):
+                a = "to"
+                b = "from"
+            else:
+                a = "a"
+                b = "b"
+            for x in list(value):
+                connections.append({a: str(type(obj)) + str(obj.uuid),
+                                    b: str(type(x)) + str(x.uuid)})
+                inner_objs, inner_conns = _resolve_object_conns(value,
+                                                                with_conns=with_conns,
+                                                                walked_connections=connections)
+                objects.extend({inner_objs})
+                connections.append(inner_conns)
+
+    return objects, connections
+
+
 class DataModelBase:
     def to_json(self, with_rels: List[RelationshipDefinition] = None):
-        return CustomJSONEncoder(with_rels=with_rels).encode(self)
+        encoder = CustomJSONEncoder(with_rels=with_rels)
+        # TODO
+        if with_rels:
+            objects: List[DataModelBase] = [self]
+            connections: List = []
+        return
 
     @classmethod
     def from_json(cls, json_string: str):
@@ -126,6 +164,7 @@ class CustomJSONDecoder(json.JSONDecoder):
     JSON decoder that is able to reconstruct subclasses of DataModelBase from JSON by matching keys with class attribute
     names. Relationship fields will be ignored.
     """
+
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
@@ -141,7 +180,8 @@ class CustomJSONDecoder(json.JSONDecoder):
             for signature, cls in signature_class_mapping.items():
                 if signature == keys_set:
                     # remove relation information from dict
-                    obj = {k: v for k,v in obj.items() if not issubclass(type(getattr(cls, k)), RelationshipDefinition)}
+                    obj = {k: v for k, v in obj.items() if
+                           not issubclass(type(getattr(cls, k)), RelationshipDefinition)}
                     return cls(**obj)
             else:
                 return obj

@@ -29,7 +29,6 @@ class MyTestCase(unittest.TestCase):
         reconstr_course = DataModelBase.from_json(course_json)
         print("reconstr. type: " + str(type(reconstr_course)))
         print("reconstr. object: " + str(reconstr_course))
-
     def test_json_encoder(self, obj: DataModelBase):
         dic = obj.to_json()
 
