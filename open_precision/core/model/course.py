@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from neomodel import StructuredNode, UniqueIdProperty, Property, RelationshipTo, cardinality, StringProperty
+from neomodel import StructuredNode, UniqueIdProperty, RelationshipTo, cardinality, StringProperty
 
 from open_precision.core.model import DataModelBase
 
@@ -22,7 +21,5 @@ class Course(StructuredNode, DataModelBase):
     def add_path(self, path: Path):
         self.save()
         path.save()
-        print("before connect")
         self.CONTAINS.connect(path)
-        print("after connect")
         return self

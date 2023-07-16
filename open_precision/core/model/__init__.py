@@ -34,10 +34,9 @@ Both serialization and deserialization ignore all relationships.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from functools import wraps
 from types import FunctionType
-from typing import List, Type, Callable, Dict, Any
+from typing import List, Any
 
 import neomodel
 from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager, RelationshipTo, RelationshipFrom
@@ -91,70 +90,96 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 
 def _resolve_object_conns(obj: Any,
                           with_conns: List[RelationshipDefinition],
-                          walked_connections: List
+                          walked_connections: List = None,
+                          main_obj: Any = None,
                           ):
-    objects = []
     connections = []
-
     objects = {}
+    walked_connections = walked_connections if walked_connections is not None else []
+
+    if main_obj is None:
+        main_obj = obj
+        objects["main"] = main_obj
+    else:
+        objects[str(type(obj).__name__) + " " + str(obj.uuid)] = obj
 
     for field, value in obj.__dict__.items():
         if isinstance(value, RelationshipManager) and value.definition in with_conns:
+            # print("resolving connection " + str(value.definition))
             relationship = getattr(obj.__class__, field)
+            if relationship in walked_connections:
+                continue
+
+            walked_connections.append(relationship)
             if isinstance(relationship, RelationshipTo):
-                a = "from"
-                b = "to"
+                rel_type = "to"
             elif isinstance(relationship, RelationshipFrom):
-                a = "to"
-                b = "from"
+                rel_type = "from"
             else:
-                a = "a"
-                b = "b"
+                rel_type = "undirected"
+
             for x in list(value):
-                connections.append({a: str(type(obj)) + str(obj.uuid),
-                                    b: str(type(x)) + str(x.uuid)})
-                inner_objs, inner_conns = _resolve_object_conns(value,
+                obj_a_ref: str = str(type(obj).__name__) + " " + str(obj.uuid) if obj != main_obj else "main"
+                obj_b_ref: str = str(type(x).__name__) + " " + str(x.uuid) if x != main_obj else "main"
+                connections.append({"a": obj_a_ref,
+                                    "relationship": field,
+                                    "type": rel_type,
+                                    "b": obj_b_ref})
+
+                inner_objs, inner_conns = _resolve_object_conns(x,
                                                                 with_conns=with_conns,
-                                                                walked_connections=connections)
-                objects.extend({inner_objs})
-                connections.append(inner_conns)
+                                                                walked_connections=walked_connections,
+                                                                main_obj=main_obj)
+                objects.update(inner_objs)
+                connections.extend(inner_conns)
 
     return objects, connections
 
 
 class DataModelBase:
-    def to_json(self, with_rels: List[RelationshipDefinition] = None):
-        encoder = CustomJSONEncoder(with_rels=with_rels)
-        # TODO
-        if with_rels:
-            objects: List[DataModelBase] = [self]
-            connections: List = []
-        return
+    def to_json(self, with_rels: List[RelationshipDefinition] = None) -> str:
+        encoder = CustomJSONEncoder()
+        if with_rels is None:
+            return encoder.encode(self)
+        else:
+            objects, connections = _resolve_object_conns(self, [x.definition for x in with_rels])
+            composite_object_dict = {"objects": objects,
+                                     "connections": connections}
+            return encoder.encode(composite_object_dict)
 
     @classmethod
-    def from_json(cls, json_string: str):
-        return CustomJSONDecoder().decode(json_string)
+    def from_json(cls, json_string: str, with_conns: bool = False):
+        """
+        Deserializes a json string to an object of the class. If the json string is a composite object (i.e. it contains
+        connections), the main object is returned.
+        If an object with the same uuid already exists in the database, it will be updated to have the properties of the
+        serialized object and returned instead of a new object.
+
+        :param json_string:
+        :param with_conns:
+        :return:
+        """
+        obj_dict = CustomJSONDecoder().decode(json_string)
+        if obj_dict.keys() == {"objects", "connections"}:
+            if with_conns:
+                for obj in obj_dict["objects"].values():
+                    obj.save()
+                for conn in obj_dict["connections"]:
+                    obj_a = obj_dict["objects"][conn["a"]]
+                    obj_b = obj_dict["objects"][conn["b"]]
+                    getattr(obj_a, conn["relationship"]).connect(obj_b)
+            return obj_dict["objects"]["main"]
+        else:
+            return obj_dict
 
 
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
 
-    def __init__(self, with_rels: List[RelationshipDefinition] = None, *args, **kwargs):
-        self.with_rels: List[RelationshipDefinition] = with_rels if with_rels else []
-        # replace definition object with actual definition
-        self.with_rels: List[dict] = [x.definition for x in self.with_rels]
-        super().__init__(*args, **kwargs)
-
     # overload method default
-
     def default(self, obj):
         if isinstance(obj, DataModelBase):
             return {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
-        elif isinstance(obj, RelationshipManager):
-            if obj.definition in self.with_rels:
-                return list(obj)
-            else:
-                return None
 
         return json.JSONEncoder.default(self, obj)
 
@@ -179,9 +204,20 @@ class CustomJSONDecoder(json.JSONDecoder):
             # check if the dict is a signature of a class
             for signature, cls in signature_class_mapping.items():
                 if signature == keys_set:
+                    if "uuid" in obj.keys():
+                        ret = cls.nodes.get_or_none(uuid=obj["uuid"])
+                        if ret is not None:
+                            # update the object with the new values
+                            for key, value in obj.items():
+                                setattr(ret, key, value)
+                            ret.save()
+
+                            return ret
+                    """
                     # remove relation information from dict
                     obj = {k: v for k, v in obj.items() if
                            not issubclass(type(getattr(cls, k)), RelationshipDefinition)}
+                    """
                     return cls(**obj)
             else:
                 return obj
@@ -242,9 +278,13 @@ def map_model(database_url: str):
                                               property_name_filter=lambda x: (not x.startswith("_")) and (
                                                   x not in ["DoesNotExist", "id"] if issubclass(cls,
                                                                                                 StructuredNode) else True),
-                                              property_type_filter=lambda x: x is not FunctionType)
+                                              property_type_filter=lambda x: x is not FunctionType
+                                                                             and not issubclass(x,
+                                                                                                RelationshipDefinition))
                                : cls
                                for cls in data_model_classes}
 
     class_signature_mapping = {v: k for k, v in
                                signature_class_mapping.items()}  # reverse lookup table for signature_class_mapping
+
+    print(class_signature_mapping)
