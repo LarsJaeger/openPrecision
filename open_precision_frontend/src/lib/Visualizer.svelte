@@ -95,7 +95,6 @@
     });
 
     // implement visualizer functions
-
     export function visualizeCourse(course) {
         for (const pathIndex in course.paths) {
             const path = course.paths[pathIndex];
