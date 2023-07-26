@@ -9,29 +9,44 @@ if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
 
 
-async def queue_func(queue: AioQueue, func: Callable[[SystemHub], Any]) -> any:
-    # create pipe
-    pipe_out, pipe_in = AioPipe(duplex=False)
-    # put action and pipe in queue
-    await queue.coro_put((func, pipe_in))
-    # wait for result
-    await pipe_out.coro_poll()
-    # return result
-    ret = await pipe_out.coro_recv()
-    # raise Exception if result is an exception
-    if isinstance(ret, tuple) and isinstance(ret[0], Exception):
-        print(ret[1])
-        raise ret[0]
-    return ret
-
-
 class SystemTaskManager:
+    """
+    This class is used to queue and handle system tasks (function calls) to be executed in the main thread.
+
+    ## Implementation details:
+    queue_system_task(func, *args, **kwargs) queues a system task (function call) to be executed in the main thread. The
+    passed function, args, kwargs, and the pipe end for sending the result put in a shared queue. When calling
+    handle_tasks(amount) the given amount of tasks will be taken from the queue and executed in the main thread. The
+    result will then be sent back through the pipe. Which triggers the queue_system_task function to return the result
+    to its caller.
+    """
+
     def __init__(self, manager: SystemHub):
         self._manager = manager
         self.task_queue = AioQueue()
 
-    async def queue_system_task(self, func: Callable[[SystemHub], Any]) -> Any:
-        return await queue_func(self.task_queue, func)
+    async def queue_system_task(self, func: Callable[[SystemHub], Any], *args, **kwargs) -> Any:
+        """
+        Queues a system task (function call) to be executed in the main thread.
+        :param func: function to be executed, must take a SystemHub as first argument, all other arguments must be
+                     passed as args and kwargs
+        :param args: positional arguments to be passed to func, must be serializable (dill)
+        :param kwargs: keyword arguments to be passed to func, must be serializable (dill)
+        :return: result of func
+        """
+        # create pipe
+        pipe_out, pipe_in = AioPipe(duplex=False)
+        # put action, args, kwargs and pipe in queue
+        await self.task_queue.coro_put((func, args, kwargs, pipe_in))
+        # wait for result
+        await pipe_out.coro_poll()
+        # return result
+        ret = await pipe_out.coro_recv()
+        # raise Exception if result is an exception
+        if isinstance(ret, tuple) and isinstance(ret[0], Exception):
+            print(ret[1])
+            raise ret[0]
+        return ret
 
     async def handle_tasks(self, amount: int = -1) -> None:
         """
@@ -57,10 +72,14 @@ class SystemTaskManager:
                 break
 
             # Get the function from the queue
-            func, conn = self.task_queue.get()
+            func, args, kwargs, conn = self.task_queue.get()
+
+            print("executing function")
+            print(func)
+
             # execute function
             try:
-                ret = func(self._manager)
+                ret = func(self._manager, *args, **kwargs)
             except Exception as e:
                 ret = e, traceback.format_exc()
             # Send the result back

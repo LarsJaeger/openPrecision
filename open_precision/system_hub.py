@@ -57,8 +57,24 @@ class SystemHub:
         self._api = API(self._system_task_manager.queue_system_task)
         api_thread = Thread(target=self._api.run)
         api_thread.start()
+
+        # starting update loop
+        self._signal_stop = False
         asyncio.run(self._data.start_update_loop())
+
         api_thread.join()
+
+    async def start_update_loop(self):
+        while not self._signal_stop:
+            try:
+                # handle actions and deliver responses
+                await self._manager.system_task_manager.handle_tasks(amount=10)
+            except Exception as e:
+                await self._sio.emit('error', str(e),
+                                     room='error')
+
+    async def stop_update_loop(self):
+        self._signal_stop = True
 
     @property
     def config(self) -> ConfigManager:

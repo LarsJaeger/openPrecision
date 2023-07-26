@@ -3,7 +3,6 @@ from __future__ import annotations
 from json import JSONEncoder
 from typing import TYPE_CHECKING, Dict, Callable, Any, List
 
-from fastapi.routing import APIRoute
 from socketio.asyncio_server import AsyncServer
 
 from open_precision.core.model import DataModelBase
@@ -13,13 +12,24 @@ if TYPE_CHECKING:
 
 
 class DataManager:
+    """
+    The DataManager manages data subscriptions and data updates. The goal is to bundle periodic api calls to reduce
+    computational expenses and network traffic, as well as to move data update work to the server side. These periodic
+    tasks either check for new data or are otherwise required to be called periodically.
+
+    Concretely, equivalent system tasks are grouped, then called once if required by the schedule, then multicasted to
+    the specified clients via socketio. For specific usage, see the documentation of #TODO
+    """
+
     def __init__(self, manager: SystemHub):
         self.endpoint_dict = None
-        self._signal_stop = False
         self._manager = manager
-        self._sio = None
+        self._sio = AsyncServer(async_mode='asgi',
+                                cors_allowed_origins="*")
+        self._sio.on('connect', self._on_connect)
         self._data_update_mapping: Dict[Callable[[], Any], List[str]] = {}
         self._connected_clients: list[str] = []
+
 
     async def _on_connect(self, sid, environ):
         self._connected_clients.append(sid)
@@ -31,28 +41,23 @@ class DataManager:
         print('disconnect ', sid)
 
     async def start_update_loop(self):
-        # url = 'redis://redis:6379' TODO evaluate if required
-        self._sio = AsyncServer(  # client_manager=AsyncRedisManager(url),
-            async_mode='asgi',
-            cors_allowed_origins="*")
-        await self._sio.on('connect', self._on_connect)
-        
-        # get endpoints for later subscriptions
-        route_list = [x for x in self._manager.api.app.routes if isinstance(x, APIRoute)]
-        self.endpoint_dict: dict = {route: route.endpoint for route in route_list}
-        
-        
+        # TODO potentially move to SystemHub (part of the update function should then be moved too)
         while not self._signal_stop:
+            try:
+                # handle actions and deliver responses
+                await self._manager.system_task_manager.handle_tasks(amount=10)
+            except Exception as e:
+                await self._sio.emit('error', str(e),
+                                     room='error')
             await self.update()
             # await asyncio.sleep(10) # slow down update loop artificially
 
-    async def update(self):
-        try:
-            # handle actions and deliver responses
-            await self._manager.system_task_manager.handle_tasks(amount=10)
-        except Exception as e:
-            await self._sio.emit('error', str(e),
-                                 room='error')
+    async def do_update(self):
+        """
+        This function is called by the SystemHub to trigger a data update. It is not intended to be called from outside
+        the system update loop.
+        :return: None
+        """
         data_update_mem = {k: None for k in self._data_update_mapping.keys()}
 
         # send current states to the user interface if changes occurred
@@ -64,14 +69,13 @@ class DataManager:
 
             if data_update_mem[fn] != exec_result:
                 for subscriber in subscribers:
-
-                    serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase)\
-                                        else JSONEncoder().encode(exec_result)
+                    serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase) \
+                        else JSONEncoder().encode(exec_result)
 
                     await self._sio.emit(serialized_result,
                                          to=subscriber)
 
-    async def add_data_subscription(self, sid: str, fn: Callable[[], Any]):
+    async def add_data_subscription(self, sid: str, fn: Callable[[], Any], period_ms: int = 0):
         subscribers = self._data_update_mapping[fn]
         if sid not in subscribers:
             subscribers.append(sid)
@@ -80,6 +84,3 @@ class DataManager:
         subscribers = self._data_update_mapping[fn]
         if sid in subscribers:
             subscribers.remove(sid)
-
-    async def stop(self):
-        self._signal_stop = True

@@ -1,16 +1,13 @@
 # define the socketio server:
 
 import socketio
-import uvicorn
 from fastapi import FastAPI, APIRouter
-from fastapi.routing import APIRoute
 from socketio import AsyncServer, AsyncRedisManager
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
 from open_precision.api.v1 import v1_router
-from open_precision.api.v1.data_subscription import data_subscription_router
 
 url = 'redis://redis:6379'
 _socketio_server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
@@ -86,4 +83,4 @@ api_router.include_router(v1_router)
 
 app.include_router(api_router)
 app.include_router(root_router)
-app.include_router(data_subscription_router)
+# app.include_router(data_subscription_router)

@@ -17,12 +17,23 @@ look up the neomodel documentation.
 The object graph mapper is neomodel, classes that should represent classes must inherit from neomodel.StructuredNode.
 The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data
 type is stored.
+### Adding Nodes
+To add a node, create a module with a class that inherits from neomodel.StructuredNode and DataModelBase, then add the class to the data_model_classes list in this module (the module import must happen in the map_model function).
+The class attributes are the properties of the node.
+The annotation of the class attribute shows the datatype of the property.
+The value assigned to that attribute describes how the data type is stored and must be of neomodel.Property.
+If the attribute should for example be data class as described below, the data class will be used in the type annotation, while the corresponding Property class will be used as the value assigned to the attribute.
 
-## Data classes
-Data classes that will not be explicitly stored as single nodes in the graph but can be stored as properties of nodes.
+## Data Classes
+Data classes that won't be explicitly stored as single nodes in the graph but can be stored as properties of nodes.
 Every data class also needs a corresponding property class that maps the data class attributes to a neo4j supported data type.
 These Property classes should be defined in the same module as the corresponding data class and must inherit from neomodel.Property (and implement the inflate and deflate methods).
 The inflate method takes the value stored in the database and returns the data class, the deflate method takes the data class and returns the value that should be stored in the database.
+
+### Adding Data Classes
+To add a data class, create a module with a class that inherits from DataModelBase and is decorated with dataclasses.dataclass(kw_only=True).
+In that same module create a class that inherits from neomodel.Property and implement the inflate and deflate methods to inflate/deflate an object from/into a neo4j native type.
+
 
 # JSON Serialization
 Use the to_json method of DataModelBase objects or the CustomJSONEncoder class to serialize the object to json.
@@ -101,7 +112,7 @@ def _resolve_object_conns(obj: Any,
         main_obj = obj
         objects["main"] = main_obj
     else:
-        objects[str(type(obj).__name__) + " " + str(obj.uuid)] = obj
+        objects[str(type(obj).__qualname__) + " " + str(obj.uuid)] = obj
 
     for field, value in obj.__dict__.items():
         if isinstance(value, RelationshipManager) and value.definition in with_conns:
@@ -119,8 +130,8 @@ def _resolve_object_conns(obj: Any,
                 rel_type = "undirected"
 
             for x in list(value):
-                obj_a_ref: str = str(type(obj).__name__) + " " + str(obj.uuid) if obj != main_obj else "main"
-                obj_b_ref: str = str(type(x).__name__) + " " + str(x.uuid) if x != main_obj else "main"
+                obj_a_ref: str = str(type(obj).__qualname__) + " " + str(obj.uuid) if obj != main_obj else "main"
+                obj_b_ref: str = str(type(x).__qualname__) + " " + str(x.uuid) if x != main_obj else "main"
                 connections.append({"a": obj_a_ref,
                                     "relationship": field,
                                     "type": rel_type,
@@ -265,8 +276,7 @@ def map_model(database_url: str):
     neomodel.db.set_connection(database_url)
 
     data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
-                                               Vehicle, VehicleState,
-                                               Waypoint]
+                                               Vehicle, VehicleState, Waypoint]
 
     neomodel.remove_all_labels()
     for cls in data_model_classes:
