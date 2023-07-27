@@ -30,8 +30,14 @@ class DataManager:
         self._data_update_mapping: Dict[Callable[[], Any], List[str]] = {}
         self._connected_clients: list[str] = []
 
-
     async def _on_connect(self, sid, environ):
+        """
+        This function is called by the socketio server when a new client connects. It is not intended to be called from
+        outside the system update loop.
+        :param sid:
+        :param environ:
+        :return:
+        """
         self._connected_clients.append(sid)
         # TODO auth
         print('connect ', sid)
@@ -39,18 +45,6 @@ class DataManager:
     async def _on_disconnect(self, sid):
         self._connected_clients.remove(sid)
         print('disconnect ', sid)
-
-    async def start_update_loop(self):
-        # TODO potentially move to SystemHub (part of the update function should then be moved too)
-        while not self._signal_stop:
-            try:
-                # handle actions and deliver responses
-                await self._manager.system_task_manager.handle_tasks(amount=10)
-            except Exception as e:
-                await self._sio.emit('error', str(e),
-                                     room='error')
-            await self.update()
-            # await asyncio.sleep(10) # slow down update loop artificially
 
     async def do_update(self):
         """
