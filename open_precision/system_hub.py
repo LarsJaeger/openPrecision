@@ -68,10 +68,10 @@ class SystemHub:
         while not self._signal_stop:
             try:
                 # handle actions and deliver responses
-                await self._manager.system_task_manager.handle_tasks(amount=10)
+                await self._system_task_manager.handle_tasks(amount=10)
             except Exception as e:
-                await self._sio.emit('error', str(e),
-                                     room='error')
+                await self._data.emit_error(e)
+            await self._data.do_update()
 
     async def stop_update_loop(self):
         self._signal_stop = True

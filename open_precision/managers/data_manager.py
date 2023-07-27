@@ -30,7 +30,6 @@ class DataManager:
         self._data_update_mapping: Dict[Callable[[], Any], List[str]] = {}
         self._connected_clients: list[str] = []
 
-
     async def _on_connect(self, sid, environ):
         self._connected_clients.append(sid)
         # TODO auth
@@ -39,18 +38,6 @@ class DataManager:
     async def _on_disconnect(self, sid):
         self._connected_clients.remove(sid)
         print('disconnect ', sid)
-
-    async def start_update_loop(self):
-        # TODO potentially move to SystemHub (part of the update function should then be moved too)
-        while not self._signal_stop:
-            try:
-                # handle actions and deliver responses
-                await self._manager.system_task_manager.handle_tasks(amount=10)
-            except Exception as e:
-                await self._sio.emit('error', str(e),
-                                     room='error')
-            await self.update()
-            # await asyncio.sleep(10) # slow down update loop artificially
 
     async def do_update(self):
         """
@@ -74,6 +61,10 @@ class DataManager:
 
                     await self._sio.emit(serialized_result,
                                          to=subscriber)
+
+    async def emit_error(self, e: Exception):
+        await self._sio.emit('error', str(e),
+                             room='error')
 
     async def add_data_subscription(self, sid: str, fn: Callable[[], Any], period_ms: int = 0):
         subscribers = self._data_update_mapping[fn]
