@@ -69,6 +69,10 @@ class DataManager:
                     await self._sio.emit(serialized_result,
                                          to=subscriber)
 
+    async def emit_error(self, e: Exception):
+        await self._sio.emit('error', str(e),
+                             room='error')
+
     async def add_data_subscription(self, sid: str, fn: Callable[[], Any], period_ms: int = 0):
         subscribers = self._data_update_mapping[fn]
         if sid not in subscribers:
