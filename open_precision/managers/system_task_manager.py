@@ -11,13 +11,13 @@ if TYPE_CHECKING:
 
 class SystemTaskManager:
     """
-    This class is used to queue and handle system tasks (function calls) to be executed in the main thread.
+    This class is used to queue and handle system tasks (func calls) to be executed in the main thread.
 
     ## Implementation details:
-    queue_system_task(func, *args, **kwargs) queues a system task (function call) to be executed in the main thread. The
-    passed function, args, kwargs, and the pipe end for sending the result put in a shared queue. When calling
+    queue_system_task(func, *args, **kwargs) queues a system task (func call) to be executed in the main thread. The
+    passed func, args, kwargs, and the pipe end for sending the result put in a shared queue. When calling
     handle_tasks(amount) the given amount of tasks will be taken from the queue and executed in the main thread. The
-    result will then be sent back through the pipe. Which triggers the queue_system_task function to return the result
+    result will then be sent back through the pipe. Which triggers the queue_system_task func to return the result
     to its caller.
     """
 
@@ -27,8 +27,8 @@ class SystemTaskManager:
 
     async def queue_system_task(self, func: Callable[[SystemHub], Any], *args, **kwargs) -> Any:
         """
-        Queues a system task (function call) to be executed in the main thread.
-        :param func: function to be executed, must take a SystemHub as first argument, all other arguments must be
+        Queues a system task (func call) to be executed in the main thread.
+        :param func: func to be executed, must take a SystemHub as first argument, all other arguments must be
                      passed as args and kwargs
         :param args: positional arguments to be passed to func, must be serializable (dill)
         :param kwargs: keyword arguments to be passed to func, must be serializable (dill)
@@ -71,13 +71,10 @@ class SystemTaskManager:
             if self.task_queue.empty():
                 break
 
-            # Get the function from the queue
+            # Get the func from the queue
             func, args, kwargs, conn = self.task_queue.get()
 
-            print("executing function")
-            print(func)
-
-            # execute function
+            # execute func
             try:
                 ret = func(self._manager, *args, **kwargs)
             except Exception as e:
@@ -85,3 +82,5 @@ class SystemTaskManager:
             # Send the result back
             with conn as conn:
                 await conn.coro_send(ret)
+
+

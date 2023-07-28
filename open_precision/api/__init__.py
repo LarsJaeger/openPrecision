@@ -13,6 +13,9 @@ if TYPE_CHECKING:
 
 
 class API:
+    """
+    responsible for initialiuing and starting the (not really REST-ful) API
+    """
     def __init__(self, queue_task: Callable[[Callable[[SystemHub], Any]], Awaitable[Any]]):
         self.queue_task = queue_task
         self.app = server.app

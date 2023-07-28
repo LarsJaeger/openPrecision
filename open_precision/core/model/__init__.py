@@ -18,7 +18,7 @@ The object graph mapper is neomodel, classes that should represent classes must 
 The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data
 type is stored.
 ### Adding Nodes
-To add a node, create a module with a class that inherits from neomodel.StructuredNode and DataModelBase, then add the class to the data_model_classes list in this module (the module import must happen in the map_model function).
+To add a node, create a module with a class that inherits from neomodel.StructuredNode and DataModelBase, then add the class to the data_model_classes list in this module (the module import must happen in the map_model func).
 The class attributes are the properties of the node.
 The annotation of the class attribute shows the datatype of the property.
 The value assigned to that attribute describes how the data type is stored and must be of neomodel.Property.
@@ -55,12 +55,12 @@ from neomodel.properties import validator
 
 from open_precision.utils.other import get_attributes, is_iterable
 
-signature_class_mapping: dict  # will be set by map_model function
-class_signature_mapping: dict  # will be set by map_model function
+signature_class_mapping: dict  # will be set by map_model func
+class_signature_mapping: dict  # will be set by map_model func
 
 
 def persist_return(func: callable) -> callable:
-    """this decorator will persist the return value of the decorated function when it is called"""
+    """this decorator will persist the return value of the decorated func when it is called"""
 
     @wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -76,8 +76,8 @@ def persist_return(func: callable) -> callable:
 
 def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
     """
-    this decorator will persist the argument of the decorated function when it is called
-    :param func: the function to decorate
+    this decorator will persist the argument of the decorated func when it is called
+    :param func: the func to decorate
     :param position_or_kw: the position or keyword of the argument to persist, defaults to 0
     """
 

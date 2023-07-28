@@ -8,7 +8,7 @@ def validate_value(value: Any, rule: Callable[[Any], bool], rule_description: st
     Checks if value is valid according to rule.
 
     :param value: value to check
-    :param rule: function that returns True if value is valid
+    :param rule: func that returns True if value is valid
     :param rule_description: description of rule for error message
 
     :return: True if value is valid according to rule, raises ValueError otherwise

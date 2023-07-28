@@ -83,4 +83,3 @@ api_router.include_router(v1_router)
 
 app.include_router(api_router)
 app.include_router(root_router)
-# app.include_router(data_subscription_router)

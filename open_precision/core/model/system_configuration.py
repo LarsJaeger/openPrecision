@@ -13,4 +13,4 @@ class SystemConfiguration(DataModelBase, StructuredNode):
     """
     uuid: str = UniqueIdProperty()
     config: dict[str, str | list | dict] = JSONProperty(required=True)
-    data_subscriptions: list[DataSubscription] = ArrayProperty(base_property=DataSubscriptionProperty, required=True)
+    #data_subscriptions: list[DataSubscription] = ArrayProperty(base_property=DataSubscriptionProperty, required=True)

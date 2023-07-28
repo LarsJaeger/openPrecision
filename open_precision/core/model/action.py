@@ -13,7 +13,7 @@ class Action(StructuredNode, DataModelBase):
     uuid: str = UniqueIdProperty()
     initiator: str = StringProperty(required=True)
     function_identifier: str = StringProperty(required=True)  # consists of the name of the class and the name
-    # of the function separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
+    # of the func separated by a dot; if a plugin should be accessed the format is plugins.<plugin_class_name>
     args: List[Any] = JSONProperty(required=True)
     kw_args: Dict[str, Any] = JSONProperty(required=True)
 

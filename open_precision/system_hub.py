@@ -60,7 +60,7 @@ class SystemHub:
 
         # starting update loop
         self._signal_stop = False
-        asyncio.run(self._data.start_update_loop())
+        asyncio.run(self.start_update_loop())
 
         api_thread.join()
 

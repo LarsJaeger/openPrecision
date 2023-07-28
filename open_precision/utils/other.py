@@ -34,9 +34,9 @@ def get_attributes(cls,
     """
     Get all attributes of a class and its base classes recursively.
     :param cls:
-    :param base_filter: function to filter base classes, inherited paths will be ignored above classes that do not pass the filter
-    :param property_name_filter: function to filter property names, properties will be ignored if filter returns False
-    :param property_type_filter: function to filter property types, properties will be ignored if filter returns False
+    :param base_filter: func to filter base classes, inherited paths will be ignored above classes that do not pass the filter
+    :param property_name_filter: func to filter property names, properties will be ignored if filter returns False
+    :param property_type_filter: func to filter property types, properties will be ignored if filter returns False
     :return: a set of all property names of the class (including inherited ones)
     """
 
