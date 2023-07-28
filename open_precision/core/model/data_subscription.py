@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Callable, Tuple, Any
 
+import neomodel
+
 from open_precision.core.model import DataModelBase
 from open_precision.utils.neomodel import DillProperty
 
@@ -13,5 +15,5 @@ class DataSubscription(DataModelBase):
     period_length: int = 0  # period length (minimum time between calling this function) in milliseconds
 
 
-class DataSubscriptionProperty(DillProperty[DataSubscription]):
+class DataSubscriptionProperty(DillProperty[DataSubscription], neomodel.Property):
     pass
