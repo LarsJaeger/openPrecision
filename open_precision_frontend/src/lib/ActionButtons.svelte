@@ -1,10 +1,3 @@
-<script context="module">
-    export function sendAction(socket, action) {
-        const actionString = JSON.stringify(action);
-        console.log("[INFO]: Sending action: " + actionString);
-        socket.emit("action", actionString);
-    }
-</script>
 <script lang="ts">
     import {add} from "./Modals/Modals.svelte";
     import configUpload from "./Modals/ConfigUpload.svelte";
@@ -23,12 +16,6 @@
         }).catch((error) => {
             console.log("[ERROR]: " + error);
         });
-
-        /*sendAction($socket, {
-            function_identifier: 'plugins.Navigator.set_course_from_course_generator',
-            args: [],
-            kw_args: {'course_generator_identifier': 'a_heading_parallel'}
-        });*/
 
         console.log("[INFO]: gen_course sent");
     }

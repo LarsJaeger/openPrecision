@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import traceback
 from datetime import datetime
 from json import JSONEncoder
 from typing import TYPE_CHECKING, Dict, Callable, Any, List, Tuple
@@ -25,12 +26,14 @@ class DataManager:
 
     def __init__(self, manager: SystemHub):
         self.endpoint_dict = None
-        self._manager = manager
+        self._hub = manager
         self._sio = AsyncServer(async_mode='asgi',
                                 cors_allowed_origins="*")
         self._sio.on('connect', self._on_connect)
+        self._sio.on('socket_id', self._get_socket_id)
         self._data_update_mapping: Dict[DataSubscription, List[str]] = {}  # subscription: [subscribed_sids]
-        self._data_update_mem: Dict[DataSubscription, Tuple[Any, datetime]] = {}  # subscription: (value, last_updated_unix)
+        self._data_update_mem: Dict[
+            DataSubscription, Tuple[Any, datetime | None]] = {}  # subscription: (value, last_updated)
         self._connected_clients: list[str] = []
 
     async def _on_connect(self, sid, environ):
@@ -45,8 +48,18 @@ class DataManager:
         # TODO auth
         print('connect ', sid)
 
+    async def _get_socket_id(self, sid, data):
+        print("_get_socket_id")
+        await self._sio.emit("socket_id", data=sid, to=sid)
+
     async def _on_disconnect(self, sid):
         self._connected_clients.remove(sid)
+        for key, subscribers_list in self._data_update_mapping.items():
+            if sid in subscribers_list:
+                print(f"removed {sid} from subscribers list")
+                subscribers_list.remove(sid)
+                if len(subscribers_list) == 0:
+                    del self._data_update_mapping[key]
         print('disconnect ', sid)
 
     async def do_update(self):
@@ -56,29 +69,33 @@ class DataManager:
         value has changed.
         :return: None
         """
-        data_update_mem = {k: (None, None) for k in self._data_update_mapping.keys()}
-
         # add subscription to out_of_date list if period length has passed
         out_of_date = []
         now = datetime.now()
-        for subscription, (val, time) in data_update_mem:
-            if now - time >= subscription.period_length:
+        for subscription, (val, time) in self._data_update_mem.items():
+            if (time is None) or (((now - time).total_seconds() * 1000) >= subscription.period_length):
                 out_of_date.append(subscription)
 
         # if out of date and value changed: send current states to the user interface
         for subscription in out_of_date:
             try:
-                exec_result = subscription.func(*subscription.args, **{x: y for (x, y) in subscription.kw_args})
+                exec_result = subscription.func(self._hub, *subscription.args, **{x: y for (x, y) in subscription.kw_args})
             except Exception as e:
-                exec_result = e
+                exec_result = {"exception": traceback.format_exc()}
 
-            if data_update_mem[subscription][0] != exec_result:
+            current_mem_val, current__mem_time = self._data_update_mem[subscription]
+            if current__mem_time is None or current_mem_val != exec_result:
+
+                self._data_update_mem[subscription] = (exec_result, datetime.now())
                 for subscriber in self._data_update_mapping[subscription]:
                     serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase) \
                         else JSONEncoder().encode(exec_result)
 
-                    await self._sio.emit(hash(subscription), data=serialized_result,
+                    #print(str(hash(subscription)))
+                    print(exec_result)
+                    await self._sio.emit(str(hash(subscription)), data=serialized_result,
                                          to=subscriber)
+                    #print("sent data update on " + str(hash(subscription)) + " to " + str(subscriber))
 
     async def emit_error(self, e: Exception):
         """
@@ -87,12 +104,18 @@ class DataManager:
         await self._sio.emit('error', str(e),
                              room='error')
 
-    async def add_data_subscription(self, sid: str, data_subscription: DataSubscription):
-        subscribers = self._data_update_mapping[data_subscription]
+    def add_data_subscription(self, sid: str, data_subscription: DataSubscription):
+        if data_subscription in self._data_update_mapping.keys():
+            subscribers = self._data_update_mapping[data_subscription]
+        else:
+            subscribers = []
+            self._data_update_mapping[data_subscription] = subscribers
+            self._data_update_mem[data_subscription] = (None, None)
         if sid not in subscribers:
+            print(f"{sid} subscribed to {str(data_subscription.func)}")
             subscribers.append(sid)
 
-    async def remove_data_subscription(self, sid: str, data_subscription: DataSubscription):
+    def remove_data_subscription(self, sid: str, data_subscription: DataSubscription):
         subscribers = self._data_update_mapping[data_subscription]
         if sid in subscribers:
             subscribers.remove(sid)

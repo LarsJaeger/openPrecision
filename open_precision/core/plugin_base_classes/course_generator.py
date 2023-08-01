@@ -15,7 +15,7 @@ class CourseGenerator(Plugin, ABC):
 
     @abstractmethod
     def __init__(self, manager: SystemHub):
-        # self._manager = manager
+        # self._hub = manager
         # atexit.register(self.cleanup)
         pass
 

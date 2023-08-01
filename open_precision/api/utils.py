@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 from json import JSONEncoder
-from typing import Callable, Any
+from typing import Callable, Any, TYPE_CHECKING
 
 import makefun
 from fastapi import Depends
@@ -10,8 +10,17 @@ from starlette.responses import JSONResponse
 
 from open_precision.api import dependencies as dependencies
 from open_precision.core.model import DataModelBase
-from open_precision.core.model.data_subscription import DataSubscriptionSchema, DataSubscription
-from open_precision.system_hub import SystemHub
+from open_precision.core.model.data_subscription import DataSubscription
+
+if TYPE_CHECKING:
+    from open_precision.system_hub import SystemHub
+
+
+def _create_add_subscr(subscription_socket_id, data_subscription):
+    def _add_subscr(hub: SystemHub):
+        hub.data.add_data_subscription(subscription_socket_id, data_subscription)
+
+    return _add_subscr
 
 
 def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], Any]:
@@ -36,31 +45,57 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
     ```
 
     """
+    # TODO document schemes
     func_sig = inspect.signature(func)
     params = list(func_sig.parameters.values())
     params.remove(params[0])  # remove hub arg
     params.append(inspect.Parameter('queue_system_task',
                                     default=Depends(dependencies.queue_system_task_dependency),
                                     kind=inspect.Parameter.KEYWORD_ONLY))
+    params.append(inspect.Parameter('subscription_socket_id',
+                                    default=None,
+                                    annotation=str | None,
+                                    kind=inspect.Parameter.KEYWORD_ONLY))
+    params.append(inspect.Parameter('subscription_period_length',
+                                    default=None,
+                                    annotation=int | None,
+                                    kind=inspect.Parameter.KEYWORD_ONLY))
     new_sig = func_sig.replace(parameters=params)
 
     @makefun.wraps(func, new_sig=new_sig)
-    async def endpoint(*args, queue_system_task=Depends(dependencies.queue_system_task_dependency),
-                       data_subscription_schema: DataSubscriptionSchema = None,
+    async def endpoint(*args,
+                       queue_system_task=Depends(dependencies.queue_system_task_dependency),
+                       subscription_socket_id: str | None = None,
+                       subscription_period_length: int | None = None,
                        **kwargs):
-        if data_subscription_schema is not None:
+        # check for subscription
+        if subscription_socket_id is not None and subscription_period_length is not None:
+            # subscription requested
+
             data_subscription = DataSubscription(func=func,
                                                  args=args,
                                                  kw_args=tuple(sorted(kwargs.items())),
-                                                 period_length=data_subscription_schema.period_length)
-            res = await queue_system_task(lambda hub: hub.data.add_data_subscription(data_subscription))
-            if not isinstance(res, Exception):
-                JSONResponse(hash(data_subscription))
+                                                 period_length=subscription_period_length)
+            res = await queue_system_task(_create_add_subscr(subscription_socket_id, data_subscription))
+            if isinstance(res, tuple) and isinstance(res[0], Exception):
+                print("returning1")
+                print(res)
+                return JSONResponse(str(res[1]), status_code=500)
             else:
-                JSONResponse(res, status_code=500)
-        res = await queue_system_task(func, *args, **kwargs)
-        return JSONResponse(res.to_json() if isinstance(res, DataModelBase) else JSONEncoder().encode(res),
-                            status_code=200 if not isinstance(res, Exception) else 500)
+                print("returning1")
+                print(hash(data_subscription))
+                return JSONResponse(str(hash(data_subscription)), status_code=200)
 
-    endpoint.engine_func = func
+        else:
+            # no subscription
+            res = await queue_system_task(func, *args, **kwargs)
+            if isinstance(res, tuple) and isinstance(res[0], Exception):
+                print("returning1")
+                print(res)
+                return JSONResponse(str(res[1]), status_code=500)
+            else:
+                print("returning1")
+                print(res)
+                return JSONResponse(res.to_json() if isinstance(res, DataModelBase) else JSONEncoder().encode(res),
+                                    status_code=200)
     return endpoint

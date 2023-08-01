@@ -1,3 +1,4 @@
+import hashlib
 from dataclasses import dataclass
 from typing import Callable, Tuple, Any
 
@@ -20,6 +21,14 @@ class DataSubscription(DataModelBase):
     kw_args: Tuple[Tuple[str, Any]] = None
     period_length: int = 0  # period length (minimum time between calling this func) in milliseconds
 
+    def __hash__(self):
+        return hash((self.func.__qualname__,
+                     self.func.__code__,
+                     self.func.__defaults__,
+                     self.func.__kwdefaults__,
+                     self.args,
+                     self.kw_args,
+                     self.period_length))
 
 class DataSubscriptionProperty(DillProperty[DataSubscription], neomodel.Property):
     pass
