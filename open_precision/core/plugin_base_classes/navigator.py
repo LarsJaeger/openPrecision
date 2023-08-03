@@ -4,8 +4,8 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from open_precision.core.model import persist_arg, persist_return
+from open_precision.core.model.course import Course
 from open_precision.core.model.vehicle_state import VehicleState
-from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
 from open_precision.core.plugin_base_classes.plugin import Plugin
 from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
 
@@ -29,13 +29,13 @@ class Navigator(Plugin, ABC):
 
     @property
     @abstractmethod
-    def course(self) -> CourseGenerator:
+    def course(self) -> Course:
         pass
 
     @course.setter
     @abstractmethod
     @persist_arg
-    def course(self, course: CourseGenerator):
+    def course(self, course: Course):
         pass
 
     @property

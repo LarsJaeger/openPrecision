@@ -79,6 +79,7 @@ class SystemTaskManager:
                 ret = func(self._manager, *args, **kwargs)
             except Exception as e:
                 ret = e, traceback.format_exc()
+                print("Exception in system task: \n", str(e))
             # Send the result back
             with conn as conn:
                 await conn.coro_send(ret)

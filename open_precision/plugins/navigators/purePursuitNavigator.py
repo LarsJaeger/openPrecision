@@ -61,6 +61,7 @@ class PurePursuitNavigator(Navigator):
             best_segment_base_waypoint = None
             best_segment_target_waypoint = None
             smallest_loss = float('inf')
+            best_path_id = None
             for path_index, path in enumerate(self.course.paths):
                 nr_of_waypoints = len(path.waypoints)
                 for waypoint_id in range(nr_of_waypoints):

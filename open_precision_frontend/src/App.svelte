@@ -1,26 +1,32 @@
 <script context="module" lang="ts">
-    export let apiAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length) + "/api" + "/v1";
+    export const backendAddress: string = "http://localhost:8000";//window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
+    export const apiAddress: string = backendAddress + "/api";
     console.log("[INFO]: using API address: " + apiAddress);
 </script>
-<script>
+<script lang="ts">
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
     import ActionButtons from "./lib/ActionButtons.svelte";
     import Modals, {add} from "./lib/Modals/Modals.svelte";
+    import {socket} from "./stores.js";
+
+    let visualizeCourse; // set by Visualizer
+    let visualizeMachineState; // set by Visualizer
+    let visualizeTargetSteeringAngle; // set by Visualizer
 
 
-    let visualizeMachineState;
-    let visualizeCourse;
-    let sid;
+    let sid: string;
 
     function course_update(data) {
-        console.log("[INFO]: (course): Received message: " + data);
-        visualizeCourse(JSON.parse(data));
+        const parsedData: any = JSON.parse(data);
+        console.log("[INFO]: (course): Received message: ");
+        console.log(parsedData);
+        visualizeCourse(parsedData);
     }
 
-    function sub_to_course() {
+    function sub_to_course(): void {
         // subscribe to course
-        fetch(apiAddress + "/course/?" + new URLSearchParams({
+        fetch(apiAddress + "/v1/navigator/course?" + new URLSearchParams({
             subscription_socket_id: sid,
             subscription_period_length: "0",
         }), {
@@ -34,7 +40,7 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
-            sock.on(data, course_update);
+            $socket.on(data, course_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
         });
@@ -43,13 +49,15 @@
 
     // vehicle data
     function vehicle_data_update(data) {
-        console.log("[INFO]: (vehicle_state): Received message: " + data);
-        visualizeMachineState(JSON.parse(data));
+        const parsedData: any = JSON.parse(data);
+        console.log("[INFO]: (vehicle_state): Received message: ");
+        console.log(parsedData);
+        visualizeMachineState(parsedData);
     }
 
     function sub_to_vehicle_data() {
         // subscribe to course
-        fetch(apiAddress + "/vehicle_state?" + new URLSearchParams({
+        fetch(apiAddress + "/v1/vehicle_state?" + new URLSearchParams({
             subscription_socket_id: sid,
             subscription_period_length: "0",
         }), {
@@ -63,7 +71,7 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
-            sock.on(data, vehicle_data_update);
+            $socket.on(data, vehicle_data_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
         });
@@ -71,13 +79,15 @@
 
     // vehicle data
     function target_steering_angle_update(data) {
-        console.log("[INFO]: (target_vehicle_state): Received message: " + data);
-        visualizeMachineState(JSON.parse(data));
+        const parsedData: any = JSON.parse(data);
+        console.log("[INFO]: (target_vehicle_state): Received message: ");
+        console.log(parsedData);
+        visualizeTargetSteeringAngle(parsedData);
     }
 
     function sub_to_target_steering_angle() {
         // subscribe to course
-        fetch(apiAddress + "/navigator/target_steering_angle?" + new URLSearchParams({
+        fetch(apiAddress + "/v1/navigator/target_steering_angle?" + new URLSearchParams({
             subscription_socket_id: sid,
             subscription_period_length: "0",
         }), {
@@ -91,32 +101,36 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
-            sock.on(data, target_steering_angle_update);
+            $socket.on(data, target_steering_angle_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
         });
     }
 
-    let sock = io("ws://localhost:8000", {
-        path: "/sockets/socket.io",
-        transports: ['websocket', 'polling', 'flashsocket']
-    });
+    $socket.on("connect", () => {
+        console.log("[INFO]: Registered with socket id: " + $socket.id);
+        sid = $socket.id;
+        $socket.onAny((event, ...args) => {
+            console.log("[INFO]: Received event: " + event + " with args: " + args);
+            // log every arg
+            args.forEach((arg) => {
+                console.log(arg);
+            });
 
-    sock.on("connect", () => {
-        console.log("[INFO]: Registered with socket id: " + sock.id);
-        sid = sock.id;
+        });
         sub_to_course();
         //sub_to_vehicle_data();
         sub_to_target_steering_angle();
     });
-    sock.connect();
+    $socket.connect();
 
 
 </script>
 
 <main>
     <Modals/>
-    <Visualizer bind:visualizeMachineState={visualizeMachineState} bind:visualizeCourse={visualizeCourse}/>
+    <Visualizer bind:visualizeCourse={visualizeCourse} bind:visualizeMachineState={visualizeMachineState}
+                bind:visualizeTargetSteeringAngle={visualizeTargetSteeringAngle}/>
     <!--<MetaButtons/> -->
     <ActionButtons/>
     <!--<StatusBar/> -->

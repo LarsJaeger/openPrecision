@@ -2,11 +2,10 @@
     import {add} from "./Modals/Modals.svelte";
     import configUpload from "./Modals/ConfigUpload.svelte";
     import {apiAddress} from "../App.svelte";
-    import {socket} from "../stores.ts";
 
     function generateCourse() {
         console.log("[INFO]: Generating course");
-        fetch(apiAddress + "/v1/course/generate", {
+        fetch(apiAddress + "/v1/navigator/generate_course", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

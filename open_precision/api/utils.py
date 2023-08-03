@@ -78,12 +78,8 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
                                                  period_length=subscription_period_length)
             res = await queue_system_task(_create_add_subscr(subscription_socket_id, data_subscription))
             if isinstance(res, tuple) and isinstance(res[0], Exception):
-                print("returning1")
-                print(res)
                 return JSONResponse(str(res[1]), status_code=500)
             else:
-                print("returning1")
-                print(hash(data_subscription))
                 return JSONResponse(str(hash(data_subscription)), status_code=200)
 
         else:

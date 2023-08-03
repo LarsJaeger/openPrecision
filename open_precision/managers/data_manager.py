@@ -3,8 +3,9 @@ from __future__ import annotations
 import traceback
 from datetime import datetime
 from json import JSONEncoder
-from typing import TYPE_CHECKING, Dict, Callable, Any, List, Tuple
+from typing import TYPE_CHECKING, Dict, Any, List, Tuple
 
+from socketio import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
 
 from open_precision.core.model import DataModelBase
@@ -27,7 +28,9 @@ class DataManager:
     def __init__(self, manager: SystemHub):
         self.endpoint_dict = None
         self._hub = manager
-        self._sio = AsyncServer(async_mode='asgi',
+        url = 'redis://redis:6379'
+        self._sio = AsyncServer(client_manager=AsyncRedisManager(url),
+                                async_mode='asgi',
                                 cors_allowed_origins="*")
         self._sio.on('connect', self._on_connect)
         self._sio.on('socket_id', self._get_socket_id)
@@ -46,10 +49,10 @@ class DataManager:
         """
         self._connected_clients.append(sid)
         # TODO auth
+
         print('connect ', sid)
 
     async def _get_socket_id(self, sid, data):
-        print("_get_socket_id")
         await self._sio.emit("socket_id", data=sid, to=sid)
 
     async def _on_disconnect(self, sid):
@@ -78,12 +81,16 @@ class DataManager:
 
         # if out of date and value changed: send current states to the user interface
         for subscription in out_of_date:
-            try:
-                exec_result = subscription.func(self._hub, *subscription.args, **{x: y for (x, y) in subscription.kw_args})
-            except Exception as e:
-                exec_result = {"exception": traceback.format_exc()}
 
             current_mem_val, current__mem_time = self._data_update_mem[subscription]
+            try:
+                exec_result = subscription.func(self._hub, *subscription.args,
+                                                **{x: y for (x, y) in subscription.kw_args})
+            except Exception as e:
+                exec_result = {"exception": traceback.format_exc()}
+                if current__mem_time is None or current_mem_val != exec_result:
+                    print("exception in data subscription: \n" + str(e))
+
             if current__mem_time is None or current_mem_val != exec_result:
 
                 self._data_update_mem[subscription] = (exec_result, datetime.now())
@@ -91,11 +98,11 @@ class DataManager:
                     serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase) \
                         else JSONEncoder().encode(exec_result)
 
-                    #print(str(hash(subscription)))
-                    print(exec_result)
+                    # print(str(hash(subscription)))
+                    # print(exec_result)
                     await self._sio.emit(str(hash(subscription)), data=serialized_result,
                                          to=subscriber)
-                    #print("sent data update on " + str(hash(subscription)) + " to " + str(subscriber))
+                    print("sent data update on " + str(hash(subscription)) + " to " + str(subscriber))
 
     async def emit_error(self, e: Exception):
         """

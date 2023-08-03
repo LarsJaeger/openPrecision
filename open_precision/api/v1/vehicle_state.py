@@ -8,7 +8,7 @@ from open_precision.api.utils import engine_endpoint
 from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
 
 if TYPE_CHECKING:
-    from open_precision.system_hub import SystemHub
+    pass
 
 vehicle_state_router = APIRouter(
     prefix="/vehicle_state",
@@ -20,5 +20,23 @@ vehicle_state_router = APIRouter(
 
 @vehicle_state_router.get("/")
 @engine_endpoint
-def _get_vehicle_state(hub):
-    return hub.plugins[VehicleStateBuilder].vehicle_state.location
+def get_vehicle_state(hub):
+    return hub.plugins[VehicleStateBuilder].vehicle_state
+
+
+@vehicle_state_router.get("/steering_angle")
+@engine_endpoint
+def get_steering_angle(hub) -> float:
+    return hub.plugins[VehicleStateBuilder].vehicle_state.steering_angle
+
+
+@vehicle_state_router.get("/speed")
+@engine_endpoint
+def get_speed(hub) -> float:
+    return hub.plugins[VehicleStateBuilder].vehicle_state.speed
+
+
+@vehicle_state_router.get("/position")
+@engine_endpoint
+def get_position(hub):
+    return hub.plugins[VehicleStateBuilder].vehicle_state.position

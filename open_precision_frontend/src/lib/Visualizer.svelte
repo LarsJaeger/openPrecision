@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
     //import * as THREE from 'three';
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
@@ -117,6 +117,11 @@
         pointer.position.z = data.position.location.z;
         pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
     }
+
+    export function visualizeTargetSteeringAngle(data: number): void {
+
+    }
+
 
 
 
