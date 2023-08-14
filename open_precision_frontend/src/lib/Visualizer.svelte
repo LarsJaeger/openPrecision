@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
     //import * as THREE from 'three';
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
@@ -12,6 +12,9 @@
     const colorBaseLight = 0xFCA647;
     const colorBase = 0xFB8604;
     const colorBaseDark = 0xc96b03;
+
+    //init steering monitor
+    let visualizedTargetSteeringAngle = 0;
 
 
     // set up three.js
@@ -118,8 +121,8 @@
         pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
     }
 
-    export function visualizeTargetSteeringAngle(data: number): void {
-
+    export function visualizeTargetSteeringAngle(data) {
+        visualizedTargetSteeringAngle = data;
     }
 
 
@@ -129,6 +132,12 @@
 
 <div>
     <canvas class="u-position-absolute u-full-screen-height u-width-full-line u-z-index-0" bind:this={canvas}></canvas>
+    <div style="position: fixed; right: 7rem; bottom: 8rem;">
+        <span aria-hidden="true" class="u-position-absolute icon-plus is-big u-z-index-1"
+              style="color:black; font-size: 7em;"></span>
+        <span aria-hidden="true"
+              class="u-position-absolute icon-arrow-narrow-up is-big u-z-index-10" style="color:red; font-size: 7em; rotate: {visualizedTargetSteeringAngle}deg"></span>
+    </div>
 </div>
 <style>
 </style>

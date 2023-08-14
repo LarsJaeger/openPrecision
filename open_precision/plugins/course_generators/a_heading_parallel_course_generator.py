@@ -45,10 +45,13 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
                    + (base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64)) * (i * working_width))
 
             loc2 = loc1 + (base_position.orientation.rotate(np.array([1, 0, 0], dtype=np.float64)) * 1000)
-            current_path = Path().add_waypoint(Waypoint(location=loc1)).add_waypoint(Waypoint(location=loc2))
-            print(f"[INFO]: added path before {current_path}")
+            wp1 = Waypoint(location=loc1)
+            wp2 = Waypoint(location=loc2)
+            wp1.save(), wp2.save()
+            wp1.SUCCESSOR.connect(wp2)
+
+            current_path = Path().add_waypoint(wp1).add_waypoint(wp2)
             course.add_path(current_path)
-            print(f"[INFO]: added path after {current_path}")
 
         print("[INFO]: course generation finished")
         return course

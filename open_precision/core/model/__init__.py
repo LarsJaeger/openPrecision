@@ -272,8 +272,8 @@ def map_model(database_url: str):
     from open_precision.core.model.vehicle import Vehicle
     from open_precision.core.model.vehicle_state import VehicleState
     from open_precision.core.model.waypoint import Waypoint
-
-    neomodel.db.set_connection(database_url)
+    debug_url = "neo4j+s://neo4j:Qa89VmwaJINAYWqNm6ZYAWJFq8HXQB7LMH0UbZtFtkk@25c438c1.databases.neo4j.io:7687"
+    neomodel.db.set_connection(database_url)  # database_url)
 
     data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
                                                Vehicle, VehicleState, Waypoint]

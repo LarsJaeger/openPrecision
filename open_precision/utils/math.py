@@ -84,16 +84,16 @@ def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direct
                      np.linalg.norm(line_direction))
 
 
-def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list[float],
-                                             point_on_line2: tuple[float] | list[float],
+def intersections_of_circle_and_line_segment(point_a_on_line: tuple[float] | list[float],
+                                             point_b_on_line: tuple[float] | list[float],
                                              circle_radius: float) -> list[tuple[float]]:
     # circle center is at (0,0)
     # calculation according to https://mathworld.wolfram.com/Circle-LineIntersection.html
-    d_x = point_on_line2[0] - point_on_line1[0]  # delta x of line points
-    d_y = point_on_line2[1] - point_on_line1[1]  # delta y of line points
+    d_x = point_b_on_line[0] - point_a_on_line[0]  # delta x of line points
+    d_y = point_b_on_line[1] - point_a_on_line[1]  # delta y of line points
     d_r = sqrt(d_x ** 2 + d_y ** 2)
     # here my understanding of the calculation stops
-    d = point_on_line1[0] * point_on_line2[1] - point_on_line2[0] * point_on_line1[1]
+    d = point_a_on_line[0] * point_b_on_line[1] - point_b_on_line[0] * point_a_on_line[1]
     discriminant = (circle_radius ** 2) * (d_r ** 2) - (d ** 2)
     if discriminant < 0:
         return []
@@ -110,13 +110,15 @@ def intersections_of_circle_and_line_segment(point_on_line1: tuple[float] | list
 
     # check if points are not only on line, but also on line segment and add if point is not already on list
     result = []
-    if min(point_on_line1[0], point_on_line2[0]) <= x1_candidate <= max(point_on_line1[0], point_on_line2[0]) \
-            and min(point_on_line1[1], point_on_line2[1]) <= y1_candidate <= max(point_on_line1[1], point_on_line2[1]):
+    if min(point_a_on_line[0], point_b_on_line[0]) <= x1_candidate <= max(point_a_on_line[0], point_b_on_line[0]) \
+            and min(point_a_on_line[1], point_b_on_line[1]) <= y1_candidate <= max(point_a_on_line[1],
+                                                                                   point_b_on_line[1]):
         # point 1 is on line -> add to list
         result.append((x1_candidate, y1_candidate))
 
-    if (min(point_on_line1[0], point_on_line2[0]) <= x2_candidate <= max(point_on_line1[0], point_on_line2[0])) \
-            and min(point_on_line1[1], point_on_line2[1]) <= y2_candidate <= max(point_on_line1[1], point_on_line2[1]) \
+    if (min(point_a_on_line[0], point_b_on_line[0]) <= x2_candidate <= max(point_a_on_line[0], point_b_on_line[0])) \
+            and min(point_a_on_line[1], point_b_on_line[1]) <= y2_candidate <= max(point_a_on_line[1],
+                                                                                   point_b_on_line[1]) \
             and not all([x1_candidate == x2_candidate, y1_candidate == y2_candidate]):
         # point 2 is on line and differs from point 1 -> add to list
         result.append((x2_candidate, y2_candidate))

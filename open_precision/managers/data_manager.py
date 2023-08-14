@@ -82,27 +82,24 @@ class DataManager:
         # if out of date and value changed: send current states to the user interface
         for subscription in out_of_date:
 
-            current_mem_val, current__mem_time = self._data_update_mem[subscription]
+            current_mem_val, current_mem_time = self._data_update_mem[subscription]
             try:
                 exec_result = subscription.func(self._hub, *subscription.args,
                                                 **{x: y for (x, y) in subscription.kw_args})
             except Exception as e:
                 exec_result = {"exception": traceback.format_exc()}
-                if current__mem_time is None or current_mem_val != exec_result:
-                    print("exception in data subscription: \n" + str(e))
+                if current_mem_time is None or current_mem_val != exec_result:
+                    print(f"exception in data subscription {str(hash(subscription))} : \n {traceback.format_exc()}")
 
-            if current__mem_time is None or current_mem_val != exec_result:
+            if current_mem_time is None or current_mem_val != exec_result:
 
                 self._data_update_mem[subscription] = (exec_result, datetime.now())
                 for subscriber in self._data_update_mapping[subscription]:
                     serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase) \
                         else JSONEncoder().encode(exec_result)
 
-                    # print(str(hash(subscription)))
-                    # print(exec_result)
                     await self._sio.emit(str(hash(subscription)), data=serialized_result,
                                          to=subscriber)
-                    print("sent data update on " + str(hash(subscription)) + " to " + str(subscriber))
 
     async def emit_error(self, e: Exception):
         """

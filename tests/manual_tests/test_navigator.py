@@ -26,7 +26,7 @@ class TestPositionBuilder(unittest.TestCase):
 
     def test_method(self):
         man = SystemHub()
-        man.plugins[Navigator].course = man.plugins[CourseGenerator].generate_course()
+        man.plugins[Navigator].current_course = man.plugins[CourseGenerator].generate_course()
         try:
             while True:
                 print(f"angle: {math.degrees(man.plugins[Navigator].steering_angle)}")

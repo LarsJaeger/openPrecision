@@ -30,10 +30,10 @@ def get_target_steering_angle(hub) -> float:
 @engine_endpoint
 def generate_course(hub: SystemHub):
     hub.plugins[Navigator].set_course_from_course_generator()
-    return hub.plugins[Navigator].course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])
+    return hub.plugins[Navigator].current_course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])
 
 
 @navigator_router.get("/course")
 @engine_endpoint
 def get_current_course(hub: SystemHub):
-    return hub.plugins[Navigator].course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])
+    return hub.plugins[Navigator].current_course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])

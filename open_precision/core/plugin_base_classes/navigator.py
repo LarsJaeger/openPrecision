@@ -29,13 +29,13 @@ class Navigator(Plugin, ABC):
 
     @property
     @abstractmethod
-    def course(self) -> Course:
+    def current_course(self) -> Course:
         pass
 
-    @course.setter
+    @current_course.setter
     @abstractmethod
     @persist_arg
-    def course(self, course: Course):
+    def current_course(self, course: Course):
         pass
 
     @property
@@ -49,6 +49,6 @@ class Navigator(Plugin, ABC):
         possible identifiers are: 'a_heading_parallel'"""
         match course_generator_identifier:
             case 'a_heading_parallel':
-                self.course = AHeadingParallelCourseGenerator(self._manager).generate_course()
+                self.current_course = AHeadingParallelCourseGenerator(self._manager).generate_course()
             case _:
                 raise ValueError(f'course_generator_identifier {course_generator_identifier} not supported')

@@ -86,12 +86,8 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
             # no subscription
             res = await queue_system_task(func, *args, **kwargs)
             if isinstance(res, tuple) and isinstance(res[0], Exception):
-                print("returning1")
-                print(res)
                 return JSONResponse(str(res[1]), status_code=500)
             else:
-                print("returning1")
-                print(res)
                 return JSONResponse(res.to_json() if isinstance(res, DataModelBase) else JSONEncoder().encode(res),
                                     status_code=200)
     return endpoint
