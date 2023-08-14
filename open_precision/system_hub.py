@@ -72,6 +72,7 @@ class SystemHub:
             except Exception as e:
                 await self._data.emit_error(e)
             await self._data.do_update()
+            await asyncio.sleep(0.01)
 
     async def stop_update_loop(self):
         self._signal_stop = True
