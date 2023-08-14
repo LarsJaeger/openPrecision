@@ -12,7 +12,7 @@
     }
 
     async function request_and_update_config() { //arg has to be there
-        await fetch(apiAddress + "/config/", {
+        await fetch(apiAddress + "/v1/config/", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
