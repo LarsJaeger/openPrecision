@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /dev:/dev
+      - config:/app/config.yml
     networks:
       - internal
     depends_on:
@@ -44,5 +44,14 @@ services:
       - "7687:7687"
     networks:
       - internal
+    volumes:
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+      - neo4j-logs:/logs
 networks:
   internal: {}
+volumes:
+  neo4j-data:
+  neo4j-plugins:
+  neo4j-logs:
+  config:

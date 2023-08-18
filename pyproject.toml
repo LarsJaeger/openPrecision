@@ -27,6 +27,7 @@ fastapi-utils = "^0.2.1"
 dill = "^0.3.6"
 aioprocessing = { extras = ["dill"], version = "^2.0.1" }
 makefun = "^1.15.1"
+gpiod = "^1.5.4"
 
 [tool.poetry.dev-dependencies]
 

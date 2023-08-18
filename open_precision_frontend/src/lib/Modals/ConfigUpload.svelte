@@ -35,7 +35,7 @@
             var content = evt.target.result;
 
             console.log("[INFO]: Updating config");
-            fetch(apiAddress + "/v1/config/", {
+            fetch(apiAddress + "/v1/config/?reload=true", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

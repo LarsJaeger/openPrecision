@@ -37,6 +37,7 @@ async def set_config(config: ConfigSchema, reload: bool = False,
                      queue_system_task=Depends(queue_system_task_dependency)):
     def set_config_inner(hub: SystemHub):
         hub.config.load_config(yaml=config.content, reload=reload)
+        hub.config.save_config_file()
         return hub.config.get_config_string()
 
     config_string = await queue_system_task(set_config_inner)

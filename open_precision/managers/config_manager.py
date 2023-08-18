@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import io
-import shutil
 import traceback
 from typing import TYPE_CHECKING
 
@@ -49,7 +48,7 @@ class ConfigManager:
         flat_conf = flatten(self._config, reducer="dot")
         flat_conf[address] = value
         self._config = CommentedMap(unflatten(flat_conf, splitter="dot"))
-        self._save_config_file()  # TODO possibly cache and save
+        self.save_config_file()  # TODO possibly cache and save
         return self
 
     def get_value(self, origin_object: object, key: str) -> any:
@@ -65,7 +64,7 @@ class ConfigManager:
         )
 
     def cleanup(self):
-        self._save_config_file()
+        self.save_config_file()
 
     def load_config(self, yaml: str = None, reload: bool = False):
         """
@@ -74,26 +73,26 @@ class ConfigManager:
         :param yaml: if None, loads from file, else loads from this parameter (should be the yaml string)
         :return: None
         """
-        print("[LOG]: loading config file")
         if yaml is None:
-            with open(self._config_path) as config_file_stream:
+            print("[LOG]: loading config from file")
+            with open(self._config_path, "r") as config_file_stream:
                 self._config = YAML().load(stream=config_file_stream)
         elif type(yaml) is str:
+            print("[LOG]: loading config from string")
             self._config = YAML().load(yaml)
         else:
             raise TypeError("yaml must be None or str")
         self._config = CommentedMap() if self._config is None else self._config
-        self._save_config_file()
+        print("[DEBUG]: config: ", self._config)
         if reload:
             self._manager.reload()
 
-    def _save_config_file(self):
+    def save_config_file(self):
         print("[LOG]: saving config file")
         try:
-            config_buffer = io.StringIO()
-            YAML().dump(self._config, stream=config_buffer)
+            print("[DEBUG]: config: ", self._config)
             with open(self._config_path, "w") as config_file_stream:
-                shutil.copyfileobj(config_buffer, config_file_stream)
+                YAML().dump(self._config, stream=config_file_stream)
         except RepresenterError as e:
             print("[ERROR]: could not parse config file: ")
             print(self._config)

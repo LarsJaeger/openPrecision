@@ -5,8 +5,8 @@ import os
 from typing import TYPE_CHECKING
 
 import serial
+from ublox_gps import ublox_gps
 
-# import externalTools.ublox_gps_fixed as ublox_gps
 import open_precision.utils.other
 from open_precision.core.model.location import Location
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
@@ -24,11 +24,14 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._manager.config.register_value(
             self, "rtk_correction_start_script_path", "start_rtk.sh"
         )
+        self._manager.config.register_value(self, "ublox_F9P_serial_path", "/dev/ttyUSB1")
+        self._manager.config.register_value(self, "ublox_F9P_baudrate", 115200)
         print("[UbloxGPSAdapter] starting initialisation")
         self._port = serial.Serial(
-            "/dev/serial0", baudrate=115200, timeout=1
-        )  # TODO add to config
-        self.gps = ublox_gps.UbloxGps(self._port)
+            self._manager.config.get_value(self, "ublox_F9P_serial_path"),
+            baudrate=self._manager.config.get_value(self, "ublox_F9P_baudrate")
+        )
+        self.gps = ublox_gps.UbloxGps(hard_port=self._port)
         self._correction_is_active = None
         if self._manager.config.get_value(self, "enable_rtk_correction") is True:
             self.start_rtk_correction()

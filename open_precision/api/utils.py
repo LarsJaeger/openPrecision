@@ -90,4 +90,5 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
             else:
                 return JSONResponse(res.to_json() if isinstance(res, DataModelBase) else JSONEncoder().encode(res),
                                     status_code=200)
+
     return endpoint

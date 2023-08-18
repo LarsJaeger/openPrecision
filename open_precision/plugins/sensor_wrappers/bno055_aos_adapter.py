@@ -3,8 +3,8 @@ from __future__ import annotations
 import atexit
 
 import adafruit_bno055
-import busio
 import numpy as np
+import serial
 from pyquaternion import Quaternion
 
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
@@ -16,16 +16,12 @@ from open_precision.system_hub import SystemHub
 class Bno055AosAdapter(AbsoluteOrientationSensor):
     def __init__(self, manager: SystemHub):
         self._manager = manager
-        self._manager.config.register_value(self, "debug", False)
+        self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
+        self._manager.config.register_value(self, "bno055_baudrate", 115200)
         print("[Bno055AosAdapter] starting initialisation")
-        if not self._manager.config.get_value(self, "debug"):
-            import board
-            i2c = busio.I2C(board.SCL,
-                            board.SDA)
-        else:
-            print("[Bno055AosAdapter] debug mode active")
-            i2c = None
-        self.sensor = adafruit_bno055.BNO055_I2C(i2c)
+        uart = serial.Serial(self._manager.config.get_value(self, "bno055_serial_path"),
+                             baudrate=self._manager.config.get_value(self, "bno055_baudrate"))
+        self.sensor = adafruit_bno055.BNO055_UART(uart)
         self.sensor.mode = adafruit_bno055.NDOF_MODE
         # self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
         self.sensor.accel_range = adafruit_bno055.ACCEL_2G
