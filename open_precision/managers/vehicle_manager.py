@@ -51,7 +51,6 @@ class VehicleManager:
             print("blub2")
             print(obj)
             return obj
-        print("aaaaaaaa")
         print(type(self._manager.config.get_value(self, "vehicles")[0]))
         print(self._manager.config.get_value(self, "vehicles")[0])
         self._vehicles: list[Vehicle] = [make_vehicle_from_config_dict(x) for x in self._manager.config.get_value(self, "vehicles")]
