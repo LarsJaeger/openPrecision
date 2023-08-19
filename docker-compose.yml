@@ -20,6 +20,10 @@ services:
       - config:/app/config.yml
     networks:
       - internal
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyUSB1:/dev/ttyUSB1"
+      - "/dev/ttyUSB2:/dev/ttyUSB2"
     depends_on:
       - redis
       - neo4j
