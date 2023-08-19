@@ -75,8 +75,12 @@ class ConfigManager:
         """
         if yaml is None:
             print("[LOG]: loading config from file")
-            with open(self._config_path, "r") as config_file_stream:
-                self._config = YAML().load(stream=config_file_stream)
+            try:
+                with open(self._config_path, "r") as config_file_stream:
+                    self._config = YAML().load(stream=config_file_stream)
+            except FileNotFoundError:
+                print("[WARNING]: config file not found")
+                self._config = CommentedMap()
         elif type(yaml) is str:
             print("[LOG]: loading config from string")
             self._config = YAML().load(yaml)
