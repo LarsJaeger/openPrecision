@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from math import sqrt
 
 import numpy as np
@@ -84,42 +85,49 @@ def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direct
                      np.linalg.norm(line_direction))
 
 
-def intersections_of_circle_and_line_segment(point_a_on_line: tuple[float] | list[float],
-                                             point_b_on_line: tuple[float] | list[float],
-                                             circle_radius: float) -> list[tuple[float]]:
+def intersections_of_circle_and_line_segment(point_translated_1: tuple[float, float],
+                                             point_translated_2: tuple[float, float],
+                                             circle_radius: float) -> list[tuple[float, float]]:
     # circle center is at (0,0)
     # calculation according to https://mathworld.wolfram.com/Circle-LineIntersection.html
-    d_x = point_b_on_line[0] - point_a_on_line[0]  # delta x of line points
-    d_y = point_b_on_line[1] - point_a_on_line[1]  # delta y of line points
-    d_r = sqrt(d_x ** 2 + d_y ** 2)
-    # here my understanding of the calculation stops
-    d = point_a_on_line[0] * point_b_on_line[1] - point_b_on_line[0] * point_a_on_line[1]
-    discriminant = (circle_radius ** 2) * (d_r ** 2) - (d ** 2)
+    x_1, y_1 = point_translated_1
+    x_2, y_2 = point_translated_2
+
+    d_x = x_2 - x_1
+    d_y = y_2 - y_1
+
+    # Pre-compute variables common to x and y equations.
+    d_r_squared = d_x ** 2 + d_y ** 2
+    determinant = x_1 * y_2 - x_2 * y_1
+    discriminant = circle_radius ** 2 * d_r_squared - determinant ** 2
+
     if discriminant < 0:
-        return []
-    # there is an intersection or tangent -> calculate points that are on line
-    x_part1 = (d * d_y)
-    x_part2 = ((1 if d_y < 0 else -1) * d_x * sqrt(discriminant))
-    part3 = (d_r ** 2)
-    x1_candidate = (x_part1 + x_part2) / part3
-    x2_candidate = (x_part1 - x_part2) / part3
-    y_part1 = (-d * d_x)
-    y_part2 = (abs(d_y) * sqrt(discriminant))
-    y1_candidate = (y_part1 + y_part2) / part3
-    y2_candidate = (y_part1 - y_part2) / part3
+        raise ValueError("The line does not intersect the circle.")
+
+    root = math.sqrt(discriminant)
+
+    mp = np.array([-1, 1])  # Array to compute minus/plus.
+    sign = -1 if d_y < 0 else 1
+
+    coords_x = (determinant * d_y + mp * sign * d_x * root) / d_r_squared
+    coords_y = (-determinant * d_x + mp * abs(d_y) * root) / d_r_squared
+
+    candidate_1 = (coords_x[0], coords_y[0])
+    candidate_2 = (coords_x[1], coords_y[1])
 
     # check if points are not only on line, but also on line segment and add if point is not already on list
     result = []
-    if min(point_a_on_line[0], point_b_on_line[0]) <= x1_candidate <= max(point_a_on_line[0], point_b_on_line[0]) \
-            and min(point_a_on_line[1], point_b_on_line[1]) <= y1_candidate <= max(point_a_on_line[1],
-                                                                                   point_b_on_line[1]):
+    if min(point_translated_1[0], point_translated_2[0]) <= candidate_1[0] <= max(point_translated_1[0], point_translated_2[0]) \
+            and min(point_translated_1[1], point_translated_2[1]) <= candidate_1[1] <= max(point_translated_1[1],
+                                                                                   point_translated_2[1]):
         # point 1 is on line -> add to list
-        result.append((x1_candidate, y1_candidate))
+        result.append(candidate_1)
 
-    if (min(point_a_on_line[0], point_b_on_line[0]) <= x2_candidate <= max(point_a_on_line[0], point_b_on_line[0])) \
-            and min(point_a_on_line[1], point_b_on_line[1]) <= y2_candidate <= max(point_a_on_line[1],
-                                                                                   point_b_on_line[1]) \
-            and not all([x1_candidate == x2_candidate, y1_candidate == y2_candidate]):
+    if (min(point_translated_1[0], point_translated_2[0]) <= candidate_2[0] <= max(point_translated_1[0], point_translated_2[0])) \
+            and min(point_translated_1[1], point_translated_2[1]) <= candidate_2[1] <= max(point_translated_1[1],
+                                                                                   point_translated_2[1]) \
+            and candidate_1 != candidate_2:
         # point 2 is on line and differs from point 1 -> add to list
-        result.append((x2_candidate, y2_candidate))
+        result.append(candidate_2)
     return result
+

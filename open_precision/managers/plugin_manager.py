@@ -30,6 +30,7 @@ def get_classes_in_package(package, classes: list | None = None) -> list:
                         classes.append(cls)
             except ModuleNotFoundError:
                 print(f'[INFO] ModuleNotFoundError when importing {plugin_name}')
+                print(traceback.format_exc())
                 continue
 
     # Now that we have looked at all the modules in the current package, start looking recursively for additional

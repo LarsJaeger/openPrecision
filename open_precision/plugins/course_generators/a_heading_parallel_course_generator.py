@@ -44,6 +44,7 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
             loc1 = base_position.location \
                    + (base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64)) * (i * working_width))
 
+
             loc2 = loc1 + (base_position.orientation.rotate(np.array([1, 0, 0], dtype=np.float64)) * 1000)
             wp1 = Waypoint(location=loc1)
             wp2 = Waypoint(location=loc2)

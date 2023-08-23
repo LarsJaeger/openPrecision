@@ -44,7 +44,6 @@ COPY --from=frontend_builder /app/dist /app/open_precision_frontend
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 COPY open_precision /app/open_precision
 COPY LICENSE /app/LICENSE
-RUN touch /app/config.yml
 
 EXPOSE 8000
 # HEALTHCHECK --start-period=30s CMD python -c "import requests; requests.get('http://localhost:8000', timeout=2)"

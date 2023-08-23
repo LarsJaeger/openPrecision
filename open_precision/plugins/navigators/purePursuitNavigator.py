@@ -4,6 +4,7 @@ from math import sqrt
 
 import numpy as np
 from neomodel import db
+from pyquaternion import Quaternion
 
 import open_precision.utils.math
 from open_precision.core.exceptions import CourseNotSetException
@@ -77,7 +78,7 @@ class PurePursuitNavigator(Navigator):
 
         lookahead_distance = 10  # TODO
         # back rotation to rotate the important points from global to vehicle coordinate system
-        global_to_vehicle = current_position.orientation.inverse
+        global_to_vehicle: Quaternion = current_position.orientation.inverse
 
         """
         along the path in previously determined direction, check for intersections with lookahead circle, starting at 
@@ -94,6 +95,7 @@ class PurePursuitNavigator(Navigator):
                                         resolve_objects=True)
 
         target_point = None
+        current_location_np = current_position.location.to_numpy()
         # walk through all waypoints in correct order
         for waypoint_base, waypoint_target in results:
             # determine if an intersection occurs between base waypoint and waypoint_id
@@ -101,10 +103,11 @@ class PurePursuitNavigator(Navigator):
             # determine possible intersections between lookahead circle and path segment
             # rotate to vehicle coordinates
             vec_base = global_to_vehicle \
-                .rotate(waypoint_base.location.to_numpy() - current_position.location.to_numpy())
+                .rotate(waypoint_base.location.to_numpy() - current_location_np)
 
             vec_target = global_to_vehicle \
-                .rotate(waypoint_target.location.to_numpy() - current_position.location.to_numpy())
+                .rotate(waypoint_target.location.to_numpy() - current_location_np)
+
 
             possible_target_points = intersections_of_circle_and_line_segment(vec_base[:2], vec_target[:2],
                                                                               lookahead_distance)
@@ -116,13 +119,22 @@ class PurePursuitNavigator(Navigator):
                     # target has been found -> break
                     break
                 case _:
-                    # see which one is closer to vec_target
-                    d0 = sqrt(possible_target_points[0][0] ** 2 + possible_target_points[0][1] ** 2)
-                    d1 = sqrt(possible_target_points[1][0] ** 2 + possible_target_points[1][1] ** 2)
-                    if d0 < d1:
-                        target_point = d0
+                    # see which one is in the right direction
+                    if self._is_segment_direction_positive:
+                        path_end = vec_target
                     else:
-                        target_point = d1
+                        path_end = vec_base
+
+                    p1 = possible_target_points[0]
+                    p2 = possible_target_points[1]
+
+                    d1 = sqrt((p1[0] - path_end[0]) ** 2 + (p1[1] - path_end[1]) ** 2)
+                    d2 = sqrt((p2[0] - path_end[0]) ** 2 + (p2[1] - path_end[1]) ** 2)
+
+                    if d1 < d2:
+                        target_point = p1
+                    else:
+                        target_point = p2
                     # target has been found -> break
                     break
         if target_point is None:
