@@ -11,9 +11,9 @@ from open_precision.core.model import DataModelBase
 
 @dataclass(kw_only=True)
 class Location(DataModelBase):
-    x: float  # ECEF X coordinate in meters
-    y: float  # ECEF Y coordinate in meters
-    z: float  # ECEF Z coordinate in meters
+    x: float = 0.  # ECEF X coordinate in meters
+    y: float = 0.  # ECEF Y coordinate in meters
+    z: float = 0.  # ECEF Z coordinate in meters
     error: float | None = None  # position accuracy in meters
 
     def is_valid(self):

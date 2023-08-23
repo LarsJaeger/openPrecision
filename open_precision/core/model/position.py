@@ -14,8 +14,8 @@ class Position(DataModelBase):
     """
     A position consists of a location and an orientation.
     """
-    location: Location
-    orientation: Orientation
+    location: Location | None = None
+    orientation: Orientation | None = None
 
 
 class PositionProperty(Property, DataModelBase):

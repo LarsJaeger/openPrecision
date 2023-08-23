@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from open_precision.core.model import persist_arg, persist_return
 from open_precision.core.model.course import Course
 from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.plugin_base_classes.plugin import Plugin
@@ -34,13 +33,11 @@ class Navigator(Plugin, ABC):
 
     @current_course.setter
     @abstractmethod
-    @persist_arg
     def current_course(self, course: Course):
         pass
 
     @property
     @abstractmethod
-    @persist_return
     def target_machine_state(self) -> VehicleState | None:
         pass
 

@@ -98,19 +98,26 @@
     });
 
     // implement visualizer functions
-    export function visualizeCourse(course) {
-        for (const pathIndex in course.paths) {
-            const path = course.paths[pathIndex];
-            console.log(path);
-            const pathLinePoints = [];
-            pathLinePoints.push(new THREE.Vector3(0));
-            for (const wpIndex in path.waypoints) {
-                const wp = path.waypoints[wpIndex];
+    export function visualizeCourse(data) {
+        data["connections"].forEach(conn => {
+            // find and add starting point of path
+            if (conn["a"].startsWith("Path") && conn["relationship"] === "BEGINS_WITH" && conn["b"].startsWith("Waypoint")) {
+                let wp = data.objects[conn["b"]];
+                console.log(wp);
+                const pathLinePoints = [];
                 pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
+
+                // iterate over successors and add to line
+                data["connections"].forEach(sub_conn => {
+                    if (sub_conn["a"] === conn["b"] && sub_conn["relationship"] === "SUCCESSOR" && sub_conn["b"].startsWith("Waypoint")) {
+                        wp = data.objects[sub_conn["b"]];
+                        pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
+                    }
+                });
+                const pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathLinePoints), new THREE.LineBasicMaterial({color: 0x00ffff}));
+                scene.add(pathLine);
             }
-            const pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathLinePoints), new THREE.LineBasicMaterial({color: 0x00ffff}));
-            scene.add(pathLine);
-        }
+        });
     }
 
     export function visualizeMachineState(data) {
@@ -121,6 +128,7 @@
         pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
     }
 
+    //currently just a stump:
     export function visualizeTargetSteeringAngle(data) {
         visualizedTargetSteeringAngle = data;
     }

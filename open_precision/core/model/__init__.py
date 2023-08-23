@@ -32,6 +32,7 @@ The inflate method takes the value stored in the database and returns the data c
 
 ### Adding Data Classes
 To add a data class, create a module with a class that inherits from DataModelBase and is decorated with dataclasses.dataclass(kw_only=True).
+All attributes must have a value assigned to them in the class definition.
 In that same module create a class that inherits from neomodel.Property and implement the inflate and deflate methods to inflate/deflate an object from/into a neo4j native type.
 
 
@@ -47,11 +48,12 @@ from __future__ import annotations
 import json
 from functools import wraps
 from types import FunctionType
-from typing import List, Any
+from typing import List, Any, Callable
 
 import neomodel
 from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager, RelationshipTo, RelationshipFrom
 from neomodel.properties import validator
+from pyquaternion import Quaternion
 
 from open_precision.utils.other import get_attributes, is_iterable
 
@@ -101,14 +103,14 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 
 def _resolve_object_conns(obj: Any,
                           with_conns: List[RelationshipDefinition],
-                          walked_connections: List = None,
+                          resolved_objects: List = None,
                           main_obj: Any = None,
                           ):
     connections = []
     objects = {}
-    walked_connections = walked_connections if walked_connections is not None else []
+    resolved_objects = resolved_objects if resolved_objects is not None else []
 
-    if main_obj is None:
+    if main_obj is None:  # only the case on the first recursion level
         main_obj = obj
         objects["main"] = main_obj
     else:
@@ -116,12 +118,8 @@ def _resolve_object_conns(obj: Any,
 
     for field, value in obj.__dict__.items():
         if isinstance(value, RelationshipManager) and value.definition in with_conns:
-            # print("resolving connection " + str(value.definition))
             relationship = getattr(obj.__class__, field)
-            if relationship in walked_connections:
-                continue
 
-            walked_connections.append(relationship)
             if isinstance(relationship, RelationshipTo):
                 rel_type = "to"
             elif isinstance(relationship, RelationshipFrom):
@@ -129,7 +127,9 @@ def _resolve_object_conns(obj: Any,
             else:
                 rel_type = "undirected"
 
+            # iterate over all connected objects and resolve their connections (recursion)
             for x in list(value):
+
                 obj_a_ref: str = str(type(obj).__qualname__) + " " + str(obj.uuid) if obj != main_obj else "main"
                 obj_b_ref: str = str(type(x).__qualname__) + " " + str(x.uuid) if x != main_obj else "main"
                 connections.append({"a": obj_a_ref,
@@ -137,9 +137,13 @@ def _resolve_object_conns(obj: Any,
                                     "type": rel_type,
                                     "b": obj_b_ref})
 
+                if x in resolved_objects:  # prevent infinite recursion
+                    continue
+                resolved_objects.append(x)
+
                 inner_objs, inner_conns = _resolve_object_conns(x,
                                                                 with_conns=with_conns,
-                                                                walked_connections=walked_connections,
+                                                                resolved_objects=resolved_objects,
                                                                 main_obj=main_obj)
                 objects.update(inner_objs)
                 connections.extend(inner_conns)
@@ -148,8 +152,13 @@ def _resolve_object_conns(obj: Any,
 
 
 class DataModelBase:
-    def to_json(self, with_rels: List[RelationshipDefinition] = None) -> str:
-        encoder = CustomJSONEncoder()
+    def to_json(self,
+                with_rels: List[RelationshipDefinition] = None,
+                field_key_filter: Callable = None,
+                field_type_filter: Callable = None,
+                ) -> str:
+        encoder = CustomJSONEncoder(field_type_filter=field_type_filter,
+                                    field_key_filter=field_key_filter)
         if with_rels is None:
             return encoder.encode(self)
         else:
@@ -186,12 +195,25 @@ class DataModelBase:
 
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
+    def __init__(self,
+                 *args,
+                 field_key_filter: Callable = None,
+                 field_type_filter: Callable = None,
+                 **kwargs):
+        self.field_key_filter = field_key_filter if field_key_filter is not None else lambda x: False
+        self.field_type_filter = field_type_filter if field_type_filter is not None else lambda x: False
+        super().__init__(*args, **kwargs)
 
     # overload method default
     def default(self, obj):
         if isinstance(obj, DataModelBase):
-            return {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
-
+            ret = {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
+            ret = {k: v for k, v in ret.items() if self.field_key_filter(k) and self.field_type_filter(type(v))}
+            return ret
+        elif obj is None:
+            return "null"
+        elif isinstance(obj, Quaternion):
+            return {"q": obj.q.tolist()}
         return json.JSONEncoder.default(self, obj)
 
 
@@ -211,6 +233,10 @@ class CustomJSONDecoder(json.JSONDecoder):
 
             for key in keys_set:
                 obj[key] = self.object_hook(obj[key])
+
+            # check for quaternion
+            if keys_set == {"q"}:
+                return Quaternion(obj["q"])
 
             # check if the dict is a signature of a class
             for signature, cls in signature_class_mapping.items():

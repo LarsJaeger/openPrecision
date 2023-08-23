@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from neomodel import StructuredNode, UniqueIdProperty, RelationshipFrom, cardinality, RelationshipTo, db
+from neomodel import StructuredNode, UniqueIdProperty, RelationshipFrom, cardinality, RelationshipTo
 
 from open_precision.core.model import DataModelBase
 
 if TYPE_CHECKING:
-    from open_precision.core.model.waypoint import Waypoint
+    pass
 
 
 class Path(StructuredNode, DataModelBase):
@@ -25,6 +24,14 @@ class Path(StructuredNode, DataModelBase):
                                                 'CONTAINS',
                                                 cardinality=cardinality.ZeroOrMore)
 
+    BEGINS_WITH: RelationshipFrom = RelationshipTo('open_precision.core.model.waypoint.Waypoint',
+                                                   'BEGINS_WITH',
+                                                   cardinality=cardinality.ZeroOrOne)
+
+    ENDS_WITH: RelationshipFrom = RelationshipTo('open_precision.core.model.waypoint.Waypoint',
+                                                 'ENDS_WITH',
+                                                 cardinality=cardinality.ZeroOrOne)
+
     # outgoing relationships
 
     IS_CONTAINED_BY: RelationshipFrom = RelationshipFrom('open_precision.core.model.course.Course',
@@ -34,10 +41,3 @@ class Path(StructuredNode, DataModelBase):
     IS_REQUIRED_BY: RelationshipFrom = RelationshipFrom('open_precision.core.model.path.Path',
                                                         'REQUIRES',
                                                         cardinality=cardinality.ZeroOrMore)
-
-    @db.transaction
-    def add_waypoint(self, waypoint: Waypoint):
-        self.save()
-        waypoint.save()
-        self.CONTAINS.connect(waypoint)
-        return self

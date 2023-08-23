@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import inspect
-from json import JSONEncoder
 from typing import Callable, Any, TYPE_CHECKING
 
 import makefun
@@ -9,7 +8,7 @@ from fastapi import Depends
 from starlette.responses import JSONResponse
 
 from open_precision.api import dependencies as dependencies
-from open_precision.core.model import DataModelBase
+from open_precision.core.model import DataModelBase, CustomJSONEncoder
 from open_precision.core.model.data_subscription import DataSubscription
 
 if TYPE_CHECKING:
@@ -31,8 +30,9 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
     The decorated function must have a variable of type SystemHub as their first positional argument.
     The following arguments can be treated as if the function was a FastAPI endpoint function, however it must still be
     decorated as such!
-    The Endpoint will return the returned value from the engine function as JSON. The status code of the returned JSON
-    will either be 200 (default), or 500 (if an error occured while executing the function).
+    The Endpoint will return the value returned by the decorated function as JSON (Attention: if it is a string, it will
+    not be JSONEncoded to allow for custom Encoders to be used within the wrapped function!). The status code of the
+    returned JSON will either be 200 (default), or 500 (if an error occured while executing the function).
 
     Usage:
     ```python
@@ -42,6 +42,14 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
         hub.plugins[Navigator].set_course_from_course_generator()
         print(foo, bar)
         return hub.plugins[Navigator].course
+
+    Engine endpoint requests  can also be subscribed to. This means that the endpoint will be called periodically and
+    the returned value will be sent to the client via socketio. To subscribe to an endpoint, the client must send the
+    request that should be subscribed to with the following query parameters:
+    - subscription_socket_id: the socket id of the client that should be subscribed to the endpoint
+    - subscription_period_length: the period length in milliseconds
+    The endpoint will then return the hash of the subscription object. This hash will be the event_id that the data will
+    be emitted with. The data will be emitted as a JSON string.
     ```
 
     """
@@ -88,7 +96,16 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
             if isinstance(res, tuple) and isinstance(res[0], Exception):
                 return JSONResponse(str(res[1]), status_code=500)
             else:
-                return JSONResponse(res.to_json() if isinstance(res, DataModelBase) else JSONEncoder().encode(res),
+                if isinstance(res, DataModelBase):
+                    res = res.to_json()
+                elif isinstance(res, str):
+                    pass
+                else:
+                    res = CustomJSONEncoder().encode(res)
+
+                print("res", res)
+                print("type", type(res))
+                return JSONResponse(res,
                                     status_code=200)
 
     return endpoint

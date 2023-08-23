@@ -8,7 +8,7 @@ from pyquaternion import Quaternion
 
 import open_precision.utils.math
 from open_precision.core.exceptions import CourseNotSetException
-from open_precision.core.model import persist_arg, persist_return
+from open_precision.core.model import persist_arg
 from open_precision.core.model.course import Course
 from open_precision.core.model.location import Location
 from open_precision.core.model.position import Position
@@ -41,7 +41,6 @@ class PurePursuitNavigator(Navigator):
         self._current_course = course
 
     @property
-    @persist_return
     def target_machine_state(self) -> VehicleState | None:
         target_machine_state = VehicleState(steering_angle=self._steering_angle, speed=None)
         return target_machine_state

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from open_precision.core.model import persist_return
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
@@ -23,7 +22,6 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
     def __init__(self, manager: SystemHub):
         self.man: SystemHub = manager
 
-    @persist_return
     def generate_course(self) -> Course:
         # get position
         # input('press enter to set first position')
@@ -51,7 +49,13 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
             wp1.save(), wp2.save()
             wp1.SUCCESSOR.connect(wp2)
 
-            current_path = Path().add_waypoint(wp1).add_waypoint(wp2)
+            current_path = Path()
+            current_path.save()
+            current_path.BEGINS_WITH.connect(wp1)
+            current_path.CONTAINS.connect(wp1)
+            current_path.ENDS_WITH.connect(wp2)
+            current_path.CONTAINS.connect(wp2)
+
             course.add_path(current_path)
 
         print("[INFO]: course generation finished")

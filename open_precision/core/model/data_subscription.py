@@ -1,4 +1,3 @@
-import hashlib
 from dataclasses import dataclass
 from typing import Callable, Tuple, Any
 
@@ -11,14 +10,14 @@ from open_precision.utils.neomodel import DillProperty
 
 @dataclass(kw_only=True, frozen=True)
 class DataSubscription(DataModelBase):
-    func: Callable = None
+    func: Callable[[...], ...] | None = None
     """
     TODO when remodelling the data subscriptions to persist throughout system restarts, __hash__ must use a subset of 
     func's properties (no session specific information, like place in memory).
     This could be done by creating a new property, compute it from func in __post_init__ and set hash=False for func. 
     """
-    args: Tuple[Any, ...] = None
-    kw_args: Tuple[Tuple[str, Any]] = None
+    args: Tuple[Any, ...] | None = None
+    kw_args: Tuple[Tuple[str, Any]] | None = None
     period_length: int = 0  # period length (minimum time between calling this func) in milliseconds
 
     def __hash__(self):

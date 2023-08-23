@@ -20,9 +20,12 @@ vehicle_state_router = APIRouter(
 
 @vehicle_state_router.get("/")
 @engine_endpoint
-def get_vehicle_state(hub):
-    return hub.plugins[VehicleStateBuilder].vehicle_state
-
+def get_vehicle_state(hub, ignore_uuid: bool = False):
+    ret = hub.plugins[VehicleStateBuilder].vehicle_state
+    if ignore_uuid:
+        return ret.to_json(field_key_filter=lambda x: x != "uuid")
+    else:
+        return ret.to_json()
 
 @vehicle_state_router.get("/steering_angle")
 @engine_endpoint

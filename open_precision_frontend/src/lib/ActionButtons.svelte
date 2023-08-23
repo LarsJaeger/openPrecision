@@ -23,6 +23,7 @@
         add(
             "Upload New Config",
             configUpload,
+            null
         );
     }
 </script>

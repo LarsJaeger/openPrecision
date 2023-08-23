@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-
 from neomodel import StructuredNode, UniqueIdProperty, cardinality, RelationshipFrom
 
 from open_precision.core.model import DataModelBase

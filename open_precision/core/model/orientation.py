@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import numpy as np
 from neomodel import Property
 from neomodel.properties import validator
 from pyquaternion import Quaternion
@@ -11,6 +12,7 @@ from open_precision.core.model import DataModelBase
 
 @dataclass(kw_only=True)
 class Orientation(Quaternion, DataModelBase):
+    q: np.ndarray = None  # will never be None after init, this is just a placeholder for the ClassRegistry
     pass
 
 

@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import traceback
 from datetime import datetime
-from json import JSONEncoder
 from typing import TYPE_CHECKING, Dict, Any, List, Tuple
 
 from socketio import AsyncRedisManager
 from socketio.asyncio_server import AsyncServer
 
-from open_precision.core.model import DataModelBase
+from open_precision.core.model import DataModelBase, CustomJSONEncoder
 from open_precision.core.model.data_subscription import DataSubscription
 
 if TYPE_CHECKING:
@@ -22,7 +21,8 @@ class DataManager:
     tasks either check for new data or are otherwise required to be called periodically.
 
     Concretely, equivalent system tasks are grouped, then called once if required by the schedule, then multicasted to
-    the specified clients via socketio. For specific usage, see the documentation of #TODO
+    the specified clients via socketio. This is done by the open_precision.api.utils.engine_endpoint decorator, which
+    also contains more documentation on how data subscriptions work.
     """
 
     def __init__(self, manager: SystemHub):
@@ -95,8 +95,12 @@ class DataManager:
 
                 self._data_update_mem[subscription] = (exec_result, datetime.now())
                 for subscriber in self._data_update_mapping[subscription]:
-                    serialized_result = exec_result.to_json() if isinstance(exec_result, DataModelBase) \
-                        else JSONEncoder().encode(exec_result)
+                    if isinstance(exec_result, DataModelBase):
+                        serialized_result = exec_result.to_json()
+                    elif isinstance(exec_result, str):
+                        serialized_result = exec_result
+                    else:
+                        serialized_result = CustomJSONEncoder().encode(exec_result)
 
                     await self._sio.emit(str(hash(subscription)), data=serialized_result,
                                          to=subscriber)

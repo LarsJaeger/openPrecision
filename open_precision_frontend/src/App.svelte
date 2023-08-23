@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-    export const backendAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
+    export const backendAddress: string = "http://localhost:8000"//window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
     export const apiAddress: string = backendAddress + "/api";
     console.log("[INFO]: using API address: " + apiAddress);
 </script>
@@ -16,12 +16,15 @@
 
 
     let sid: string;
+    let event_id_to_function_map: Map<string, Function> = new Map<string, Function>();
 
     function course_update(data) {
         const parsedData: any = JSON.parse(data);
         console.log("[INFO]: (course): Received message: ");
         console.log(parsedData);
-        visualizeCourse(parsedData);
+        if (parsedData != null) {
+            visualizeCourse(parsedData);
+        }
     }
 
     function sub_to_course(): void {
@@ -40,6 +43,7 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
+            event_id_to_function_map.set(data, course_update);
             $socket.on(data, course_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
@@ -59,7 +63,8 @@
         // subscribe to course
         fetch(apiAddress + "/v1/vehicle_state?" + new URLSearchParams({
             subscription_socket_id: sid,
-            subscription_period_length: "0",
+            subscription_period_length: "100",
+            ignore_uuid: "true"
         }), {
                 method: "GET",
                 headers: {
@@ -71,6 +76,7 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
+            event_id_to_function_map.set(data, vehicle_data_update);
             $socket.on(data, vehicle_data_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
@@ -101,6 +107,8 @@
             return response.json();
         }).then((data) => {
             console.log("[INFO]: subscribed to hash " + data)
+
+            event_id_to_function_map.set(data, target_steering_angle_update);
             $socket.on(data, target_steering_angle_update);
         }).catch((error) => {
             console.log("[ERROR]: " + error);
@@ -111,15 +119,16 @@
         console.log("[INFO]: Registered with socket id: " + $socket.id);
         sid = $socket.id;
         $socket.onAny((event, ...args) => {
-            console.log("[INFO]: Received event: " + event + " with args: " + args);
-            // log every arg
-            args.forEach((arg) => {
-                console.log(arg);
-            });
-
+            setTimeout(function () {
+                if (event_id_to_function_map.has(event)) {
+                    event_id_to_function_map.get(event)(...args);
+                } else {
+                    console.log("[INFO]: Received unknown event: " + event + " with args: " + args);
+                }
+            }, 1000);
         });
         sub_to_course();
-        //sub_to_vehicle_data();
+        sub_to_vehicle_data();
         sub_to_target_steering_angle();
     });
     $socket.connect();

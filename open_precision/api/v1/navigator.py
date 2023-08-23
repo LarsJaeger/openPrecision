@@ -7,6 +7,7 @@ from fastapi import APIRouter
 from open_precision.api.utils import engine_endpoint
 from open_precision.core.model.course import Course
 from open_precision.core.model.path import Path
+from open_precision.core.model.waypoint import Waypoint
 from open_precision.core.plugin_base_classes.navigator import Navigator
 
 if TYPE_CHECKING:
@@ -32,9 +33,8 @@ def generate_course(hub: SystemHub):
     hub.plugins[Navigator].set_course_from_course_generator()
     course = hub.plugins[Navigator].current_course
     if course is None:
-        return "None"
-    else:
-        return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])
+        return None
+    return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH])
 
 
 @navigator_router.get("/course")
@@ -42,6 +42,5 @@ def generate_course(hub: SystemHub):
 def get_current_course(hub: SystemHub):
     course = hub.plugins[Navigator].current_course
     if course is None:
-        return "None"
-    else:
-        return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS])
+        return None
+    return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH])
