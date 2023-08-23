@@ -200,8 +200,8 @@ class CustomJSONEncoder(json.JSONEncoder):
                  field_key_filter: Callable = None,
                  field_type_filter: Callable = None,
                  **kwargs):
-        self.field_key_filter = field_key_filter if field_key_filter is not None else lambda x: False
-        self.field_type_filter = field_type_filter if field_type_filter is not None else lambda x: False
+        self.field_key_filter = field_key_filter if field_key_filter is not None else lambda x: True
+        self.field_type_filter = field_type_filter if field_type_filter is not None else lambda x: True
         super().__init__(*args, **kwargs)
 
     # overload method default
