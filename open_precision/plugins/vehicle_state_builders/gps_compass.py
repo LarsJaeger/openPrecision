@@ -30,7 +30,7 @@ class GpsCompassPositionBuilder(VehicleStateBuilder):
     def __init__(self, manager: SystemHub):
         self._manager = manager
 
-        """get available sensors"""
+        """get available sensor"""
 
     @property
     def current_position(self) -> Position | None:

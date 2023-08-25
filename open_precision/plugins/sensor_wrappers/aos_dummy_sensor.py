@@ -8,7 +8,7 @@ from open_precision.system_hub import SystemHub
 class AOSDummySensor(AbsoluteOrientationSensor):
     @property
     def orientation(self) -> Quaternion | None:
-        return Quaternion(0, 0, 0, 1)
+        return Quaternion(1, 0, 0, 0)
 
     @property
     def gravity(self) -> np.ndarray | None:

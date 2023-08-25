@@ -3,6 +3,7 @@
     //import * as THREE from 'three';
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
     import {onMount} from "svelte";
+
     //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
     // init app constants
@@ -81,6 +82,7 @@
             }
             controls.update()
             renderer.render(scene, camera);
+
             requestAnimationFrame(render);
         }
 
@@ -92,7 +94,6 @@
         const controls = new OrbitControls(camera, canvas);
 
         const render = makeRender(renderer, controls);
-
         // request first frame
         requestAnimationFrame(render);
     });
@@ -121,11 +122,13 @@
     }
 
     export function visualizeMachineState(data) {
-        console.log(data);
-        pointer.position.x = data.position.location.x;
-        pointer.position.y = data.position.location.y;
-        pointer.position.z = data.position.location.z;
-        pointer.rotation.setFromQuaternion(new THREE.Quaternion(data.position.orientation.x, data.position.orientation.y, data.position.orientation.z, data.position.orientation.w));
+        pointer.position.set(
+            data.position.location.x,
+            data.position.location.y,
+            data.position.location.z
+        );
+        const quat = new THREE.Quaternion(data.position.orientation.q[1], data.position.orientation.q[2], data.position.orientation.q[3], data.position.orientation.q[0]);
+        pointer.rotation.setFromQuaternion(quat);
     }
 
     //currently just a stump:
@@ -133,7 +136,15 @@
         visualizedTargetSteeringAngle = data;
     }
 
-
+    export function visualizeRawLocation(data) {
+        const geometry = new THREE.SphereGeometry(0.1, 8, 8); //radius, widthSegments, heightSegments
+        const material = new THREE.MeshBasicMaterial({color: 0xffff00});
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+        sphere.position.x = data.x;
+        sphere.position.y = data.y;
+        sphere.position.z = data.z;
+    }
 
 
 </script>
@@ -144,7 +155,8 @@
         <span aria-hidden="true" class="u-position-absolute icon-plus is-big u-z-index-1"
               style="color:black; font-size: 7em;"></span>
         <span aria-hidden="true"
-              class="u-position-absolute icon-arrow-narrow-up is-big u-z-index-10" style="color:red; font-size: 7em; rotate: {visualizedTargetSteeringAngle}deg"></span>
+              class="u-position-absolute icon-arrow-narrow-up is-big u-z-index-10"
+              style="color:red; font-size: 7em; rotate: {visualizedTargetSteeringAngle}deg"></span>
     </div>
 </div>
 <style>

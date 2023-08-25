@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from open_precision.core.model import persist_return
 from open_precision.core.model.location import Location
 from open_precision.core.model.orientation import Orientation
 from open_precision.core.model.position import Position
@@ -33,7 +32,7 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
     def __init__(self, manager: SystemHub):
         self._manager = manager
 
-        """get available sensors"""
+        """get available sensor"""
 
     @property
     def current_position(self) -> Position | None:
@@ -44,7 +43,7 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
         for i, var in enumerate([uncorrected_location, orientation, gps_receiver_offset]):
             validate_value(var, lambda x: True if x is not None else False, rule_description="value cannot be None")
 
-        corrected_location = uncorrected_location + orientation.rotate(
+        corrected_location = uncorrected_location - orientation.rotate(
             np.array(list(gps_receiver_offset), dtype=np.float64)
         )
 
