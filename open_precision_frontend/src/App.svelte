@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-    export const backendAddress: string = "http://zeropi:8000" //window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
+    export const backendAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
     export const apiAddress: string = backendAddress + "/api";
     console.log("[INFO]: using API address: " + apiAddress);
 </script>
