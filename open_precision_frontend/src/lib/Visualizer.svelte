@@ -20,6 +20,7 @@
 
     // set up three.js
     let canvas;
+    let controls;
 
 
     const fov = 85;
@@ -71,7 +72,8 @@
         return needResize;
     }
 
-    function makeRender(renderer, controls) {
+    function makeRender(renderer, inner_controls) {
+        controls = inner_controls;
         function render(time) {
             time *= 0.001;
 
@@ -92,7 +94,6 @@
     onMount(() => {
         const renderer = new THREE.WebGLRenderer({canvas});
         const controls = new OrbitControls(camera, canvas);
-
         const render = makeRender(renderer, controls);
         // request first frame
         requestAnimationFrame(render);
@@ -127,6 +128,9 @@
             data.position.location.y,
             data.position.location.z
         );
+
+        controls.target = pointer.position;
+        controls.update();
         const quat = new THREE.Quaternion(data.position.orientation.q[1], data.position.orientation.q[2], data.position.orientation.q[3], data.position.orientation.q[0]);
         pointer.rotation.setFromQuaternion(quat);
     }
