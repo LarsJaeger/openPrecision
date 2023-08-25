@@ -16,7 +16,7 @@ adafruit-circuitpython-bno055 = "^5.4.1"
 uvicorn = "^0.18.2"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
-sparkfun-ublox-gps-ecef = { git = "https://github.com/LarsJaeger/Sparkfun_Ublox_Gps_Py_ecef.git", rev = "master" }
+sparkfun-ublox-gps = { git = "https://github.com/LarsJaeger/Sparkfun_Ublox_Gps_Py_ecef.git", rev = "master" }
 ruamel-yaml-string = "^0.1.0"
 neomodel = "^5.0.0"
 fastapi = "^0.96.0"
