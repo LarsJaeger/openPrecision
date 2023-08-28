@@ -160,7 +160,7 @@
               style="color:black; font-size: 7em;"></span>
         <span aria-hidden="true"
               class="u-position-absolute icon-arrow-narrow-up is-big u-z-index-10"
-              style="color:red; font-size: 7em; rotate: {visualizedTargetSteeringAngle}deg"></span>
+              style="color:red; font-size: 7em; rotate: {visualizedTargetSteeringAngle}rad"></span>
     </div>
 </div>
 <style>

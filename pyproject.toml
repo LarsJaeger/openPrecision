@@ -26,9 +26,10 @@ dill = "^0.3.6"
 aioprocessing = { extras = ["dill"], version = "^2.0.1" }
 makefun = "^1.15.1"
 gpiod = "^1.5.4"
-spidev = "^3.6"
 
-[tool.poetry.dev-dependencies]
+
+[tool.poetry.group.deployment.dependencies]
+spidev = "^3.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -5,6 +5,7 @@ import os
 from typing import TYPE_CHECKING
 
 import serial
+from datetime import datetime
 from ublox_gps import ublox_gps
 
 import open_precision.utils.other
@@ -36,7 +37,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         if self._manager.config.get_value(self, "enable_rtk_correction") is True:
             self.start_rtk_correction()
             self._correction_is_active = True
-        self._last_update = None
+        self._last_updated = None
         self._message: any = None
 
         atexit.register(self.cleanup)
@@ -47,13 +48,18 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self._port.close()
 
     def update_values(self):
+        _current_time = datetime.now()
         if (
-                self._last_update is None
-                or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
+                self._last_updated is None
+                or (_current_time - self._last_updated).total_seconds() * 1000 >= shortest_update_dt
         ):
-            self._message = self.gps.hp_geo_coords_ecef()
-            print("message: " + str(self._message))
-            self._last_update = open_precision.utils.other.millis()
+            for i in range(10):
+                self._message = self.gps.hp_geo_coords_ecef()
+                if self._message is not None:
+                    break
+            if self._message is None:
+                print("[UbloxGPSAdapter] could not get message")
+            self._last_updated = _current_time
 
     @property
     def location(self) -> Location | None:

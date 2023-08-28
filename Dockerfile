@@ -12,7 +12,7 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 RUN python -c 'from urllib.request import urlopen; print(urlopen("https://install.python-poetry.org").read().decode())' | python -
 COPY ./poetry.lock ./poetry.lock
 COPY ./pyproject.toml ./pyproject.toml
-RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes
+RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes --with=deployment
 
 # install dependencies in seperate container because the final base image does not have git installed
 FROM --platform=$TARGETPLATFORM python:3 as dependency_loader

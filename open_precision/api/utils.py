@@ -103,8 +103,6 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
                 else:
                     res = CustomJSONEncoder().encode(res)
 
-                print("res", res)
-                print("type", type(res))
                 return JSONResponse(res,
                                     status_code=200)
 
