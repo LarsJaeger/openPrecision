@@ -15,12 +15,12 @@ from open_precision.core.plugin_base_classes.sensor_types.global_positioning_sys
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
 
-shortest_update_dt = 100  # in ms
-
 
 class UbloxGPSAdapter(GlobalPositioningSystem):
     def __init__(self, manager: SystemHub):
         self._manager = manager
+        self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
+        self._min_update_dt = self._manager.config.get_value(self, "min_update_dt_in_ms")
         self._manager.config.register_value(self, "enable_rtk_correction", True)
         self._manager.config.register_value(
             self, "rtk_correction_start_script_path", "start_rtk.sh"
@@ -51,7 +51,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         _current_time = datetime.now()
         if (
                 self._last_updated is None
-                or (_current_time - self._last_updated).total_seconds() * 1000 >= shortest_update_dt
+                or (_current_time - self._last_updated).total_seconds() * 1000 >= self._min_update_dt
         ):
             for i in range(10):
                 self._message = self.gps.hp_geo_coords_ecef()

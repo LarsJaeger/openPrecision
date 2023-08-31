@@ -28,8 +28,35 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         self.sensor.mode = adafruit_bno055.NDOF_MODE
         # self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
         # self.sensor.accel_range = adafruit_bno055.ACCEL_2G bugged with UART
+
+        # buffer variables
+        self._scaled_acceleration = None
+        self._scaled_angular_acceleration = None
+        self._scaled_magnetometer = None
+        self._orientation = None
+
         atexit.register(self.cleanup)
         print("[Bno055AosAdapter] finished initialisation")
+
+    def update_values(self):
+        _current_time = datetime.now()
+        if (
+                self._last_updated is None
+                or (_current_time - self._last_updated).total_seconds() * 1000 >= self._min_update_dt
+        ):
+            self._scaled_acceleration = np.array(self.sensor.acceleration)
+            self._scaled_angular_acceleration = np.array(self.sensor.gyro)
+            self._scaled_magnetometer = np.array(self.sensor.magnetic)
+            for i in range(10):
+                current_quat = self.sensor.quaternion
+                if current_quat != (None, None, None, None):
+                    self._orientation = Quaternion(current_quat)
+                    break
+            else:
+                self._orientation = None
+            self._gravity = np.array(self.sensor.gravity)
+
+            self._last_updated = _current_time
 
     def cleanup(self):
         pass
@@ -49,22 +76,18 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 
     @property
     def scaled_angular_acceleration(self) -> np.ndarray | None:
-        return np.array(self.sensor.gyro)
+        return self._scaled_angular_acceleration
 
     @property
     def scaled_magnetometer(self) -> np.ndarray | None:
-        return np.array(self.sensor.magnetic)
+        return self._scaled_magnetometer
 
     @property
     def orientation(self) -> Quaternion | None:
         """returns an orientation quaternion"""
-        current_quat = self.sensor.quaternion
-        if current_quat == (None, None, None, None):
-            return None
-        quat = Quaternion(current_quat)
-        return quat
+        return self._orientation
 
     @property
     def gravity(self) -> np.ndarray | None:
         """returns a gravity vector"""
-        return np.array(self.sensor.gravity)
+        return self._gravity
