@@ -22,26 +22,26 @@
     let canvas;
     let controls;
 
+    const scene = new THREE.Scene();
 
     const fov = 85;
     const aspect = 2;  // the canvas default
     const near = 0.1;
-    const far = 50;
+    const far = 5000;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.up.set(0, 0, 1);
 
     camera.position.x = -6;
+    camera.position.y = 0;
     camera.position.z = 6;
     // camera.rotation.x = Math.PI / 2;
     // camera.rotation.y = -  Math.PI / 2;
     camera.rotation.z = -Math.PI / 2;
-
-    const scene = new THREE.Scene();
+    camera.lookAt(0, 0, 0);
+    const proxy_camera = camera.clone();
     scene.background = new THREE.Color(colorLight); // set background color of three.js scene
-    // add lights
-    const light = new THREE.AmbientLight(0x505050, 2);
-    light.position.set(0, 0, 4);
-    scene.add(light);
+
+    scene.add(camera);
 
     // add axes helper
     const axesHelper = new THREE.AxesHelper(5);
@@ -57,6 +57,11 @@
     const plane_pointer = new THREE.Mesh(new THREE.CircleGeometry(1.5, 32), new THREE.MeshPhongMaterial({color: colorNeutral}));
     plane_pointer.rotation.z = -Math.PI / 2;
     pointer.add(plane_pointer);
+    // add lights
+    const light = new THREE.AmbientLight(0x505050, 2);
+    light.position.set(0, 0, 4);
+    pointer.add(light);
+    //pointer.add(camera);
 
     scene.add(pointer);
 
@@ -74,26 +79,44 @@
 
     function makeRender(renderer, inner_controls) {
         controls = inner_controls;
-        function render(time) {
+
+        function animate(time) {
             time *= 0.001;
 
             if (resizeRendererToDisplaySize(renderer)) {
                 const canvas = renderer.domElement;
                 camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                proxy_camera.aspect = canvas.clientWidth / canvas.clientHeight;
                 camera.updateProjectionMatrix();
+                proxy_camera.updateProjectionMatrix();
             }
-            controls.update()
-            renderer.render(scene, camera);
+            controls.update();
+            const translatedCameraPosition = new THREE.Vector3().addVectors(proxy_camera.position, pointer.position);
+            const translatedCameraRotation = proxy_camera.quaternion.clone().multiply(pointer.quaternion);
+            camera.clone(proxy_camera);
+            camera.position.set(translatedCameraPosition.x,
+                translatedCameraPosition.y,
+                translatedCameraPosition.z);
+            camera.rotation.setFromQuaternion(translatedCameraRotation);
 
-            requestAnimationFrame(render);
+            //console.log("camera position and rotation")
+            //console.log(proxy_camera.position);
+            //console.log(translatedCameraPosition);
+
+            //console.log(proxy_camera.quaternion);
+            //console.log(translatedCameraRotation);
+
+
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
         }
 
-        return render;
+        return animate;
     }
 
     onMount(() => {
         const renderer = new THREE.WebGLRenderer({canvas});
-        const controls = new OrbitControls(camera, canvas);
+        const controls = new OrbitControls(proxy_camera, canvas);
         const render = makeRender(renderer, controls);
         // request first frame
         requestAnimationFrame(render);
@@ -128,9 +151,6 @@
             data.position.location.y,
             data.position.location.z
         );
-
-        controls.target = pointer.position;
-        controls.update();
         const quat = new THREE.Quaternion(data.position.orientation.q[1], data.position.orientation.q[2], data.position.orientation.q[3], data.position.orientation.q[0]);
         pointer.rotation.setFromQuaternion(quat);
     }
@@ -140,11 +160,12 @@
         visualizedTargetSteeringAngle = data;
     }
 
+    const geometry = new THREE.SphereGeometry(0.1, 8, 8); //radius, widthSegments, heightSegments
+    const material = new THREE.MeshBasicMaterial({color: 0xffff00});
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
     export function visualizeRawLocation(data) {
-        const geometry = new THREE.SphereGeometry(0.1, 8, 8); //radius, widthSegments, heightSegments
-        const material = new THREE.MeshBasicMaterial({color: 0xffff00});
-        const sphere = new THREE.Mesh(geometry, material);
-        scene.add(sphere);
         sphere.position.x = data.x;
         sphere.position.y = data.y;
         sphere.position.z = data.z;
