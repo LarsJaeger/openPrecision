@@ -26,6 +26,19 @@
             null
         );
     }
+
+    function calibrate(){
+        fetch(apiAddress + "/v1/sensor/aos/calibrate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            console.log("[INFO]: Calibrated");
+        }).catch((error) => {
+            console.log("[ERROR]: " + error);
+        });
+    }
 </script>
 
 <div class="u-position-absolute u-grid u-main-center u-cross-center u-gap-16" style="right: 2%; transform: translateY(-50%); top: 50%;">
@@ -37,7 +50,7 @@
         <span class="icon-cog" aria-hidden="true"></span>
         <span class="text u-font-size-32">Configure</span>
     </button>
-    <button class="grid-item-1 button is-big u-padding-16" id="ab_c">
-        <span class="text u-font-size-32">C</span>
+    <button class="grid-item-1 button is-big u-padding-16" id="ab_c" on:click={calibrate}>
+        <span class="text u-font-size-32">Calibrate</span>
     </button>
 </div>

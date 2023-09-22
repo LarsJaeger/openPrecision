@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class GpsAosPositionBuilder(VehicleStateBuilder):
     @property
     def vehicle_state(self) -> VehicleState | None:
-        return VehicleState(steering_angle=0, position=self.current_position, speed=0)
+        return VehicleState(steering_angle=0., position=self.current_position, speed=0.)
 
     def cleanup(self):
         pass

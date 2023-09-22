@@ -38,10 +38,10 @@
     // camera.rotation.y = -  Math.PI / 2;
     camera.rotation.z = -Math.PI / 2;
     camera.lookAt(0, 0, 0);
-    const proxy_camera = camera.clone();
     scene.background = new THREE.Color(colorLight); // set background color of three.js scene
 
     scene.add(camera);
+    const proxy_camera = camera.clone();
 
     // add axes helper
     const axesHelper = new THREE.AxesHelper(5);
@@ -91,13 +91,15 @@
                 proxy_camera.updateProjectionMatrix();
             }
             controls.update();
-            const translatedCameraPosition = new THREE.Vector3().addVectors(proxy_camera.position, pointer.position);
-            const translatedCameraRotation = proxy_camera.quaternion.clone().multiply(pointer.quaternion);
-            camera.clone(proxy_camera);
-            camera.position.set(translatedCameraPosition.x,
+            const translatedCameraPosition = pointer.position.clone().add(proxy_camera.position.clone().applyQuaternion(pointer.quaternion));
+            const translatedCameraRotation = pointer.quaternion.clone().premultiply(proxy_camera.quaternion);
+
+            //camera.clone(proxy_camera);
+            camera.rotation.setFromQuaternion(translatedCameraRotation);
+            camera.position.set(
+                translatedCameraPosition.x,
                 translatedCameraPosition.y,
                 translatedCameraPosition.z);
-            camera.rotation.setFromQuaternion(translatedCameraRotation);
 
             //console.log("camera position and rotation")
             //console.log(proxy_camera.position);
@@ -107,8 +109,8 @@
             //console.log(translatedCameraRotation);
 
 
-            requestAnimationFrame(animate);
             renderer.render(scene, camera);
+            requestAnimationFrame(animate);
         }
 
         return animate;
@@ -117,8 +119,9 @@
     onMount(() => {
         const renderer = new THREE.WebGLRenderer({canvas});
         const controls = new OrbitControls(proxy_camera, canvas);
-        const render = makeRender(renderer, controls);
+        controls.update();
         // request first frame
+        const render = makeRender(renderer, controls);
         requestAnimationFrame(render);
     });
 
@@ -153,6 +156,11 @@
         );
         const quat = new THREE.Quaternion(data.position.orientation.q[1], data.position.orientation.q[2], data.position.orientation.q[3], data.position.orientation.q[0]);
         pointer.rotation.setFromQuaternion(quat);
+        axesHelper.position.set(
+            data.position.location.x,
+            data.position.location.y,
+            data.position.location.z
+        );
     }
 
     //currently just a stump:

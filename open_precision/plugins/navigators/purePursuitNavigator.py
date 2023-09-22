@@ -75,7 +75,7 @@ class PurePursuitNavigator(Navigator):
 
         # determine the target steering location
 
-        lookahead_distance = 10  # TODO
+        lookahead_distance = 6  # TODO
         # back rotation to rotate the important points from global to vehicle coordinate system
         global_to_vehicle: Quaternion = current_position.orientation.inverse
 

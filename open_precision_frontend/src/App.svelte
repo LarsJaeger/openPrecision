@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-    export const backendAddress: string = "http://zeropi:8000";//window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
+    export const backendAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length); //"http://192.168.9.129:8000", //window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
     export const apiAddress: string = backendAddress + "/api";
     console.log("[INFO]: using API address: " + apiAddress);
 </script>
@@ -62,7 +62,7 @@
 
     function sub_to_vehicle_data() {
         // subscribe to course
-        fetch(apiAddress + "/v1/vehicle_state?" + new URLSearchParams({
+        fetch(apiAddress + "/v1/vehicle_state/?" + new URLSearchParams({
             subscription_socket_id: sid,
             subscription_period_length: "100",
             ignore_uuid: "true"
