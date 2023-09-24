@@ -12,7 +12,7 @@ from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.external.bno055_serial_driver import BNO055
+from open_precision.external.bno055_serial_driver import BNO055, AXIS_REMAP_Z, AXIS_REMAP_Y, AXIS_REMAP_X
 from open_precision.system_hub import SystemHub
 
 
@@ -28,7 +28,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         # new serial implementation
         self.sensor = BNO055(serial_port=self._manager.config.get_value(self, "bno055_serial_path"))
         self.sensor.begin()
-        self.sensor.setExternalCrystalUse(True)
+        self.sensor.set_axis_remap(x=AXIS_REMAP_X, y=AXIS_REMAP_Y, z=AXIS_REMAP_Z)
 
         self._calibration_quat: Quaternion = Quaternion(1.0, 0.0, 0.0, 0.0)
 
