@@ -37,7 +37,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         )
         self.gps = ublox_gps.UbloxGps(hard_port=self._port)
         self._correction_is_active = None
-        if self._manager.config.get_value(self, "enable_rtk_correction") is True:
+        if self._manager.config.get_value(self, "enable_rtk_correction"):
             self.start_rtk_correction()
             self._correction_is_active = True
         self._last_updated = None
@@ -69,11 +69,16 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         self.update_values()
         if self._message is None:
             return None
+        """
+        message is according to 5.14.5 from https://cdn.sparkfun.com/assets/f/7/4/3/5/PM-15136.pdf
+        high precision variables have already been scaled from mm to cm by library, so they can be added directly
+        then both are scaled to m
+        """
         location: Location = Location(
-            x=(self._message.ecefX + self._message.ecefXHp * 0.1) * 0.01,
-            y=(self._message.ecefY + self._message.ecefYHp * 0.1) * 0.01,
-            z=(self._message.ecefZ + self._message.ecefZHp * 0.1) * 0.01,
-            error=self._message.pAcc * (10 ^ -3),
+            x=(self._message.ecefX + self._message.ecefXHp) * 0.01,
+            y=(self._message.ecefY + self._message.ecefYHp) * 0.01,
+            z=(self._message.ecefZ + self._message.ecefZHp) * 0.01,
+            error=self._message.pAcc * 0.01,
         )
         return location
 
