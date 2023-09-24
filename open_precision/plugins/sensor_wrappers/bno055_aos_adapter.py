@@ -18,27 +18,20 @@ from open_precision.system_hub import SystemHub
 class Bno055AosAdapter(AbsoluteOrientationSensor):
     def __init__(self, manager: SystemHub):
         self._manager = manager
-        self._manager.config.register_value(self, "bno055_scl_pin", 3)
-        self._manager.config.register_value(self, "bno055_sda_pin", 4)
-        #self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
+        self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
         self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
+        self._manager.config.register_value(self, "use_board_module", True)
         self._min_update_dt = self._manager.config.get_value(self, "min_update_dt_in_ms")
         print("[Bno055AosAdapter] starting initialisation")
-        """
         uart = serial.Serial(self._manager.config.get_value(self, "bno055_serial_path"),
                              baudrate=115200,
                              bytesize=EIGHTBITS,
                              parity=PARITY_NONE,
                              stopbits=STOPBITS_ONE)
         self.sensor = adafruit_bno055.BNO055_UART(uart)
-        """
-        i2c = adafruit_bno055.I2C(scl=self._manager.config.get_value("bno055_scl_pin"),
-                                  sda=self._manager.config.get_value("bno055_sda_pin"))
-
-        self.sensor = adafruit_bno055.BNO055_I2C(i2c)
         self.sensor.mode = adafruit_bno055.NDOF_MODE
         self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
-        self.sensor.accel_range = adafruit_bno055.ACCEL_2G bugged with UART
+        self.sensor.accel_range = adafruit_bno055.ACCEL_2G
 
         self._calibration_quat: Quaternion = Quaternion(1.0, 0.0, 0.0, 0.0)
 
