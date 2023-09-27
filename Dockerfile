@@ -1,5 +1,5 @@
 # because of missing wheels for some arm architectures, the platform is set to linux/amd64
-FROM --platform=linux/amd64 python:3-alpine as dependency_exporter
+FROM --platform=linux/amd64 python:3 as dependency_exporter
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 # install git
@@ -22,6 +22,11 @@ WORKDIR /app
 COPY --from=dependency_exporter /app/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt --target=./libraries --no-dependencies
 
+# install rtklib
+FROM --platform=$TARGETPLATFORM gcc as rtklib_builder
+RUN git clone https://github.com/tomojitakasu/RTKLIB.git
+RUN cd ./RTKLIB/app/str2str/gcc && make
+
 FROM node:14-alpine as frontend_builder
 WORKDIR /app
 COPY open_precision_frontend /app
@@ -40,6 +45,12 @@ ENV PYTHONPATH "${PYTHONPATH}:/app:/app/libraries"
 
 # copy frontend
 COPY --from=frontend_builder /app/dist /app/open_precision_frontend
+
+# install screen
+RUN apt update
+RUN apt install -y screen
+# copy rtklib
+COPY --from=rtklib_builder /RTKLIB/app/str2str/gcc/str2str /app/rtklib/str2str
 
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 COPY open_precision /app/open_precision

@@ -31,14 +31,14 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
             raise ValueError("base position cannot be None")
         # get user input for working width
         # TODO get user input or read from config
-        working_width: float = 3.0
+        working_width: float = 9.0
 
         name = "A+heading C1"
 
         description = "asdasda"
 
         course = Course(name=name, description=description)
-        for i in range(-3, 3):
+        for i in range(-7, 7):
             loc1 = base_position.location \
                    + (base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64)) * (i * working_width))
 

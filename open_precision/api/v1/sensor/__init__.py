@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from open_precision.api.v1.sensor.aos import aos_router
 from open_precision.api.v1.sensor.gps import gps_router
 from open_precision.api.v1.sensor.imu import imu_router
 
@@ -9,7 +10,7 @@ sensor_router = APIRouter(
     dependencies=[],
     responses={404: {"description": "Not found"}},
 )
-routers = [gps_router, imu_router]
+routers = [gps_router, imu_router, aos_router]
 
 for router in routers:
     sensor_router.include_router(router)

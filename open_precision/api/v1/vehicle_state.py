@@ -27,6 +27,7 @@ def get_vehicle_state(hub, ignore_uuid: bool = False):
     else:
         return ret.to_json()
 
+
 @vehicle_state_router.get("/steering_angle")
 @engine_endpoint
 def get_steering_angle(hub) -> float:
@@ -42,4 +43,5 @@ def get_speed(hub) -> float:
 @vehicle_state_router.get("/position")
 @engine_endpoint
 def get_position(hub):
-    return hub.plugins[VehicleStateBuilder].vehicle_state.position
+    a = hub.plugins[VehicleStateBuilder].vehicle_state.position
+    return a
