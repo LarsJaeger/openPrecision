@@ -113,6 +113,12 @@ class DataManager:
                              room='error')
 
     def add_data_subscription(self, sid: str, data_subscription: DataSubscription):
+        """
+        subscribe a socket id to a data subscription
+        :param sid:
+        :param data_subscription:
+        :return:
+        """
         if data_subscription in self._data_update_mapping.keys():
             subscribers = self._data_update_mapping[data_subscription]
         else:
@@ -124,6 +130,25 @@ class DataManager:
             subscribers.append(sid)
 
     def remove_data_subscription(self, sid: str, data_subscription: DataSubscription):
+        """
+        remove a data subscription for a given socket id and data subscription
+        :param sid:
+        :param data_subscription:
+        :return:
+        """
         subscribers = self._data_update_mapping[data_subscription]
         if sid in subscribers:
             subscribers.remove(sid)
+            print(f"{sid} unsubscribed from {str(data_subscription.func)}")
+        if len(subscribers) == 0:
+            del self._data_update_mapping[data_subscription]
+            del self._data_update_mem[data_subscription]
+
+    def remove_all_data_subscriptions(self, sid: str):
+        """
+        remove all data subscriptions for a given socket id
+        :param sid:
+        :return:
+        """
+        for data_subscription in self._data_update_mapping.keys():
+            self.remove_data_subscription(sid, data_subscription)

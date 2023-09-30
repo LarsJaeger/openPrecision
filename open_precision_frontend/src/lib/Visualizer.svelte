@@ -92,21 +92,13 @@
             }
             controls.update();
             const translatedCameraPosition = pointer.position.clone().add(proxy_camera.position.clone().applyQuaternion(pointer.quaternion));
-            const translatedCameraRotation = pointer.quaternion.clone().premultiply(proxy_camera.quaternion);
+            const translatedCameraRotation = pointer.quaternion.clone().multiply(proxy_camera.quaternion);
 
-            //camera.clone(proxy_camera);
             camera.rotation.setFromQuaternion(translatedCameraRotation);
             camera.position.set(
                 translatedCameraPosition.x,
                 translatedCameraPosition.y,
                 translatedCameraPosition.z);
-
-            //console.log("camera position and rotation")
-            //console.log(proxy_camera.position);
-            //console.log(translatedCameraPosition);
-
-            //console.log(proxy_camera.quaternion);
-            //console.log(translatedCameraRotation);
 
 
             renderer.render(scene, camera);

@@ -3,11 +3,8 @@ from __future__ import annotations
 import atexit
 from datetime import datetime
 
-import adafruit_bno055
 import numpy as np
-import serial
 from pyquaternion import Quaternion
-from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
@@ -55,7 +52,8 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
             for i in range(10):
                 current_quat = self.sensor.read_quaternion()
                 if current_quat != (None, None, None, None):
-                    self._orientation = Quaternion(current_quat).normalised
+                    self._orientation = Quaternion(
+                        (current_quat[3], current_quat[0], current_quat[1], current_quat[2])).normalised
 
                     break
             else:

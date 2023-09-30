@@ -54,7 +54,7 @@ class SystemHub:
             self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
 
             # initializing and starting api and user interface delivery
-            self._api = API(self._system_task_manager.queue_system_task)
+            self._api = API(self)
             print("[INFO]: starting api thread")
             with self._api:
                 # starting update loop
