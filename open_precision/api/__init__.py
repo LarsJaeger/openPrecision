@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import uvicorn
 
 import open_precision.api.dependencies as dependencies  # this must be imported before other api modules
-from open_precision.api import app as main_server
+from open_precision.api.app import app
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
@@ -22,7 +22,6 @@ class API:
 
         self._thread: None | threading.Thread = None
         self.queue_task = self._hub.system_task_manager.queue_system_task
-        self.app = main_server.make_app(self._hub)
         self._server: uvicorn.Server | None = None
 
         # inject queue_task into dependencies
@@ -34,12 +33,11 @@ class API:
             self._thread.join()
 
     def __enter__(self):
-        self._thread = threading.Thread(target=self._run)
+        self._thread = threading.Thread(target=self._run, daemon=True)
         self._thread.start()
 
     def _run(self):
-        main_server.queue_task = self.queue_task
-        config = uvicorn.Config(self.app, host="0.0.0.0",
+        config = uvicorn.Config(app, host="0.0.0.0",
                                 log_level="info")  # , ssl_keyfile="key.pem", ssl_certfile="cert.pem")
         self._server = uvicorn.Server(config=config)
         self._server.run()

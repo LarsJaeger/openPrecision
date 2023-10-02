@@ -10,75 +10,85 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
+from open_precision.api import dependencies as dependencies
 from open_precision.api.v1 import v1_router
 
 if TYPE_CHECKING:
     pass
 
+url = 'redis://redis:6379'
+_socketio_server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
+                                            async_mode='asgi',
+                                            cors_allowed_origins="*")
 
-def make_app(hub):
-    url = 'redis://redis:6379'
-    _socketio_server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url),
-                                                async_mode='asgi',
-                                                cors_allowed_origins="*")
 
-    # define socketio events:
-    @_socketio_server.event
-    async def connect(sid, environment, auth):
-        print('[INFO] client connected with socketid: ', sid)
+# define helper function:
+async def remove_all_data_subscriptions(hub, sid: str):
+    await hub.data.remove_all_data_subscriptions(sid)
 
-    @_socketio_server.event
-    async def disconnect(sid):
-        hub.system_task_manager.queue_system_task(hub.data.remove_all_data_subscriptions, sid)
-        print('[INFO] client disconnected with socketid: ', sid)
 
-    # define the fastapi app:
-    app = FastAPI()
+# define socketio events:
 
-    origins = [
-        "*"
-    ]
+@_socketio_server.event
+async def connect(sid, environment, auth):
+    print('[INFO] client connected with socketid: ', sid)
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
-    # serve the static frontend
-    app.mount("/app", StaticFiles(directory="/app/open_precision_frontend", html=True), name="static")
+@_socketio_server.event
+async def disconnect(sid):
+    # perform api request to remove all data subscriptions
+    await dependencies._global_queue_task_func(remove_all_data_subscriptions, sid)
+    print('[INFO] client disconnected with socketid: ', sid)
 
-    root_router = APIRouter(
-        prefix="",
-        tags=["root"],
-        dependencies=[],
-        responses={404: {"description": "Not found"}},
-    )
 
-    @root_router.get("/")
-    async def root():
-        """
-        Redirects to the frontend
-        :return: RedirectResponse
-        """
-        return RedirectResponse(url='/app')
+# define the fastapi app:
+app = FastAPI()
 
-    # app.mount("/", StaticFiles(="/app/open_precision_frontend/index.html"), name="static")
+origins = [
+    "*"
+]
 
-    # server the socketio app
-    app.mount("/sockets", socketio.ASGIApp(_socketio_server))
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # define the api
-    api_router = APIRouter(
-        prefix="/api",
-        tags=["api"],
-        dependencies=[],
-        responses={404: {"description": "Not found"}},
-    )
-    api_router.include_router(v1_router)
+# serve the static frontend
+app.mount("/app", StaticFiles(directory="/app/open_precision_frontend", html=True), name="static")
 
-    app.include_router(api_router)
-    app.include_router(root_router)
-    return app
+root_router = APIRouter(
+    prefix="",
+    tags=["root"],
+    dependencies=[],
+    responses={404: {"description": "Not found"}},
+)
+
+
+@root_router.get("/")
+async def root():
+    """
+    Redirects to the frontend
+    :return: RedirectResponse
+    """
+    return RedirectResponse(url='/app')
+
+
+# app.mount("/", StaticFiles(="/app/open_precision_frontend/index.html"), name="static")
+
+# server the socketio app
+app.mount("/sockets", socketio.ASGIApp(_socketio_server))
+
+# define the api
+api_router = APIRouter(
+    prefix="/api",
+    tags=["api"],
+    dependencies=[],
+    responses={404: {"description": "Not found"}},
+)
+api_router.include_router(v1_router)
+
+app.include_router(api_router)
+app.include_router(root_router)
