@@ -15,12 +15,13 @@
     "@yushijinhun/three-minifier-rollup": "^0.4.0",
     "svelte": "^3.54.0",
     "svelte-check": "^2.10.0",
+    "svelte-preprocess-import-assets": "^1.0.1",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.5"
   },
   "dependencies": {
-    "@appwrite.io/pink": "^0.0.2",
+    "@appwrite.io/pink": "^0.0.6-rc.15",
     "@threlte/core": "^5.0.8",
     "@threlte/extras": "^4.9.3",
     "@threlte/preprocess": "^0.0.2",

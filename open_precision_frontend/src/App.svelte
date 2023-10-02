@@ -7,8 +7,10 @@
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
     import ActionButtons from "./lib/ActionButtons.svelte";
+    import Dashboard from "./lib/Dashboard.svelte";
     import Modals, {add} from "./lib/Modals/Modals.svelte";
     import {socket} from "./stores.js";
+    import SwitchButton from "./lib/SwitchButton.svelte";
 
     let visualizeCourse; // set by Visualizer
     let visualizeMachineState; // set by Visualizer
@@ -18,6 +20,7 @@
 
     let sid: string;
     let event_id_to_function_map: Map<string, Function> = new Map<string, Function>();
+    let showVisualizer: boolean = true;
 
     function course_update(data) {
         const parsedData: any = JSON.parse(data);
@@ -172,6 +175,7 @@
 
 <main>
     <Modals/>
+    {#if showVisualizer}
     <Visualizer bind:visualizeCourse={visualizeCourse}
                 bind:visualizeMachineState={visualizeMachineState}
                 bind:visualizeRawLocation={visualizeRawLocation}
@@ -180,4 +184,8 @@
     <!--<MetaButtons/> -->
     <ActionButtons/>
     <!--<StatusBar/> -->
+    {:else}
+        <Dashboard/>
+    {/if}
+    <SwitchButton bind:showVisualizer={showVisualizer}/>
 </main>

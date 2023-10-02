@@ -2,7 +2,6 @@
     export let heading = "";
     export let lines = "";
 
-
     function copyToClipBoard() {
         navigator.clipboard.writeText(lines);
     }

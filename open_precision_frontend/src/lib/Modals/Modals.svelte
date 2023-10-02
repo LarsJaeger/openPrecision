@@ -46,9 +46,10 @@
 {#if $modals.length !== 0}
     <div class="modal-backdrop u-position-absolute u-cross-center u-main-center u-flex u-flex-wrap u-full-screen-height u-width-full-line u-z-index-20" on:click={clickOutside} on:keypress>
         <!-- Modal content -->
-        <div class="modal u-flex u-flex-wrap u-max-width-100-percent u-overflow-x-auto u-overflow-y-auto">
+        <div class="modal u-flex u-flex-wrap u-max-width-100-percent u-overflow-x-auto u-overflow-y-auto u-z-index-20">
             <form class="modal-form" method="dialog">
                 <header class="modal-header">
+                    <div class="u-flex u-main-space-between u-cross-center u-gap-16">
                     <div class="avatar is-color-orange is-size-large">
                         <span>{#if ($modals.length !== 1)}{$modals.length}{/if}<span class="icon-exclamation" aria-hidden="true"></span></span>
                     </div>
@@ -59,6 +60,7 @@
                             on:click={closeCurrent}>
                         <span class="icon-x" aria-hidden="true"></span>
                     </button>
+                    </div>
                 </header>
                 {#if ($modals[0].bodyProps == null)}
                     <svelte:component this={$modals[0].bodyComponent}/>
@@ -73,7 +75,7 @@
     /* The Modal (background) */
     .modal-backdrop {
         position: fixed; /* Stay in place */
-        z-index: 2; /* Sit on top */
+        z-index: 22; /* Sit on top */
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         background-color: rgb(0, 0, 0); /* Fallback color */
