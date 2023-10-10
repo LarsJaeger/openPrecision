@@ -1,5 +1,5 @@
 # because of missing wheels for some arm architectures, the platform is set to linux/amd64
-FROM --platform=linux/amd64 python:3 as dependency_exporter
+FROM --platform=linux/amd64 python:3.10 as dependency_exporter
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 # install git
@@ -15,7 +15,7 @@ COPY ./pyproject.toml ./pyproject.toml
 RUN poetry export -f requirements.txt --output ./requirements.txt --without-hashes --with=deployment
 
 # install dependencies in seperate container because the final base image does not have git installed
-FROM --platform=$TARGETPLATFORM python:3 as dependency_loader
+FROM --platform=$TARGETPLATFORM python:3.10 as dependency_loader
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 
@@ -35,7 +35,7 @@ RUN npm run build
 
 
 
-FROM --platform=$TARGETPLATFORM python:3-slim as runtime
+FROM --platform=$TARGETPLATFORM python:3.10-slim as runtime
 ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 

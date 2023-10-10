@@ -530,7 +530,7 @@ python-versions = ">=3"
 
 [[package]]
 name = "simple-websocket"
-version = "0.10.1"
+version = "1.0.0"
 description = "Simple WebSocket server and client for Python"
 category = "main"
 optional = false
@@ -538,6 +538,9 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 wsproto = "*"
+
+[package.extras]
+docs = ["sphinx"]
 
 [[package]]
 name = "six"
@@ -1043,8 +1046,8 @@ ruamel-yaml-string = [
     { file = "ruamel.yaml.string-0.1.1.tar.gz", hash = "sha256:7a7aedcc055d45c004d38b756f58474ebefb106851f4ce56ce58415709784350" },
 ]
 simple-websocket = [
-    { file = "simple-websocket-0.10.1.tar.gz", hash = "sha256:0ab46c8ffa51a46dc95eed94608b3b722841c0bf849def71d465c5c356679c82" },
-    { file = "simple_websocket-0.10.1-py3-none-any.whl", hash = "sha256:62c36bacfd75cc867927bb39d91951342a7234bdfe20f41dd969a3b8bb1413b7" },
+    { file = "simple-websocket-1.0.0.tar.gz", hash = "sha256:17d2c72f4a2bd85174a97e3e4c88b01c40c3f81b7b648b0cc3ce1305968928c8" },
+    { file = "simple_websocket-1.0.0-py3-none-any.whl", hash = "sha256:1d5bf585e415eaa2083e2bcf02a3ecf91f9712e7b3e6b9fa0b461ad04e0837bc" },
 ]
 six = [
     { file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254" },
