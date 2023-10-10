@@ -77,13 +77,17 @@ class SystemTaskManager:
             if self.task_queue.empty():
                 break
 
+            print("[DEBUG]: MAIN feting task")
             # Get the func from the queue
             func, args, kwargs, conn = self.task_queue.get()
-
+            print("[DEBUG]: MAIN got task")
             # execute func
             try:
+                print("[DEBUG]: MAIN executing task")
+                print("[DEBUG]: MAIN task:", func, args, kwargs)
                 ret = func(self._manager, *args, **kwargs)
             except Exception as e:
+                print("[DEBUG]: MAIN exception in task")
                 ret = e, traceback.format_exc()
                 print("Exception in system task: \n", str(e))
             # Send the result back

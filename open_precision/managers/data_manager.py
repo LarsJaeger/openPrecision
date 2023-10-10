@@ -32,30 +32,31 @@ class DataManager:
         self._sio = AsyncServer(client_manager=AsyncRedisManager(url),
                                 async_mode='asgi',
                                 cors_allowed_origins="*")
-        self._sio.on('connect', self._on_connect)
-        self._sio.on('socket_id', self._get_socket_id)
         self._data_update_mapping: Dict[DataSubscription, List[str]] = {}  # subscription: [subscribed_sids]
         self._data_update_mem: Dict[
             DataSubscription, Tuple[Any, datetime | None]] = {}  # subscription: (value, last_updated)
         self._connected_clients: list[str] = []
 
-    async def _on_connect(self, sid, environ):
+    def inner_on_connect(self, sid):
         """
         This func is called by the socketio server when a new client connects. It is not intended to be called from
         outside the system update loop.
         :param sid:
-        :param environ:
         :return:
         """
+        print("ALALALALALALALALLALALALA")
         self._connected_clients.append(sid)
         # TODO auth
 
         print('connect ', sid)
 
+    """
     async def _get_socket_id(self, sid, data):
         await self._sio.emit("socket_id", data=sid, to=sid)
+    """
 
-    async def _on_disconnect(self, sid):
+    def inner_on_disconnect(self, sid):
+        print("asalsladlasldasjdajsdiajdijasda")
         self._connected_clients.remove(sid)
         for key, subscribers_list in self._data_update_mapping.items():
             if sid in subscribers_list:

@@ -23,23 +23,27 @@ _socketio_server: AsyncServer = AsyncServer(client_manager=AsyncRedisManager(url
 
 
 # define helper function:
-async def remove_all_data_subscriptions(hub, sid: str):
-    await hub.data.remove_all_data_subscriptions(sid)
+def inner_disconnect(hub, sid: str):
+    hub.data.inner_on_disconnect(sid)
+
+
+def inner_connect(hub, sid: str):
+    hub.data.inner_on_connect(sid)
 
 
 # define socketio events:
 
 @_socketio_server.event
 async def connect(sid, environment, auth):
+    await dependencies._global_queue_task_func(inner_connect, str(sid))
     print('[INFO] client connected with socketid: ', sid)
 
 
 @_socketio_server.event
 async def disconnect(sid):
     # perform api request to remove all data subscriptions
-    await dependencies._global_queue_task_func(remove_all_data_subscriptions, sid)
+    await dependencies._global_queue_task_func(inner_disconnect, str(sid))
     print('[INFO] client disconnected with socketid: ', sid)
-
 
 # define the fastapi app:
 app = FastAPI()

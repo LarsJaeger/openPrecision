@@ -50,7 +50,7 @@ services:
       - neo4j-plugins:/plugins
       - neo4j-logs:/logs
 networks:
-  internal: {}
+  internal:
 volumes:
   neo4j-data:
   neo4j-plugins:
