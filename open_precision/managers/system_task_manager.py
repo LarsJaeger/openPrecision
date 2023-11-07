@@ -37,17 +37,11 @@ class SystemTaskManager:
         # create pipe
         pipe_out, pipe_in = AioPipe(duplex=False)
         # put action, args, kwargs and pipe in queue
-        print("[DEBUG]: HELPER putting task in queue")
-        print("[DEBUG]: HELPER task:", func, args, kwargs)
         await self.task_queue.coro_put((func, args, kwargs, pipe_in))
-        print("[DEBUG]: HELPER waiting for result")
         # wait for result
         await pipe_out.coro_poll()
-        print("[DEBUG]: HELPER result ready")
         # return result
         ret = await pipe_out.coro_recv()
-        print("[DEBUG]: HELPER received result")
-        print("[DEBUG]: HELPER result:", ret)
         # raise Exception if result is an exception
         if isinstance(ret, tuple) and isinstance(ret[0], Exception):
             print(ret[1])
@@ -77,22 +71,14 @@ class SystemTaskManager:
             if self.task_queue.empty():
                 break
 
-            print("[DEBUG]: MAIN feting task")
             # Get the func from the queue
             func, args, kwargs, conn = self.task_queue.get()
-            print("[DEBUG]: MAIN got task")
             # execute func
             try:
-                print("[DEBUG]: MAIN executing task")
-                print("[DEBUG]: MAIN task:", func, args, kwargs)
                 ret = func(self._manager, *args, **kwargs)
             except Exception as e:
-                print("[DEBUG]: MAIN exception in task")
                 ret = e, traceback.format_exc()
                 print("Exception in system task: \n", str(e))
             # Send the result back
             with conn as conn:
-                print("[DEBUG]: MAIN sending result")
-                print("[DEBUG]: MAIN result:", ret)
                 await conn.coro_send(ret)
-                print("[DEBUG]: MAIN sent result")

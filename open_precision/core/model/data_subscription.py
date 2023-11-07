@@ -10,7 +10,7 @@ from open_precision.utils.neomodel import DillProperty
 
 @dataclass(kw_only=True, frozen=True)
 class DataSubscription(DataModelBase):
-    func: Callable[[...], ...] | None = None
+    func: Callable | None = None
     """
     TODO when remodelling the data subscriptions to persist throughout system restarts, __hash__ must use a subset of 
     func's properties (no session specific information, like place in memory).

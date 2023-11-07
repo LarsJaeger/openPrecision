@@ -44,7 +44,6 @@ class DataManager:
         :param sid:
         :return:
         """
-        print("ALALALALALALALALLALALALA")
         self._connected_clients.append(sid)
         # TODO auth
 
@@ -56,14 +55,16 @@ class DataManager:
     """
 
     def inner_on_disconnect(self, sid):
-        print("asalsladlasldasjdajsdiajdijasda")
         self._connected_clients.remove(sid)
+        subscriptions_to_delete = []
         for key, subscribers_list in self._data_update_mapping.items():
             if sid in subscribers_list:
-                print(f"removed {sid} from subscribers list")
                 subscribers_list.remove(sid)
                 if len(subscribers_list) == 0:
-                    del self._data_update_mapping[key]
+                    subscriptions_to_delete.append(key)
+        for key in subscriptions_to_delete:
+            del self._data_update_mapping[key]
+            del self._data_update_mem[key]
         print('disconnect ', sid)
 
     async def do_update(self):
