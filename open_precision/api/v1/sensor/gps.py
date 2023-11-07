@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
 from open_precision.api.utils import engine_endpoint
-from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
+    GlobalPositioningSystem,
+)
 
 gps_router = APIRouter(
     prefix="/gps",

@@ -13,17 +13,20 @@ from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_s
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
-from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
+    InertialMeasurementUnit,
+)
 from open_precision.core.plugin_base_classes.sensor_types.world_magnetic_model_calculater import (
     WorldMagneticModelCalculator,
 )
-from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.core.plugin_base_classes.vehicle_state_builder import (
+    VehicleStateBuilder,
+)
 from open_precision.system_hub import SystemHub
 from open_precision.utils.math import norm_vector
 
 
 class GpsCompassPositionBuilder(VehicleStateBuilder):
-
     def cleanup(self):
         pass
 
@@ -34,20 +37,28 @@ class GpsCompassPositionBuilder(VehicleStateBuilder):
 
     @property
     def current_position(self) -> Position | None:
-        uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
-        gravity_vector: np.array = self._manager.plugins[AbsoluteOrientationSensor].gravity
-        mag_real_vector: np.array = self._manager.plugins[InertialMeasurementUnit].scaled_magnetometer
-        mag_wmm_vector: np.array = self._manager.plugins[WorldMagneticModelCalculator].field_vector
+        uncorrected_location: Location = self._manager.plugins[
+            GlobalPositioningSystem
+        ].location
+        gravity_vector: np.array = self._manager.plugins[
+            AbsoluteOrientationSensor
+        ].gravity
+        mag_real_vector: np.array = self._manager.plugins[
+            InertialMeasurementUnit
+        ].scaled_magnetometer
+        mag_wmm_vector: np.array = self._manager.plugins[
+            WorldMagneticModelCalculator
+        ].field_vector
         gravity_model_vector = np.array([0.0, 0.0, -1.0])
 
         if any(
-            x is None
-            for x in [
-                gravity_vector,
-                mag_real_vector,
-                mag_wmm_vector,
-                gravity_model_vector,
-            ]
+                x is None
+                for x in [
+                    gravity_vector,
+                    mag_real_vector,
+                    mag_wmm_vector,
+                    gravity_model_vector,
+                ]
         ):
             return None
 
@@ -103,7 +114,7 @@ class GpsCompassPositionBuilder(VehicleStateBuilder):
         # TODO switch to ecef
         corrected_location: Location = Location(
             lat=uncorrected_location.lat
-            - math.tan(
+                - math.tan(
                 np.divide(
                     correction_vector[1],
                     uncorrected_location.height - correction_vector[2],
@@ -112,7 +123,7 @@ class GpsCompassPositionBuilder(VehicleStateBuilder):
                 )
             ),
             lon=uncorrected_location.lon
-            - math.tan(
+                - math.tan(
                 np.divide(
                     correction_vector[0],
                     uncorrected_location.height - correction_vector[2],
@@ -135,7 +146,7 @@ class GpsCompassPositionBuilder(VehicleStateBuilder):
     @property
     def is_ready(self):
         return (
-            self._manager.plugins[GlobalPositioningSystem].is_calibrated()
-            and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
-            and self._manager.plugins[WorldMagneticModelCalculator].is_calibrated()
+                self._manager.plugins[GlobalPositioningSystem].is_calibrated()
+                and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
+                and self._manager.plugins[WorldMagneticModelCalculator].is_calibrated()
         )

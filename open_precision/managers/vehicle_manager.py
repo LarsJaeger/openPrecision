@@ -19,7 +19,7 @@ class VehicleManager:
             [
                 {
                     "name": "example_vehicle",
-                    "gps_receiver_offset": [1., 2., 3.],
+                    "gps_receiver_offset": [1.0, 2.0, 3.0],
                     "turn_radius_right": 70.3,
                     "turn_radius_left": 69.1,
                     "wheelbase": 3.2,
@@ -51,9 +51,13 @@ class VehicleManager:
             print("blub2")
             print(obj)
             return obj
+
         print(type(self._manager.config.get_value(self, "vehicles")[0]))
         print(self._manager.config.get_value(self, "vehicles")[0])
-        self._vehicles: list[Vehicle] = [make_vehicle_from_config_dict(x) for x in self._manager.config.get_value(self, "vehicles")]
+        self._vehicles: list[Vehicle] = [
+            make_vehicle_from_config_dict(x)
+            for x in self._manager.config.get_value(self, "vehicles")
+        ]
 
         self._current_vehicle_id: int = self._manager.config.get_value(
             self, "current_vehicle_id"

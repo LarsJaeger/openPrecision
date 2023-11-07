@@ -2,7 +2,11 @@
 name = "open_precision"
 version = "0.1.0"
 description = ""
+readme = "README.md"
 authors = ["larsjaeger <lars@jgr.one>"]
+
+
+# --- declare dependencies ---
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -28,6 +32,15 @@ makefun = "^1.15.1"
 gpiod = "^1.5.4"
 httpx = "^0.25.0"
 
+[tool.poetry.group.dev] # Development dependencies for testing, formatting/ linting and building docs.
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+ruff = "^0.1.1"
+nox = "^2023.4.22"
+pdoc = "^14.1.0"
+
 
 [tool.poetry.group.deployment.dependencies]
 spidev = "^3.6"
@@ -35,3 +48,43 @@ spidev = "^3.6"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+# --- configure development tool chain ---
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --import-mode=importlib --ignore=tests/manual_tests/"
+pythonpath = [
+    "src"
+]
+
+testpaths = [
+    "tests"
+]
+
+
+[tool.ruff]
+# Include all Python files, including type stubs and Jupyter notebooks.
+include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
+
+[tool.ruff.lint]
+ignore = [
+    "W191",
+    "E111",
+    "E114",
+    "E117",
+    "D206",
+    "D300",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "COM812",
+    "ISC001",
+    "ISC002"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"

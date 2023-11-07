@@ -7,12 +7,12 @@ from open_precision.system_hub import SystemHub
 
 
 def main():
-    man = SystemHub()
+    SystemHub()
 
 
 if __name__ == "__main__":
     try:
         main()
-    except (KeyboardInterrupt, SystemExit) as exErr:
+    except (KeyboardInterrupt, SystemExit):
         print("\nEnding Example 1")
         sys.exit(0)

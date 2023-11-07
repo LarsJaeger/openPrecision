@@ -57,34 +57,55 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
     func_sig = inspect.signature(func)
     params = list(func_sig.parameters.values())
     params.remove(params[0])  # remove hub arg
-    params.append(inspect.Parameter('queue_system_task',
-                                    default=Depends(dependencies.queue_system_task_dependency),
-                                    kind=inspect.Parameter.KEYWORD_ONLY))
-    params.append(inspect.Parameter('subscription_socket_id',
-                                    default=None,
-                                    annotation=str | None,
-                                    kind=inspect.Parameter.KEYWORD_ONLY))
-    params.append(inspect.Parameter('subscription_period_length',
-                                    default=None,
-                                    annotation=int | None,
-                                    kind=inspect.Parameter.KEYWORD_ONLY))
+    params.append(
+        inspect.Parameter(
+            "queue_system_task",
+            default=Depends(dependencies.queue_system_task_dependency),
+            kind=inspect.Parameter.KEYWORD_ONLY,
+        )
+    )
+    params.append(
+        inspect.Parameter(
+            "subscription_socket_id",
+            default=None,
+            annotation=str | None,
+            kind=inspect.Parameter.KEYWORD_ONLY,
+        )
+    )
+    params.append(
+        inspect.Parameter(
+            "subscription_period_length",
+            default=None,
+            annotation=int | None,
+            kind=inspect.Parameter.KEYWORD_ONLY,
+        )
+    )
     new_sig = func_sig.replace(parameters=params)
 
     @makefun.wraps(func, new_sig=new_sig)
-    async def endpoint(*args,
-                       queue_system_task=Depends(dependencies.queue_system_task_dependency),
-                       subscription_socket_id: str | None = None,
-                       subscription_period_length: int | None = None,
-                       **kwargs):
+    async def endpoint(
+            *args,
+            queue_system_task=Depends(dependencies.queue_system_task_dependency),
+            subscription_socket_id: str | None = None,
+            subscription_period_length: int | None = None,
+            **kwargs,
+    ):
         # check for subscription
-        if subscription_socket_id is not None and subscription_period_length is not None:
+        if (
+                subscription_socket_id is not None
+                and subscription_period_length is not None
+        ):
             # subscription requested
 
-            data_subscription = DataSubscription(func=func,
-                                                 args=args,
-                                                 kw_args=tuple(sorted(kwargs.items())),
-                                                 period_length=subscription_period_length)
-            res = await queue_system_task(_create_add_subscr(subscription_socket_id, data_subscription))
+            data_subscription = DataSubscription(
+                func=func,
+                args=args,
+                kw_args=tuple(sorted(kwargs.items())),
+                period_length=subscription_period_length,
+            )
+            res = await queue_system_task(
+                _create_add_subscr(subscription_socket_id, data_subscription)
+            )
             if isinstance(res, tuple) and isinstance(res[0], Exception):
                 return JSONResponse(str(res[1]), status_code=500)
             else:
@@ -103,7 +124,6 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
                 else:
                     res = CustomJSONEncoder().encode(res)
 
-                return JSONResponse(res,
-                                    status_code=200)
+                return JSONResponse(res, status_code=200)
 
     return endpoint

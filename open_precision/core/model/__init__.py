@@ -51,7 +51,13 @@ from types import FunctionType
 from typing import List, Any, Callable
 
 import neomodel
-from neomodel import StructuredNode, RelationshipDefinition, RelationshipManager, RelationshipTo, RelationshipFrom
+from neomodel import (
+	StructuredNode,
+	RelationshipDefinition,
+	RelationshipManager,
+	RelationshipTo,
+	RelationshipFrom,
+)
 from neomodel.properties import validator
 from pyquaternion import Quaternion
 
@@ -62,265 +68,308 @@ class_signature_mapping: dict  # will be set by map_model func
 
 
 def persist_return(func: callable) -> callable:
-    """this decorator will persist the return value of the decorated func when it is called"""
+	"""this decorator will persist the return value of the decorated func when it is called"""
 
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        val = func(self, *args, **kwargs)
-        if is_iterable(val):
-            [item.save() for item in val]
-        else:
-            val.save()
-        return val
+	@wraps(func)
+	def wrapper(self, *args, **kwargs):
+		val = func(self, *args, **kwargs)
+		if is_iterable(val):
+			[item.save() for item in val]
+		else:
+			val.save()
+		return val
 
-    return wrapper
+	return wrapper
 
 
 def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
-    """
-    this decorator will persist the argument of the decorated func when it is called
-    :param func: the func to decorate
-    :param position_or_kw: the position or keyword of the argument to persist, defaults to 0
-    """
+	"""
+	this decorator will persist the argument of the decorated func when it is called
+	:param func: the func to decorate
+	:param position_or_kw: the position or keyword of the argument to persist, defaults to 0
+	"""
 
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        if isinstance(position_or_kw, str):
-            val = kwargs[position_or_kw]
-        elif isinstance(position_or_kw, int):
-            val = args[0]
-        else:
-            raise TypeError("position_or_kw must be either an int or a str")
+	@wraps(func)
+	def wrapper(self, *args, **kwargs):
+		if isinstance(position_or_kw, str):
+			val = kwargs[position_or_kw]
+		elif isinstance(position_or_kw, int):
+			val = args[0]
+		else:
+			raise TypeError("position_or_kw must be either an int or a str")
 
-        if is_iterable(val):
-            [item.save() for item in val]
-        else:
-            val.save()
-        return func(self, *args, **kwargs)
+		if is_iterable(val):
+			[item.save() for item in val]
+		else:
+			val.save()
+		return func(self, *args, **kwargs)
 
-    return wrapper
+	return wrapper
 
 
-def _resolve_object_conns(obj: Any,
-                          with_conns: List[RelationshipDefinition],
-                          resolved_objects: List = None,
-                          main_obj: Any = None,
-                          ):
-    connections = []
-    objects = {}
-    resolved_objects = resolved_objects if resolved_objects is not None else []
+def _resolve_object_conns(
+		obj: Any,
+		with_conns: List[RelationshipDefinition],
+		resolved_objects: List = None,
+		main_obj: Any = None,
+):
+	connections = []
+	objects = {}
+	resolved_objects = resolved_objects if resolved_objects is not None else []
 
-    if main_obj is None:  # only the case on the first recursion level
-        main_obj = obj
-        objects["main"] = main_obj
-    else:
-        objects[str(type(obj).__qualname__) + " " + str(obj.uuid)] = obj
+	if main_obj is None:  # only the case on the first recursion level
+		main_obj = obj
+		objects["main"] = main_obj
+	else:
+		objects[str(type(obj).__qualname__) + " " + str(obj.uuid)] = obj
 
-    for field, value in obj.__dict__.items():
-        if isinstance(value, RelationshipManager) and value.definition in with_conns:
-            relationship = getattr(obj.__class__, field)
+	for field, value in obj.__dict__.items():
+		if isinstance(value, RelationshipManager) and value.definition in with_conns:
+			relationship = getattr(obj.__class__, field)
 
-            if isinstance(relationship, RelationshipTo):
-                rel_type = "to"
-            elif isinstance(relationship, RelationshipFrom):
-                rel_type = "from"
-            else:
-                rel_type = "undirected"
+			if isinstance(relationship, RelationshipTo):
+				rel_type = "to"
+			elif isinstance(relationship, RelationshipFrom):
+				rel_type = "from"
+			else:
+				rel_type = "undirected"
 
-            # iterate over all connected objects and resolve their connections (recursion)
-            for x in list(value):
+			# iterate over all connected objects and resolve their connections (recursion)
+			for x in list(value):
+				obj_a_ref: str = (
+					str(type(obj).__qualname__) + " " + str(obj.uuid)
+					if obj != main_obj
+					else "main"
+				)
+				obj_b_ref: str = (
+					str(type(x).__qualname__) + " " + str(x.uuid)
+					if x != main_obj
+					else "main"
+				)
+				connections.append(
+					{
+						"a": obj_a_ref,
+						"relationship": field,
+						"type": rel_type,
+						"b": obj_b_ref,
+					}
+				)
 
-                obj_a_ref: str = str(type(obj).__qualname__) + " " + str(obj.uuid) if obj != main_obj else "main"
-                obj_b_ref: str = str(type(x).__qualname__) + " " + str(x.uuid) if x != main_obj else "main"
-                connections.append({"a": obj_a_ref,
-                                    "relationship": field,
-                                    "type": rel_type,
-                                    "b": obj_b_ref})
+				if x in resolved_objects:  # prevent infinite recursion
+					continue
+				resolved_objects.append(x)
 
-                if x in resolved_objects:  # prevent infinite recursion
-                    continue
-                resolved_objects.append(x)
+				inner_objs, inner_conns = _resolve_object_conns(
+					x,
+					with_conns=with_conns,
+					resolved_objects=resolved_objects,
+					main_obj=main_obj,
+				)
+				objects.update(inner_objs)
+				connections.extend(inner_conns)
 
-                inner_objs, inner_conns = _resolve_object_conns(x,
-                                                                with_conns=with_conns,
-                                                                resolved_objects=resolved_objects,
-                                                                main_obj=main_obj)
-                objects.update(inner_objs)
-                connections.extend(inner_conns)
-
-    return objects, connections
+	return objects, connections
 
 
 class DataModelBase:
-    def to_json(self,
-                with_rels: List[RelationshipDefinition] = None,
-                field_key_filter: Callable = None,
-                field_type_filter: Callable = None,
-                ) -> str:
-        encoder = CustomJSONEncoder(field_type_filter=field_type_filter,
-                                    field_key_filter=field_key_filter)
-        if with_rels is None:
-            return encoder.encode(self)
-        else:
-            objects, connections = _resolve_object_conns(self, [x.definition for x in with_rels])
-            composite_object_dict = {"objects": objects,
-                                     "connections": connections}
-            return encoder.encode(composite_object_dict)
+	def to_json(
+			self,
+			with_rels: List[RelationshipDefinition] = None,
+			field_key_filter: Callable = None,
+			field_type_filter: Callable = None,
+	) -> str:
+		encoder = CustomJSONEncoder(
+			field_type_filter=field_type_filter, field_key_filter=field_key_filter
+		)
+		if with_rels is None:
+			return encoder.encode(self)
+		else:
+			objects, connections = _resolve_object_conns(
+				self, [x.definition for x in with_rels]
+			)
+			composite_object_dict = {"objects": objects, "connections": connections}
+			return encoder.encode(composite_object_dict)
 
-    @classmethod
-    def from_json(cls, json_string: str, with_conns: bool = False):
-        """
-        Deserializes a json string to an object of the class. If the json string is a composite object (i.e. it contains
-        connections), the main object is returned.
-        If an object with the same uuid already exists in the database, it will be updated to have the properties of the
-        serialized object and returned instead of a new object.
+	@classmethod
+	def from_json(cls, json_string: str, with_conns: bool = False):
+		"""
+		Deserializes a json string to an object of the class. If the json string is a composite object (i.e. it contains
+		connections), the main object is returned.
+		If an object with the same uuid already exists in the database, it will be updated to have the properties of the
+		serialized object and returned instead of a new object.
 
-        :param json_string:
-        :param with_conns:
-        :return:
-        """
-        obj_dict = CustomJSONDecoder().decode(json_string)
-        if obj_dict.keys() == {"objects", "connections"}:
-            if with_conns:
-                for obj in obj_dict["objects"].values():
-                    obj.save()
-                for conn in obj_dict["connections"]:
-                    obj_a = obj_dict["objects"][conn["a"]]
-                    obj_b = obj_dict["objects"][conn["b"]]
-                    getattr(obj_a, conn["relationship"]).connect(obj_b)
-            return obj_dict["objects"]["main"]
-        else:
-            return obj_dict
+		:param json_string:
+		:param with_conns:
+		:return:
+		"""
+		obj_dict = CustomJSONDecoder().decode(json_string)
+		if obj_dict.keys() == {"objects", "connections"}:
+			if with_conns:
+				for obj in obj_dict["objects"].values():
+					obj.save()
+				for conn in obj_dict["connections"]:
+					obj_a = obj_dict["objects"][conn["a"]]
+					obj_b = obj_dict["objects"][conn["b"]]
+					getattr(obj_a, conn["relationship"]).connect(obj_b)
+			return obj_dict["objects"]["main"]
+		else:
+			return obj_dict
 
 
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
-    def __init__(self,
-                 *args,
-                 field_key_filter: Callable = None,
-                 field_type_filter: Callable = None,
-                 **kwargs):
-        self.field_key_filter = field_key_filter if field_key_filter is not None else lambda x: True
-        self.field_type_filter = field_type_filter if field_type_filter is not None else lambda x: True
-        super().__init__(*args, **kwargs)
+	def __init__(
+			self,
+			*args,
+			field_key_filter: Callable = None,
+			field_type_filter: Callable = None,
+			**kwargs,
+	):
+		self.field_key_filter = (
+			field_key_filter if field_key_filter is not None else lambda x: True
+		)
+		self.field_type_filter = (
+			field_type_filter if field_type_filter is not None else lambda x: True
+		)
+		super().__init__(*args, **kwargs)
 
-    # overload method default
-    def default(self, obj):
-        if isinstance(obj, DataModelBase):
-            ret = {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
-            ret = {k: v for k, v in ret.items() if self.field_key_filter(k) and self.field_type_filter(type(v))}
-            return ret
-        elif obj is None:
-            return "null"
-        elif isinstance(obj, Quaternion):
-            return {"q": obj.q.tolist()}
-        return json.JSONEncoder.default(self, obj)
+	# overload method default
+	def default(self, obj):
+		if isinstance(obj, DataModelBase):
+			ret = {x: getattr(obj, x) for x in class_signature_mapping[obj.__class__]}
+			ret = {
+				k: v
+				for k, v in ret.items()
+				if self.field_key_filter(k) and self.field_type_filter(type(v))
+			}
+			return ret
+		elif obj is None:
+			return "null"
+		elif isinstance(obj, Quaternion):
+			return {"q": obj.q.tolist()}
+		return json.JSONEncoder.default(self, obj)
 
 
 class CustomJSONDecoder(json.JSONDecoder):
-    """
-    JSON decoder that is able to reconstruct subclasses of DataModelBase from JSON by matching keys with class attribute
-    names. Relationship fields will be ignored.
-    """
+	"""
+	JSON decoder that is able to reconstruct subclasses of DataModelBase from JSON by matching keys with class attribute
+	names. Relationship fields will be ignored.
+	"""
 
-    def __init__(self, *args, **kwargs):
-        json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
+	def __init__(self, *args, **kwargs):
+		json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
-    def object_hook(self, obj):
-        # handling the resolution of nested objects
-        if isinstance(obj, dict):
-            keys_set = set(obj.keys())
+	def object_hook(self, obj):
+		# handling the resolution of nested objects
+		if isinstance(obj, dict):
+			keys_set = set(obj.keys())
 
-            for key in keys_set:
-                obj[key] = self.object_hook(obj[key])
+			for key in keys_set:
+				obj[key] = self.object_hook(obj[key])
 
-            # check for quaternion
-            if keys_set == {"q"}:
-                return Quaternion(obj["q"])
+			# check for quaternion
+			if keys_set == {"q"}:
+				return Quaternion(obj["q"])
 
-            # check if the dict is a signature of a class
-            for signature, cls in signature_class_mapping.items():
-                if signature == keys_set:
-                    if "uuid" in obj.keys():
-                        ret = cls.nodes.get_or_none(uuid=obj["uuid"])
-                        if ret is not None:
-                            # update the object with the new values
-                            for key, value in obj.items():
-                                setattr(ret, key, value)
-                            ret.save()
+			# check if the dict is a signature of a class
+			for signature, cls in signature_class_mapping.items():
+				if signature == keys_set:
+					if "uuid" in obj.keys():
+						ret = cls.nodes.get_or_none(uuid=obj["uuid"])
+						if ret is not None:
+							# update the object with the new values
+							for key, value in obj.items():
+								setattr(ret, key, value)
+							ret.save()
 
-                            return ret
-                    """
+							return ret
+					"""
                     # remove relation information from dict
                     obj = {k: v for k, v in obj.items() if
                            not issubclass(type(getattr(cls, k)), RelationshipDefinition)}
                     """
-                    return cls(**obj)
-            else:
-                return obj
+					return cls(**obj)
+			else:
+				return obj
 
-        if isinstance(obj, list):
-            for i in range(0, len(obj)):
-                obj[i] = self.object_hook(obj[i])
+		if isinstance(obj, list):
+			for i in range(0, len(obj)):
+				obj[i] = self.object_hook(obj[i])
 
-            return obj
+			return obj
 
-        return obj
+		return obj
 
 
 class CustomJSONProperty(neomodel.JSONProperty):
-    """
-    Property for storing specific data types as JSON objects in Neo4j
-    """
+	"""
+	Property for storing specific data types as JSON objects in Neo4j
+	"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 
-    @validator
-    def inflate(self, value: str) -> DataModelBase:
-        return CustomJSONDecoder().decode(value)
+	@validator
+	def inflate(self, value: str) -> DataModelBase:
+		return CustomJSONDecoder().decode(value)
 
-    @validator
-    def deflate(self, value: DataModelBase) -> str:
-        return CustomJSONEncoder().encode(value)
+	@validator
+	def deflate(self, value: DataModelBase) -> str:
+		return CustomJSONEncoder().encode(value)
 
 
 def map_model(database_url: str):
-    global signature_class_mapping, class_signature_mapping
+	global signature_class_mapping, class_signature_mapping
 
-    from open_precision.core.model.action import Action
-    from open_precision.core.model.action_response import ActionResponse
-    from open_precision.core.model.course import Course
-    from open_precision.core.model.location import Location
-    from open_precision.core.model.orientation import Orientation
-    from open_precision.core.model.path import Path
-    from open_precision.core.model.position import Position
-    from open_precision.core.model.vehicle import Vehicle
-    from open_precision.core.model.vehicle_state import VehicleState
-    from open_precision.core.model.waypoint import Waypoint
-    debug_url = "neo4j+s://neo4j:Qa89VmwaJINAYWqNm6ZYAWJFq8HXQB7LMH0UbZtFtkk@25c438c1.databases.neo4j.io:7687"
-    neomodel.db.set_connection(database_url)  # database_url)
+	from open_precision.core.model.action import Action
+	from open_precision.core.model.action_response import ActionResponse
+	from open_precision.core.model.course import Course
+	from open_precision.core.model.location import Location
+	from open_precision.core.model.orientation import Orientation
+	from open_precision.core.model.path import Path
+	from open_precision.core.model.position import Position
+	from open_precision.core.model.vehicle import Vehicle
+	from open_precision.core.model.vehicle_state import VehicleState
+	from open_precision.core.model.waypoint import Waypoint
 
-    data_model_classes: List[DataModelBase] = [Action, ActionResponse, Course, Location, Orientation, Path, Position,
-                                               Vehicle, VehicleState, Waypoint]
+	neomodel.db.set_connection(database_url)  # database_url)
 
-    neomodel.remove_all_labels()
-    for cls in data_model_classes:
-        neomodel.install_labels(cls)
+	data_model_classes: List[DataModelBase] = [
+		Action,
+		ActionResponse,
+		Course,
+		Location,
+		Orientation,
+		Path,
+		Position,
+		Vehicle,
+		VehicleState,
+		Waypoint,
+	]
 
-    # generate class signature mapping for deserialization of json to data model classes
-    signature_class_mapping = {get_attributes(cls,
-                                              base_filter=lambda x: x not in [DataModelBase, StructuredNode],
-                                              property_name_filter=lambda x: (not x.startswith("_")) and (
-                                                  x not in ["DoesNotExist", "id"] if issubclass(cls,
-                                                                                                StructuredNode) else True),
-                                              property_type_filter=lambda x: x is not FunctionType
-                                                                             and not issubclass(x,
-                                                                                                RelationshipDefinition))
-                               : cls
-                               for cls in data_model_classes}
+	neomodel.remove_all_labels()
+	for cls in data_model_classes:
+		neomodel.install_labels(cls)
 
-    class_signature_mapping = {v: k for k, v in
-                               signature_class_mapping.items()}  # reverse lookup table for signature_class_mapping
+	# generate class signature mapping for deserialization of json to data model classes
+	signature_class_mapping = {
+		get_attributes(
+			cls,
+			base_filter=lambda x: x not in [DataModelBase, StructuredNode],
+			property_name_filter=lambda x: (not x.startswith("_"))
+										   and (
+											   x not in ["DoesNotExist", "id"]
+											   if issubclass(cls, StructuredNode)
+											   else True
+										   ),
+			property_type_filter=lambda x: x is not FunctionType
+										   and not issubclass(x, RelationshipDefinition),
+		): cls
+		for cls in data_model_classes
+	}
 
-    print(class_signature_mapping)
+	class_signature_mapping = {
+		v: k for k, v in signature_class_mapping.items()
+	}  # reverse lookup table for signature_class_mapping
+
+	print(class_signature_mapping)

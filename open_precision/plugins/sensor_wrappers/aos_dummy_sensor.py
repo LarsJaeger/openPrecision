@@ -1,7 +1,9 @@
 import numpy as np
 from pyquaternion import Quaternion
 
-from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
+from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
+    AbsoluteOrientationSensor,
+)
 from open_precision.system_hub import SystemHub
 
 

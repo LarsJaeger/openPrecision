@@ -34,7 +34,9 @@ def generate_course(hub: SystemHub):
     course = hub.plugins[Navigator].current_course
     if course is None:
         return None
-    return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH])
+    return course.to_json(
+        with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH]
+    )
 
 
 @navigator_router.get("/course")
@@ -43,4 +45,6 @@ def get_current_course(hub: SystemHub):
     course = hub.plugins[Navigator].current_course
     if course is None:
         return None
-    return course.to_json(with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH])
+    return course.to_json(
+        with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH]
+    )

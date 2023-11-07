@@ -9,7 +9,12 @@ from pyquaternion import Quaternion
 from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
     AbsoluteOrientationSensor,
 )
-from open_precision.external.bno055_serial_driver import BNO055, AXIS_REMAP_Z, AXIS_REMAP_Y, AXIS_REMAP_X
+from open_precision.external.bno055_serial_driver import (
+    BNO055,
+    AXIS_REMAP_Z,
+    AXIS_REMAP_Y,
+    AXIS_REMAP_X,
+)
 from open_precision.system_hub import SystemHub
 
 
@@ -18,12 +23,15 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         self._manager = manager
         self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
         self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
-        self._min_update_dt = self._manager.config.get_value(self, "min_update_dt_in_ms")
+        self._min_update_dt = self._manager.config.get_value(
+            self, "min_update_dt_in_ms"
+        )
         print("[Bno055AosAdapter] starting initialisation")
 
-
         # new serial implementation
-        self.sensor = BNO055(serial_port=self._manager.config.get_value(self, "bno055_serial_path"))
+        self.sensor = BNO055(
+            serial_port=self._manager.config.get_value(self, "bno055_serial_path")
+        )
         self.sensor.begin()
         self.sensor.set_axis_remap(x=AXIS_REMAP_X, y=AXIS_REMAP_Y, z=AXIS_REMAP_Z)
 
@@ -44,7 +52,8 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         _current_time = datetime.now()
         if (
                 self._last_updated is None
-                or (_current_time - self._last_updated).total_seconds() * 1000 >= self._min_update_dt
+                or (_current_time - self._last_updated).total_seconds() * 1000
+                >= self._min_update_dt
         ):
             # self._scaled_acceleration = np.array(self.sensor.acceleration)
             # self._scaled_angular_acceleration = np.array(self.sensor.gyro)
@@ -53,7 +62,13 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
                 current_quat = self.sensor.read_quaternion()
                 if current_quat != (None, None, None, None):
                     self._orientation = Quaternion(
-                        (current_quat[3], current_quat[0], current_quat[1], current_quat[2])).normalised
+                        (
+                            current_quat[3],
+                            current_quat[0],
+                            current_quat[1],
+                            current_quat[2],
+                        )
+                    ).normalised
 
                     break
             else:

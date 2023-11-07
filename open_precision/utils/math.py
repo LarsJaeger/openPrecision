@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from math import sqrt
 
 import numpy as np
 from numpy import linalg as la
@@ -80,14 +79,20 @@ def calc_distance(loc1: Location, loc2: Location) -> float:
     return np.linalg.norm(loc2.to_numpy() - loc1.to_numpy())
 
 
-def calc_distance_to_line(loc1: Location, line_base_point: Location, line_direction: np.array) -> float:
-    return np.divide(np.linalg.norm(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
-                     np.linalg.norm(line_direction))
+def calc_distance_to_line(
+        loc1: Location, line_base_point: Location, line_direction: np.array
+) -> float:
+    return np.divide(
+        np.linalg.norm(np.cross((loc1 - line_base_point).to_numpy(), line_direction)),
+        np.linalg.norm(line_direction),
+    )
 
 
-def intersections_of_circle_and_line_segment(point_translated_1: tuple[float, float],
-                                             point_translated_2: tuple[float, float],
-                                             circle_radius: float) -> list[tuple[float, float]]:
+def intersections_of_circle_and_line_segment(
+        point_translated_1: tuple[float, float],
+        point_translated_2: tuple[float, float],
+        circle_radius: float,
+) -> list[tuple[float, float]]:
     # circle center is at (0,0)
     # calculation according to https://mathworld.wolfram.com/Circle-LineIntersection.html
     x_1, y_1 = point_translated_1
@@ -117,17 +122,25 @@ def intersections_of_circle_and_line_segment(point_translated_1: tuple[float, fl
 
     # check if points are not only on line, but also on line segment and add if point is not already on list
     result = []
-    if min(point_translated_1[0], point_translated_2[0]) <= candidate_1[0] <= max(point_translated_1[0], point_translated_2[0]) \
-            and min(point_translated_1[1], point_translated_2[1]) <= candidate_1[1] <= max(point_translated_1[1],
-                                                                                   point_translated_2[1]):
+    if min(point_translated_1[0], point_translated_2[0]) <= candidate_1[0] <= max(
+            point_translated_1[0], point_translated_2[0]
+    ) and min(point_translated_1[1], point_translated_2[1]) <= candidate_1[1] <= max(
+        point_translated_1[1], point_translated_2[1]
+    ):
         # point 1 is on line -> add to list
         result.append(candidate_1)
 
-    if (min(point_translated_1[0], point_translated_2[0]) <= candidate_2[0] <= max(point_translated_1[0], point_translated_2[0])) \
-            and min(point_translated_1[1], point_translated_2[1]) <= candidate_2[1] <= max(point_translated_1[1],
-                                                                                   point_translated_2[1]) \
-            and candidate_1 != candidate_2:
+    if (
+            (
+                    min(point_translated_1[0], point_translated_2[0])
+                    <= candidate_2[0]
+                    <= max(point_translated_1[0], point_translated_2[0])
+            )
+            and min(point_translated_1[1], point_translated_2[1])
+            <= candidate_2[1]
+            <= max(point_translated_1[1], point_translated_2[1])
+            and candidate_1 != candidate_2
+    ):
         # point 2 is on line and differs from point 1 -> add to list
         result.append(candidate_2)
     return result
-

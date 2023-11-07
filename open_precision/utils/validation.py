@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import Any, Callable
 
 
-def validate_value(value: Any, rule: Callable[[Any], bool], rule_description: str | None = None) -> bool:
+def validate_value(
+        value: Any, rule: Callable[[Any], bool], rule_description: str | None = None
+) -> bool:
     """
     Checks if value is valid according to rule.
 

@@ -4,7 +4,9 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
+    InertialMeasurementUnit,
+)
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub

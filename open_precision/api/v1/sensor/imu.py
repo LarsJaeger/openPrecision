@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
 from open_precision.api.utils import engine_endpoint
-from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import InertialMeasurementUnit
+from open_precision.core.plugin_base_classes.sensor_types.inertial_measurement_unit import (
+    InertialMeasurementUnit,
+)
 
 imu_router = APIRouter(
     prefix="/imu",

@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
 from open_precision.api.utils import engine_endpoint
-from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import AbsoluteOrientationSensor
+from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_sensor import (
+    AbsoluteOrientationSensor,
+)
 
 aos_router = APIRouter(
     prefix="/aos",

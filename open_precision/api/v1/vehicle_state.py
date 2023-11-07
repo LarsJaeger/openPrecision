@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING
 from fastapi import APIRouter
 
 from open_precision.api.utils import engine_endpoint
-from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.core.plugin_base_classes.vehicle_state_builder import (
+    VehicleStateBuilder,
+)
 
 if TYPE_CHECKING:
     pass

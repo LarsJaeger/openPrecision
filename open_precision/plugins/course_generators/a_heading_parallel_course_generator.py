@@ -9,7 +9,9 @@ from open_precision.core.model.path import Path
 from open_precision.core.model.position import Position
 from open_precision.core.model.waypoint import Waypoint
 from open_precision.core.plugin_base_classes.course_generator import CourseGenerator
-from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.core.plugin_base_classes.vehicle_state_builder import (
+    VehicleStateBuilder,
+)
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
@@ -39,11 +41,15 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
 
         course = Course(name=name, description=description)
         for i in range(-7, 7):
-            loc1 = base_position.location \
-                   + (base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64)) * (i * working_width))
+            loc1 = base_position.location + (
+                    base_position.orientation.rotate(np.array([0, 1, 0], dtype=np.float64))
+                    * (i * working_width)
+            )
 
-
-            loc2 = loc1 + (base_position.orientation.rotate(np.array([1, 0, 0], dtype=np.float64)) * 1000)
+            loc2 = loc1 + (
+                    base_position.orientation.rotate(np.array([1, 0, 0], dtype=np.float64))
+                    * 1000
+            )
             wp1 = Waypoint(location=loc1)
             wp2 = Waypoint(location=loc2)
             wp1.save(), wp2.save()

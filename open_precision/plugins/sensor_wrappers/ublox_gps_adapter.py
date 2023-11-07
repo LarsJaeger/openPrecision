@@ -2,15 +2,16 @@ from __future__ import annotations
 
 import atexit
 import os
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import serial
-from datetime import datetime
 from ublox_gps import ublox_gps
 
-import open_precision.utils.other
 from open_precision.core.model.location import Location
-from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import GlobalPositioningSystem
+from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
+    GlobalPositioningSystem,
+)
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
@@ -20,20 +21,20 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
     def __init__(self, manager: SystemHub):
         self._manager = manager
         self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
-        self._min_update_dt = self._manager.config.get_value(self, "min_update_dt_in_ms")
+        self._min_update_dt = self._manager.config.get_value(
+            self, "min_update_dt_in_ms"
+        )
         self._manager.config.register_value(self, "enable_rtk_correction", True)
+        self._manager.config.register_value(self, "rtk_str2str_in", "TODO")
+        self._manager.config.register_value(self, "rtk_str2str_out", "TODO")
         self._manager.config.register_value(
-            self, "rtk_str2str_in", "TODO"
+            self, "ublox_F9P_serial_path", "/dev/ttyUSB1"
         )
-        self._manager.config.register_value(
-            self, "rtk_str2str_out", "TODO"
-        )
-        self._manager.config.register_value(self, "ublox_F9P_serial_path", "/dev/ttyUSB1")
         self._manager.config.register_value(self, "ublox_F9P_baudrate", 115200)
         print("[UbloxGPSAdapter] starting initialisation")
         self._port = serial.Serial(
             self._manager.config.get_value(self, "ublox_F9P_serial_path"),
-            baudrate=self._manager.config.get_value(self, "ublox_F9P_baudrate")
+            baudrate=self._manager.config.get_value(self, "ublox_F9P_baudrate"),
         )
         self.gps = ublox_gps.UbloxGps(hard_port=self._port)
         self._correction_is_active = None
@@ -54,7 +55,8 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
         _current_time = datetime.now()
         if (
                 self._last_updated is None
-                or (_current_time - self._last_updated).total_seconds() * 1000 >= self._min_update_dt
+                or (_current_time - self._last_updated).total_seconds() * 1000
+                >= self._min_update_dt
         ):
             for i in range(10):
                 self._message = self.gps.hp_geo_coords_ecef()

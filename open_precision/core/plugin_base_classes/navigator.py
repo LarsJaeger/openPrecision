@@ -6,7 +6,9 @@ from typing import TYPE_CHECKING
 from open_precision.core.model.course import Course
 from open_precision.core.model.vehicle_state import VehicleState
 from open_precision.core.plugin_base_classes.plugin import Plugin
-from open_precision.plugins.course_generators.a_heading_parallel_course_generator import AHeadingParallelCourseGenerator
+from open_precision.plugins.course_generators.a_heading_parallel_course_generator import (
+    AHeadingParallelCourseGenerator,
+)
 
 if TYPE_CHECKING:
     from open_precision.system_hub import SystemHub
@@ -41,11 +43,17 @@ class Navigator(Plugin, ABC):
     def target_machine_state(self) -> VehicleState | None:
         pass
 
-    def set_course_from_course_generator(self, course_generator_identifier: str = 'a_heading_parallel'):
+    def set_course_from_course_generator(
+            self, course_generator_identifier: str = "a_heading_parallel"
+    ):
         """sets the course generator to the one with the given identifier,
         possible identifiers are: 'a_heading_parallel'"""
         match course_generator_identifier:
-            case 'a_heading_parallel':
-                self.current_course = AHeadingParallelCourseGenerator(self._manager).generate_course()
+            case "a_heading_parallel":
+                self.current_course = AHeadingParallelCourseGenerator(
+                    self._manager
+                ).generate_course()
             case _:
-                raise ValueError(f'course_generator_identifier {course_generator_identifier} not supported')
+                raise ValueError(
+                    f"course_generator_identifier {course_generator_identifier} not supported"
+                )

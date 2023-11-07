@@ -73,8 +73,9 @@ class SparkfunIcm20948Adapter(InertialMeasurementUnit):
 
     def update_values(self):
         if (
-            self._last_update is None
-            or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
+                self._last_update is None
+                or open_precision.utils.other.millis() - self._last_update
+                >= shortest_update_dt
         ):
             self.imu.getAgmt()
             self._last_update = open_precision.utils.other.millis()

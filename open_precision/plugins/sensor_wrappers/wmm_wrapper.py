@@ -19,7 +19,7 @@ from open_precision.system_hub import SystemHub
 
 def wmm_input_builder(longitude: float, latitude: float, altitude_msl):
     converted_input_data_string = (
-        str(datetime.now().year) + "." + str(datetime.now().month) + " "
+            str(datetime.now().year) + "." + str(datetime.now().month) + " "
     )
     converted_input_data_string += "M" + " " + "M" + str(altitude_msl) + " "
     converted_input_data_string += str(latitude) + " "
@@ -51,13 +51,13 @@ class WmmWrapper(WorldMagneticModelCalculator):
         with open("wmmInput.txt", "w") as wmm_input:
             wmm_input.write(wmm_input_builder(longitude, latitude, altitude_msl))
         command = (
-            "cd "
-            + self._manager.config.get_value(self, "wmm_bin_path")
-            + " && ./wmm_file f "
-            + str(os.getcwd())
-            + "/wmmInput.txt "
-            + str(os.getcwd())
-            + "/wmmOutput.txt"
+                "cd "
+                + self._manager.config.get_value(self, "wmm_bin_path")
+                + " && ./wmm_file f "
+                + str(os.getcwd())
+                + "/wmmInput.txt "
+                + str(os.getcwd())
+                + "/wmmOutput.txt"
         )
         os.system(command)
         with open("wmmOutput.txt", "r") as wwm_output:
@@ -93,8 +93,9 @@ class WmmWrapper(WorldMagneticModelCalculator):
 
     def update_values(self):
         if (
-            self._last_update is None
-            or open_precision.utils.other.millis() - self._last_update >= shortest_update_dt
+                self._last_update is None
+                or open_precision.utils.other.millis() - self._last_update
+                >= shortest_update_dt
         ):
             self._current_datapoint = self._get_data_point(
                 self._manager.plugins[GlobalPositioningSystem].longitude,
@@ -117,7 +118,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
         """returns the locational magnetic declination (magnetic variation) in degrees"""
         self.update_values()
         return float(self._current_datapoint["D_deg"]) + (
-            float(self._current_datapoint["D_min"]) / 60
+                float(self._current_datapoint["D_min"]) / 60
         )
 
     @property
@@ -125,7 +126,7 @@ class WmmWrapper(WorldMagneticModelCalculator):
         """returns the locational magnetic inclination in degrees"""
         self.update_values()
         return float(self._current_datapoint["I_deg"]) + (
-            float(self._current_datapoint["I_min"]) / 60
+                float(self._current_datapoint["I_min"]) / 60
         )
 
     @property

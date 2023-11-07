@@ -37,7 +37,8 @@ class API:
         self._thread.start()
 
     def _run(self):
-        config = uvicorn.Config(app, host="0.0.0.0",
-                                log_level="info")  # , ssl_keyfile="key.pem", ssl_certfile="cert.pem")
+        config = uvicorn.Config(
+            app, host="0.0.0.0", log_level="info"
+        )  # , ssl_keyfile="key.pem", ssl_certfile="cert.pem")
         self._server = uvicorn.Server(config=config)
         self._server.run()

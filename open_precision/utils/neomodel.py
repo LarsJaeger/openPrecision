@@ -4,7 +4,7 @@ import dill
 import neomodel
 from neomodel.properties import validator
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class DillProperty(neomodel.Property, Generic[T]):

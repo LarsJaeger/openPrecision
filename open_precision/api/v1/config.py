@@ -24,7 +24,9 @@ config_router = APIRouter(
 
 
 @config_router.get("/")
-async def get_config(queue_system_task=Depends(queue_system_task_dependency)) -> ConfigSchema:
+async def get_config(
+        queue_system_task=Depends(queue_system_task_dependency)
+) -> ConfigSchema:
     def get_config_inner(hub: SystemHub):
         return hub.config.get_config_string()
 
@@ -33,8 +35,11 @@ async def get_config(queue_system_task=Depends(queue_system_task_dependency)) ->
 
 
 @config_router.post("/")
-async def set_config(config: ConfigSchema, reload: bool = False,
-                     queue_system_task=Depends(queue_system_task_dependency)):
+async def set_config(
+        config: ConfigSchema,
+        reload: bool = False,
+        queue_system_task=Depends(queue_system_task_dependency),
+):
     def set_config_inner(hub: SystemHub):
         hub.config.load_config(yaml=config.content, reload=reload)
         hub.config.save_config_file()

@@ -14,6 +14,7 @@ class Position(DataModelBase):
     """
     A position consists of a location and an orientation.
     """
+
     location: Location | None = None
     orientation: Orientation | None = None
 
@@ -26,8 +27,16 @@ class PositionProperty(Property, DataModelBase):
 
     @validator
     def inflate(self, value: list[float]) -> Position:
-        return Position(location=Location(value[0], value[1], value[2], value[3]), orientation=Orientation(value[-4:]))
+        return Position(
+            location=Location(value[0], value[1], value[2], value[3]),
+            orientation=Orientation(value[-4:]),
+        )
 
     @validator
     def deflate(self, value: Position) -> list[float]:
-        return [value.location.x, value.location.y, value.location.z, value.location.error] + value.q.tolist()
+        return [
+            value.location.x,
+            value.location.y,
+            value.location.z,
+            value.location.error,
+        ] + value.q.tolist()

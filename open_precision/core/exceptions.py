@@ -34,12 +34,11 @@ class SensorNotConnectedException(PluginException):
 
 
 class NotAPathException(PluginException):
-
-    def __init__(self, path: 'Path'):
+    def __init__(self, path: "Path"):
         self.path = path
 
     def __str__(self):
-        return f'Path has too few waypoints, at least 2 are required'
+        return "Path has too few waypoints, at least 2 are required"
 
 
 class CourseNotSetException(PluginException):
@@ -49,7 +48,8 @@ class CourseNotSetException(PluginException):
         self.navigator = navigator
 
     def __str__(self):
-        return f'Course of navigator {self.navigator} is None / has not been set'
+        return f"Course of navigator {self.navigator} is None / has not been set"
+
 
 class InvalidValueException(PluginException):
     """raised when a value is invalid"""
@@ -64,8 +64,6 @@ class InvalidValueException(PluginException):
 
     def __str__(self):
         if self.value_rule is None:
-            return f'value {self.value} of type {type(self.value)} is invalid'
+            return f"value {self.value} of type {type(self.value)} is invalid"
         else:
-            return f'value {self.value} of type {type(self.value)} is invalid. Value rule: {self.value_rule}'
-
-
+            return f"value {self.value} of type {type(self.value)} is invalid. Value rule: {self.value_rule}"

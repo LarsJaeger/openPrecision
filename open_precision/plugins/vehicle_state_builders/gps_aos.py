@@ -14,7 +14,9 @@ from open_precision.core.plugin_base_classes.sensor_types.absolute_orientation_s
 from open_precision.core.plugin_base_classes.sensor_types.global_positioning_system import (
     GlobalPositioningSystem,
 )
-from open_precision.core.plugin_base_classes.vehicle_state_builder import VehicleStateBuilder
+from open_precision.core.plugin_base_classes.vehicle_state_builder import (
+    VehicleStateBuilder,
+)
 from open_precision.utils.validation import validate_value
 
 if TYPE_CHECKING:
@@ -24,7 +26,9 @@ if TYPE_CHECKING:
 class GpsAosPositionBuilder(VehicleStateBuilder):
     @property
     def vehicle_state(self) -> VehicleState | None:
-        return VehicleState(steering_angle=0., position=self.current_position, speed=0.)
+        return VehicleState(
+            steering_angle=0.0, position=self.current_position, speed=0.0
+        )
 
     def cleanup(self):
         pass
@@ -36,12 +40,22 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
 
     @property
     def current_position(self) -> Position | None:
-        uncorrected_location: Location = self._manager.plugins[GlobalPositioningSystem].location
-        orientation: Orientation = self._manager.plugins[AbsoluteOrientationSensor].orientation
+        uncorrected_location: Location = self._manager.plugins[
+            GlobalPositioningSystem
+        ].location
+        orientation: Orientation = self._manager.plugins[
+            AbsoluteOrientationSensor
+        ].orientation
         gps_receiver_offset = self._manager.vehicles.current_vehicle.gps_receiver_offset
 
-        for i, var in enumerate([uncorrected_location, orientation, gps_receiver_offset]):
-            validate_value(var, lambda x: True if x is not None else False, rule_description="value cannot be None")
+        for i, var in enumerate(
+                [uncorrected_location, orientation, gps_receiver_offset]
+        ):
+            validate_value(
+                var,
+                lambda x: True if x is not None else False,
+                rule_description="value cannot be None",
+            )
 
         corrected_location = uncorrected_location - orientation.rotate(
             np.array(list(gps_receiver_offset), dtype=np.float64)
@@ -55,6 +69,6 @@ class GpsAosPositionBuilder(VehicleStateBuilder):
     @property
     def is_ready(self):
         return (
-            self._manager.plugins[GlobalPositioningSystem].is_calibrated()
-            and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
+                self._manager.plugins[GlobalPositioningSystem].is_calibrated()
+                and self._manager.plugins[AbsoluteOrientationSensor].is_calibrated()
         )

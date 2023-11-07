@@ -25,7 +25,9 @@ class SystemTaskManager:
         self._manager = manager
         self.task_queue = AioQueue()
 
-    async def queue_system_task(self, func: Callable[[SystemHub], Any], *args, **kwargs) -> Any:
+    async def queue_system_task(
+            self, func: Callable[[SystemHub], Any], *args, **kwargs
+    ) -> Any:
         """
         Queues a system task (func call) to be executed in the main thread.
         :param func: func to be executed, must take a SystemHub as first argument, all other arguments must be
@@ -66,7 +68,6 @@ class SystemTaskManager:
             amount = self.task_queue.qsize()
 
         for _ in range(amount):
-
             # skip if queue is empty
             if self.task_queue.empty():
                 break

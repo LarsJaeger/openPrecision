@@ -26,10 +26,11 @@ class SystemHub:
     def __init__(self):
         self._signal_reload = True  # The system will reload if this is True
         while self._signal_reload:
-
             # loading sub managers
-            self._config_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                             os.path.relpath('../config/config.yml'))
+            self._config_path = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                os.path.relpath("../config/config.yml"),
+            )
 
             self._config = ConfigManager(self)
 
@@ -37,7 +38,9 @@ class SystemHub:
             print("[INFO]: sleeping for 5 sec")
             time.sleep(5)
             print("[INFO]: starting model mapping")
-            self._config.register_value(self, "neo4j_address", "bolt://neo4j:password@neo4j:7687")
+            self._config.register_value(
+                self, "neo4j_address", "bolt://neo4j:password@neo4j:7687"
+            )
             map_model(database_url=self._config.get_value(self, "neo4j_address"))
             print("[INFO]: finished model mapping")
 
@@ -49,8 +52,12 @@ class SystemHub:
 
             # loading plugins, but loading UserInterface last
             self._plugins = {}
-            for plugin_type in plugin_manager.get_classes_in_package("open_precision.core.plugin_base_classes"):
-                self._plugins[plugin_type] = PluginManager(self, plugin_type, "open_precision.plugins").instance
+            for plugin_type in plugin_manager.get_classes_in_package(
+                    "open_precision.core.plugin_base_classes"
+            ):
+                self._plugins[plugin_type] = PluginManager(
+                    self, plugin_type, "open_precision.plugins"
+                ).instance
             self._plugin_name_mapping = _get_plugin_name_mapping(self._plugins)
 
             # initializing and starting api and user interface delivery
@@ -72,7 +79,7 @@ class SystemHub:
             except Exception as e:
                 await self._data.emit_error(e)
             await self._data.do_update()
-            # await asyncio.sleep(0.1) # uncomment to artificially slow down the update loop
+        # await asyncio.sleep(0.1) # uncomment to artificially slow down the update loop
 
     def stop_update_loop(self):
         self._signal_stop = True
