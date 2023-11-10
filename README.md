@@ -24,7 +24,9 @@ Procedure:
 
 ## Documentation
 
-The generated documentation can be found in the `doc` folder.
+Documentation of the main branch can be found [here](https://larsjaeger.github.io/openPrecision/)
+For code that is still in development, generated documentation can be found in the `doc` folder after being generated
+by `poetry run nox`.
 
 More information on how to document the code can be found [here](https://pdoc.dev/docs/pdoc.html#how-can-i).
 

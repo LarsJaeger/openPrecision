@@ -1,3 +1,6 @@
+"""
+This script initializes the SystemHub and therefore starts the whole system. It is the entry point for the system.
+"""
 from __future__ import annotations
 from __future__ import print_function
 

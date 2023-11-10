@@ -20,8 +20,8 @@ class ConfigManager:
 		self._config: CommentedMap = CommentedMap()
 		self._config_path = self._manager._config_path
 		self.load_config()
-		self.classes = plugin_manager.get_classes_in_package("open_precision")
-		for cls in self.classes:
+		self._classes = plugin_manager.get_classes_in_package("open_precision")
+		for cls in self._classes:
 			YAML().register_class(cls)  # register class
 
 	def register_value(

@@ -1,3 +1,6 @@
+"""
+This file contains the SystemHub class, which is the central backbone of every instance of the application.
+"""
 from __future__ import annotations
 
 import asyncio
@@ -20,7 +23,7 @@ def _get_plugin_name_mapping(plugins: dict) -> dict:
 
 class SystemHub:
     """
-    reponsible for dependency injection, instance management and starting the system
+    reponsible for dependency injection, instance management, starting, reloading and stopping the system
     """
 
     def __init__(self):
