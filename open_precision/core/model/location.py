@@ -31,9 +31,9 @@ class Location(DataModelBase):
 					res_error = None
 			case list() | tuple():
 				if (
-						3 <= len(other) <= 4
-						and self.error is not None
-						and other[3] is not None
+                        3 <= len(other) <= 4
+                        and self.error is not None
+                        and other[3] is not None
 				):
 					res_x = self.x + other[0]
 					res_y = self.y + other[1]

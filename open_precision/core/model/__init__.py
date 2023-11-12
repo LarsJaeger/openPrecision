@@ -108,10 +108,10 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 
 
 def _resolve_object_conns(
-		obj: Any,
-		with_conns: List[RelationshipDefinition],
-		resolved_objects: List = None,
-		main_obj: Any = None,
+        obj: Any,
+        with_conns: List[RelationshipDefinition],
+        resolved_objects: List = None,
+        main_obj: Any = None,
 ):
 	connections = []
 	objects = {}
@@ -173,10 +173,10 @@ def _resolve_object_conns(
 
 class DataModelBase:
 	def to_json(
-			self,
-			with_rels: List[RelationshipDefinition] = None,
-			field_key_filter: Callable = None,
-			field_type_filter: Callable = None,
+            self,
+            with_rels: List[RelationshipDefinition] = None,
+            field_key_filter: Callable = None,
+            field_type_filter: Callable = None,
 	) -> str:
 		encoder = CustomJSONEncoder(
 			field_type_filter=field_type_filter, field_key_filter=field_key_filter
@@ -219,11 +219,11 @@ class DataModelBase:
 # extend the json.JSONEncoder class
 class CustomJSONEncoder(json.JSONEncoder):
 	def __init__(
-			self,
-			*args,
-			field_key_filter: Callable = None,
-			field_type_filter: Callable = None,
-			**kwargs,
+            self,
+            *args,
+            field_key_filter: Callable = None,
+            field_type_filter: Callable = None,
+            **kwargs,
 	):
 		self.field_key_filter = (
 			field_key_filter if field_key_filter is not None else lambda x: True
@@ -357,13 +357,13 @@ def map_model(database_url: str):
 			cls,
 			base_filter=lambda x: x not in [DataModelBase, StructuredNode],
 			property_name_filter=lambda x: (not x.startswith("_"))
-										   and (
-											   x not in ["DoesNotExist", "id"]
-											   if issubclass(cls, StructuredNode)
-											   else True
-										   ),
+                                           and (
+                                               x not in ["DoesNotExist", "id"]
+                                               if issubclass(cls, StructuredNode)
+                                               else True
+                                           ),
 			property_type_filter=lambda x: x is not FunctionType
-										   and not issubclass(x, RelationshipDefinition),
+                                           and not issubclass(x, RelationshipDefinition),
 		): cls
 		for cls in data_model_classes
 	}

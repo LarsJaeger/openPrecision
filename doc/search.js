@@ -612,7 +612,7 @@ window.pdocSearch = (function () {
         "fullname": "open_precision",
         "modulename": "open_precision",
         "kind": "module",
-        "doc": "<p></p>\n"
+        "doc": "<p>.. include: ../README.md</p>\n"
     }, {
         "fullname": "open_precision.api",
         "modulename": "open_precision.api",
@@ -989,6 +989,14 @@ window.pdocSearch = (function () {
         "kind": "function",
         "doc": "<p></p>\n",
         "signature": "<span class=\"signature pdoc-code multiline\">(<span class=\"param\">\t<span class=\"n\">sid</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">=</span> <span class=\"n\">Body</span><span class=\"p\">(</span><span class=\"n\">PydanticUndefined</span><span class=\"p\">)</span>,</span><span class=\"param\">\t<span class=\"o\">*</span>,</span><span class=\"param\">\t<span class=\"n\">queue_system_task</span><span class=\"o\">=</span><span class=\"n\">Depends</span><span class=\"p\">(</span><span class=\"n\">queue_system_task_dependency</span><span class=\"p\">)</span>,</span><span class=\"param\">\t<span class=\"n\">subscription_socket_id</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span>,</span><span class=\"param\">\t<span class=\"n\">subscription_period_length</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></span><span class=\"return-annotation\">):</span></span>",
+        "funcdef": "async def"
+    }, {
+        "fullname": "open_precision.api.v1.system.data_subscription.get_all_data_subscriptions",
+        "modulename": "open_precision.api.v1.system.data_subscription",
+        "qualname": "get_all_data_subscriptions",
+        "kind": "function",
+        "doc": "<p></p>\n",
+        "signature": "<span class=\"signature pdoc-code multiline\">(<span class=\"param\">\t<span class=\"o\">*</span>,</span><span class=\"param\">\t<span class=\"n\">queue_system_task</span><span class=\"o\">=</span><span class=\"n\">Depends</span><span class=\"p\">(</span><span class=\"n\">queue_system_task_dependency</span><span class=\"p\">)</span>,</span><span class=\"param\">\t<span class=\"n\">subscription_socket_id</span><span class=\"p\">:</span> <span class=\"nb\">str</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span>,</span><span class=\"param\">\t<span class=\"n\">subscription_period_length</span><span class=\"p\">:</span> <span class=\"nb\">int</span> <span class=\"o\">|</span> <span class=\"kc\">None</span> <span class=\"o\">=</span> <span class=\"kc\">None</span></span><span class=\"return-annotation\">):</span></span>",
         "funcdef": "async def"
     }, {
         "fullname": "open_precision.api.v1.system.plugin",
@@ -3472,12 +3480,6 @@ window.pdocSearch = (function () {
         "doc": "<p></p>\n",
         "signature": "<span class=\"signature pdoc-code condensed\">(<span class=\"param\"><span class=\"n\">manager</span><span class=\"p\">:</span> <span class=\"n\">open_precision</span><span class=\"o\">.</span><span class=\"n\">system_hub</span><span class=\"o\">.</span><span class=\"n\">SystemHub</span></span>)</span>"
     }, {
-        "fullname": "open_precision.managers.config_manager.ConfigManager.classes",
-        "modulename": "open_precision.managers.config_manager",
-        "qualname": "ConfigManager.classes",
-        "kind": "variable",
-        "doc": "<p></p>\n"
-    }, {
         "fullname": "open_precision.managers.config_manager.ConfigManager.register_value",
         "modulename": "open_precision.managers.config_manager",
         "qualname": "ConfigManager.register_value",
@@ -3612,6 +3614,14 @@ window.pdocSearch = (function () {
         "kind": "function",
         "doc": "<p>remove all data subscriptions for a given socket id</p>\n\n<h6 id=\"parameters\">Parameters</h6>\n\n<ul>\n<li><strong>sid</strong>: </li>\n</ul>\n\n<h6 id=\"returns\">Returns</h6>\n",
         "signature": "<span class=\"signature pdoc-code condensed\">(<span class=\"param\"><span class=\"bp\">self</span>, </span><span class=\"param\"><span class=\"n\">sid</span><span class=\"p\">:</span> <span class=\"nb\">str</span></span><span class=\"return-annotation\">):</span></span>",
+        "funcdef": "def"
+    }, {
+        "fullname": "open_precision.managers.data_manager.DataManager.get_exec_times",
+        "modulename": "open_precision.managers.data_manager",
+        "qualname": "DataManager.get_exec_times",
+        "kind": "function",
+        "doc": "<p>get the average execution times of all data subscriptions</p>\n\n<h6 id=\"returns\">Returns</h6>\n\n<blockquote>\n  <p>dict[DataSubscription, float | None]</p>\n</blockquote>\n",
+        "signature": "<span class=\"signature pdoc-code multiline\">(<span class=\"param\">\t<span class=\"bp\">self</span></span><span class=\"return-annotation\">) -> <span class=\"n\">Dict</span><span class=\"p\">[</span><span class=\"n\">open_precision</span><span class=\"o\">.</span><span class=\"n\">core</span><span class=\"o\">.</span><span class=\"n\">model</span><span class=\"o\">.</span><span class=\"n\">data_subscription</span><span class=\"o\">.</span><span class=\"n\">DataSubscription</span><span class=\"p\">,</span> <span class=\"nb\">float</span> <span class=\"o\">|</span> <span class=\"kc\">None</span><span class=\"p\">]</span>:</span></span>",
         "funcdef": "def"
     }, {
         "fullname": "open_precision.managers.plugin_manager",
@@ -3751,13 +3761,13 @@ window.pdocSearch = (function () {
         "fullname": "open_precision.system_hub",
         "modulename": "open_precision.system_hub",
         "kind": "module",
-        "doc": "<p></p>\n"
+        "doc": "<p>This file contains the SystemHub class, which is the central backbone of every instance of the application.</p>\n"
     }, {
         "fullname": "open_precision.system_hub.SystemHub",
         "modulename": "open_precision.system_hub",
         "qualname": "SystemHub",
         "kind": "class",
-        "doc": "<p>reponsible for dependency injection, instance management and starting the system</p>\n"
+        "doc": "<p>reponsible for dependency injection, instance management, starting, reloading and stopping the system</p>\n"
     }, {
         "fullname": "open_precision.system_hub.SystemHub.start_update_loop",
         "modulename": "open_precision.system_hub",

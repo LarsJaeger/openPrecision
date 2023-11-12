@@ -28,10 +28,10 @@ def is_iterable(obj: any):
 
 
 def get_attributes(
-		cls,
-		base_filter: Callable[[type], bool] = lambda x: True,
-		property_name_filter: Callable[[str], bool] = lambda x: True,
-		property_type_filter: Callable[[type], bool] = lambda x: True,
+        cls,
+        base_filter: Callable[[type], bool] = lambda x: True,
+        property_name_filter: Callable[[str], bool] = lambda x: True,
+        property_type_filter: Callable[[type], bool] = lambda x: True,
 ) -> frozenset[str]:
 	"""
 	Get all attributes of a class and its base classes recursively.

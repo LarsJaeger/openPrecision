@@ -39,6 +39,9 @@ class DataManager:
 		self._data_update_mem: Dict[
 			DataSubscription, Tuple[Any, datetime | None]
 		] = {}  # subscription: (value, last_updated)
+		self._subscription_exec_time_mapping: Dict[
+			DataSubscription, float | None
+		] = {}  # subscription: average_exec_time
 		self._connected_clients: list[str] = []
 
 	def inner_on_connect(self, sid):
@@ -69,6 +72,7 @@ class DataManager:
 		for key in subscriptions_to_delete:
 			del self._data_update_mapping[key]
 			del self._data_update_mem[key]
+			del self._subscription_exec_time_mapping[key]
 		print("subscriptions_to_delete")
 		print(subscriptions_to_delete)
 		print("disconnect ", sid)
@@ -80,7 +84,7 @@ class DataManager:
 		value has changed.
 		:return: None
 		"""
-		# add subscription to out_of_date list if period length has passed
+		# add subscription to out_of_date list if period length has passed and it needs to be updated
 		out_of_date = []
 		now = datetime.now()
 		for subscription, (val, time) in self._data_update_mem.items():
@@ -93,11 +97,28 @@ class DataManager:
 		for subscription in out_of_date:
 			current_mem_val, current_mem_time = self._data_update_mem[subscription]
 			try:
+				time = datetime.now()
 				exec_result = subscription.func(
 					self._hub,
 					*subscription.args,
 					**{x: y for (x, y) in subscription.kw_args},
 				)
+				exec_time = datetime.now() - time
+				# log average execution time per subscription
+				if self._subscription_exec_time_mapping[subscription] is None:
+					self._subscription_exec_time_mapping[
+						subscription
+					] = exec_time.total_seconds()
+				else:
+					self._subscription_exec_time_mapping[subscription] = (
+							self._subscription_exec_time_mapping[subscription] * 0.95
+							+ exec_time.total_seconds() * 0.05
+					)
+				"""
+				print(f"executed data subscription {str(hash(subscription))}")
+				print(f"data_subscription: {subscription}")
+				print(f"result: {exec_result}")
+				"""
 			except Exception:
 				exec_result = {"exception": traceback.format_exc()}
 				if current_mem_time is None or current_mem_val != exec_result:
@@ -114,7 +135,7 @@ class DataManager:
 						serialized_result = exec_result
 					else:
 						serialized_result = CustomJSONEncoder().encode(exec_result)
-
+					# print("sending data subscription update to client: ", subscriber)
 					await self._sio.emit(
 						str(hash(subscription)), data=serialized_result, to=subscriber
 					)
@@ -138,6 +159,7 @@ class DataManager:
 			subscribers = []
 			self._data_update_mapping[data_subscription] = subscribers
 			self._data_update_mem[data_subscription] = (None, None)
+			self._subscription_exec_time_mapping[data_subscription] = None
 		if sid not in subscribers:
 			print(f"{sid} subscribed to {str(data_subscription.func)}")
 			subscribers.append(sid)
@@ -165,3 +187,10 @@ class DataManager:
 		"""
 		for data_subscription in self._data_update_mapping.keys():
 			self.remove_data_subscription(sid, data_subscription)
+
+	def get_exec_times(self) -> Dict[DataSubscription, float | None]:
+		"""
+		get the average execution times of all data subscriptions
+		:return: dict[DataSubscription, float | None]
+		"""
+		return self._subscription_exec_time_mapping

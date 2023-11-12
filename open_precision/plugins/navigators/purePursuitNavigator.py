@@ -171,18 +171,18 @@ class PurePursuitNavigator(Navigator):
 			angle = 0
 		else:
 			angle = np.arctan(
-				wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1])))
+                wheelbase / ((lookahead_distance ** 2) / (2 * abs(target_point[1])))
 			)
 		# set sign of angle dependent on turning direction
 		angle = angle * (1 if target_point[1] < 0 else -1)
 		return angle
 
 	def _calc_combined_error(
-			self,
-			offset_error: float,
-			pos1,
-			waypoint_base: Waypoint,
-			waypoint_target: Waypoint,
+            self,
+            offset_error: float,
+            pos1,
+            waypoint_base: Waypoint,
+            waypoint_target: Waypoint,
 	):
 		# rotation from global to vehicle reference system
 		back_rotation = pos1.orientation.inverse
@@ -221,10 +221,10 @@ class PurePursuitNavigator(Navigator):
 		return final_error
 
 	def calc_position_error(
-			self,
-			pos1: Position,
-			target_location: Location,
-			target_direction_vector: np.array,
+            self,
+            pos1: Position,
+            target_location: Location,
+            target_direction_vector: np.array,
 	) -> float:
 		"""returns a value that becomes bigger the more effort it takes to reach a certain position."""
 		# calculate offset:
@@ -234,7 +234,7 @@ class PurePursuitNavigator(Navigator):
 		return self._calc_combined_error(offset_error, pos1, target_direction_vector)
 
 	def calc_line_error(
-			self, pos1: Position, waypoint_base: Waypoint, waypoint_target: Waypoint
+            self, pos1: Position, waypoint_base: Waypoint, waypoint_target: Waypoint
 	) -> float:
 		"""returns a value that becomes bigger the more effort it takes to reach a certain position."""
 		# calculate offset:
