@@ -89,7 +89,7 @@ class DataManager:
 		now = datetime.now()
 		for subscription, (val, time) in self._data_update_mem.items():
 			if (time is None) or (
-					((now - time).total_seconds() * 1000) >= subscription.period_length
+				((now - time).total_seconds() * 1000) >= subscription.period_length
 			):
 				out_of_date.append(subscription)
 
@@ -111,8 +111,8 @@ class DataManager:
 					] = exec_time.total_seconds()
 				else:
 					self._subscription_exec_time_mapping[subscription] = (
-							self._subscription_exec_time_mapping[subscription] * 0.95
-							+ exec_time.total_seconds() * 0.05
+						self._subscription_exec_time_mapping[subscription] * 0.95
+						+ exec_time.total_seconds() * 0.05
 					)
 				"""
 				print(f"executed data subscription {str(hash(subscription))}")

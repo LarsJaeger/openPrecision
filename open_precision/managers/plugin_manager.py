@@ -21,7 +21,7 @@ def get_classes_in_package(package, classes: list | None = None) -> list:
 	imported_package = __import__(package, fromlist=["a"])
 
 	for _, plugin_name, is_package in pkgutil.iter_modules(
-			imported_package.__path__, imported_package.__name__ + "."
+		imported_package.__path__, imported_package.__name__ + "."
 	):
 		if not is_package:
 			try:
@@ -73,7 +73,7 @@ def _check_plugins_for_class(plugin_class, plugins) -> list:
 
 class PluginManager:
 	def __init__(
-			self, manager: SystemHub, plugin_type_class: type, plugin_package: str
+		self, manager: SystemHub, plugin_type_class: type, plugin_package: str
 	):
 		atexit.register(self._cleanup)
 		self._manager: SystemHub = manager

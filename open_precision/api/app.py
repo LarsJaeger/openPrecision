@@ -10,7 +10,7 @@ from socketio import AsyncServer, AsyncRedisManager
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
-from libraries.starlette.staticfiles import StaticFiles
+from starlette.staticfiles import StaticFiles
 from open_precision.api.v1 import v1_router
 
 if TYPE_CHECKING:

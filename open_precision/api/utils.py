@@ -84,16 +84,16 @@ def engine_endpoint(func: Callable[[SystemHub, ...], Any]) -> Callable[[...], An
 
 	@makefun.wraps(func, new_sig=new_sig)
 	async def endpoint(
-			*args,
-			queue_system_task=Depends(dependencies.queue_system_task_dependency),
-			subscription_socket_id: str | None = None,
-			subscription_period_length: int | None = None,
-			**kwargs,
+		*args,
+		queue_system_task=Depends(dependencies.queue_system_task_dependency),
+		subscription_socket_id: str | None = None,
+		subscription_period_length: int | None = None,
+		**kwargs,
 	):
 		# check for subscription
 		if (
-				subscription_socket_id is not None
-				and subscription_period_length is not None
+			subscription_socket_id is not None
+			and subscription_period_length is not None
 		):
 			# subscription requested
 

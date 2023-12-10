@@ -15,7 +15,7 @@ def make_docs(session):
     session.run("poetry", "run", "pdoc",
                 "-d", "restructuredtext",
                 "-t", "pdoc-theme-gv",
-                "-o", "doc",
+                "-o", "docs",
                 "--math",
                 "--mermaid",
                 "open_precision")

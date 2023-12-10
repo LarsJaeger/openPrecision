@@ -56,7 +56,7 @@ class SystemHub:
 			# loading plugins, but loading UserInterface last
 			self._plugins = {}
 			for plugin_type in plugin_manager.get_classes_in_package(
-					"open_precision.core.plugin_base_classes"
+				"open_precision.core.plugin_base_classes"
 			):
 				self._plugins[plugin_type] = PluginManager(
 					self, plugin_type, "open_precision.plugins"

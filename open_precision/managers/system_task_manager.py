@@ -26,7 +26,7 @@ class SystemTaskManager:
 		self.task_queue = AioQueue()
 
 	async def queue_system_task(
-			self, func: Callable[[SystemHub], Any], *args, **kwargs
+		self, func: Callable[[SystemHub], Any], *args, **kwargs
 	) -> Any:
 		"""
 		Queues a system task (func call) to be executed in the main thread.

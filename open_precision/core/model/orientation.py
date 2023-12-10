@@ -12,20 +12,20 @@ from open_precision.core.model import DataModelBase
 
 @dataclass(kw_only=True)
 class Orientation(Quaternion, DataModelBase):
-    q: np.ndarray = None  # will never be None after init, this is just a placeholder for the ClassRegistry
-    pass
+	q: np.ndarray = None  # will never be None after init, this is just a placeholder for the ClassRegistry
+	pass
 
 
 class OrientationProperty(Property):
-    """
-    Property for storing Orientation objects in Neo4j
-    Orientation Quaternion values are stored as a list of 4 floats.
-    """
+	"""
+	Property for storing Orientation objects in Neo4j
+	Orientation Quaternion values are stored as a list of 4 floats.
+	"""
 
-    @validator
-    def inflate(self, value: list[float]) -> Orientation:
-        return Orientation(value)
+	@validator
+	def inflate(self, value: list[float]) -> Orientation:
+		return Orientation(value)
 
-    @validator
-    def deflate(self, value: Orientation) -> list[float]:
-        return value.q.tolist()
+	@validator
+	def deflate(self, value: Orientation) -> list[float]:
+		return value.q.tolist()

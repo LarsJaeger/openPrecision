@@ -25,7 +25,7 @@ class ConfigManager:
 			YAML().register_class(cls)  # register class
 
 	def register_value(
-			self, origin_object: object, key: str, value: any
+		self, origin_object: object, key: str, value: any
 	) -> ConfigManager:
 		"""adds key/value pair to object's config if not already set"""
 
