@@ -9,7 +9,7 @@ authors = ["larsjaeger <lars@jgr.one>"]
 # --- declare dependencies ---
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 numpy = "^1.22.4"
 pyserial = "^3.5"
 pyquaternion = "^0.9.9"
@@ -31,6 +31,7 @@ aioprocessing = { extras = ["dill"], version = "^2.0.1" }
 makefun = "^1.15.1"
 gpiod = "^1.5.4"
 httpx = "^0.25.0"
+adafruit-bno055 = "^1.0.2"
 
 [tool.poetry.group.dev] # Development dependencies for testing, formatting/ linting and building docs.
 optional = true

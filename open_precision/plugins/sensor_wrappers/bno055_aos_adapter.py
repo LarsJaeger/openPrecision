@@ -15,25 +15,38 @@ from open_precision.external.bno055_serial_driver import (
     AXIS_REMAP_Y,
     AXIS_REMAP_X,
 )
+import adafruit_bno055
 from open_precision.system_hub import SystemHub
 
 
 class Bno055AosAdapter(AbsoluteOrientationSensor):
     def __init__(self, manager: SystemHub):
         self._manager = manager
-        self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
-        self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
-        self._min_update_dt = self._manager.config.get_value(
-            self, "min_update_dt_in_ms"
-        )
+        self._register_config()
         print("[Bno055AosAdapter] starting initialisation")
 
+        self._read: callable = lambda: raise NotImplementedError()
+        """this function contains the function that returns the quaternion"""
+
         # new serial implementation
-        self.sensor = BNO055(
-            serial_port=self._manager.config.get_value(self, "bno055_serial_path")
-        )
-        self.sensor.begin()
-        self.sensor.set_axis_remap(x=AXIS_REMAP_X, y=AXIS_REMAP_Y, z=AXIS_REMAP_Z)
+        if self._manager.config.get_value("bno055_use_serial"):
+            self.sensor = BNO055(
+                serial_port=self._manager.config.get_value(self, "bno055_serial_path")
+            )
+            self.sensor.begin()
+            self.sensor.set_axis_remap(x=AXIS_REMAP_X, y=AXIS_REMAP_Y, z=AXIS_REMAP_Z)
+            self._read = self.sensor.read_quaternion
+        else:
+            # init i2c 
+            i2c = adafruit_bno055.I2C(scl=self._manager.config.get_value("bno055_scl_pin"),
+                                  sda=self._manager.config.get_value("bno055_sda_pin"))
+
+            self.sensor = adafruit_bno055.BNO055_I2C(i2c)
+            self.sensor.mode = adafruit_bno055.NDOF_MODE
+            self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
+            self.sensor.accel_range = adafruit_bno055.ACCEL_2G
+            self.sensor.accel_range = adafruit_bno055.ACCEL_2G
+            self._read = lambda: self.sensor.quaternion
 
         self._calibration_quat: Quaternion = Quaternion(1.0, 0.0, 0.0, 0.0)
 
@@ -48,6 +61,19 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
         atexit.register(self.cleanup)
         print("[Bno055AosAdapter] finished initialisation")
 
+    def register_config(self):
+        # config for i2c init
+        self._manager.config.register_value(self, "bno055_scl_pin", 3)
+        self._manager.config.register_value(self, "bno055_sda_pin", 4)
+        # config for uart init:
+        self._manager.config.register_value(self, "bno055_use_serial", False)
+        self._manager.config.register_value(self, "bno055_serial_path", "/dev/ttyUSB0")
+        self._manager.config.register_value(self, "min_update_dt_in_ms", 100)
+        # general config:
+        self._min_update_dt = self._manager.config.get_value(
+            self, "min_update_dt_in_ms"
+        )
+
     def update_values(self):
         _current_time = datetime.now()
         if (
@@ -59,7 +85,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
             # self._scaled_angular_acceleration = np.array(self.sensor.gyro)
             # self._scaled_magnetometer = np.array(self.sensor.magnetic)
             for i in range(10):
-                current_quat = self.sensor.read_quaternion()
+                current_quat = self.sensor._read()
                 if current_quat != (None, None, None, None):
                     self._orientation = Quaternion(
                         (
