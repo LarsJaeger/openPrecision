@@ -97,6 +97,7 @@ async def connect(sid, environment):
 	:return:
 	"""
 
+	print("connect")
 	global origin_url
 	origin_url = environment["HTTP_ORIGIN"]
 	endpoint_url = origin_url + "/api/v1/system/data_subscription/connect_client"
@@ -122,6 +123,7 @@ async def disconnect(sid):
 	:param sid: socket id
 	:return:
 	"""
+	print("disconnect")
 	global origin_url
 	if origin_url is None:
 		print(

@@ -62,7 +62,11 @@ class DataManager:
     """
 
 	def inner_on_disconnect(self, sid):
+		print("inner_disconnect")
+		print(sid)
+		print(self._connected_clients)
 		self._connected_clients.remove(sid)
+		print(self._connected_clients)
 		subscriptions_to_delete = []
 		for key, subscribers_list in self._data_update_mapping.items():
 			if sid in subscribers_list:

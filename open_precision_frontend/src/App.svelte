@@ -176,14 +176,14 @@
 <main>
     <Modals/>
     {#if showVisualizer}
-    <Visualizer bind:visualizeCourse={visualizeCourse}
-                bind:visualizeMachineState={visualizeMachineState}
-                bind:visualizeRawLocation={visualizeRawLocation}
-                bind:visualizeTargetSteeringAngle={visualizeTargetSteeringAngle}
-    />
-    <!--<MetaButtons/> -->
-    <ActionButtons/>
-    <!--<StatusBar/> -->
+        <Visualizer bind:visualizeCourse={visualizeCourse}
+                    bind:visualizeMachineState={visualizeMachineState}
+                    bind:visualizeRawLocation={visualizeRawLocation}
+                    bind:visualizeTargetSteeringAngle={visualizeTargetSteeringAngle}
+        />
+        <!--<MetaButtons/> -->
+        <ActionButtons/>
+        <!--<StatusBar/> -->
     {:else}
         <Dashboard/>
     {/if}

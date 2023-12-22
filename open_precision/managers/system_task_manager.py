@@ -60,26 +60,27 @@ class SystemTaskManager:
 
 		:return: None
 		"""
+		queue_size = self.task_queue.qsize()
 		if amount == -1:
 			while not self.task_queue.empty():
 				await self.handle_tasks(0)
 
-		elif amount == 0:
-			amount = self.task_queue.qsize()
+		elif amount == 0 or amount <= queue_size:
+			amount = queue_size
 
 		for _ in range(amount):
-			# skip if queue is empty
-			if self.task_queue.empty():
-				break
-
-			# Get the func from the queue
 			func, args, kwargs, conn = self.task_queue.get()
+
+			print(f"[DEBUG]: now handling func: {func}, args: {args}, kwargs: {kwargs}")
 			# execute func
 			try:
 				ret = func(self._manager, *args, **kwargs)
 			except Exception as e:
 				ret = e, traceback.format_exc()
 				print("Exception in system task: \n", str(e))
+			print("[DEBUG]: finished handling task, now sending back result")
 			# Send the result back
 			with conn as conn:
 				await conn.coro_send(ret)
+			print("[DEBUG]: finished sending result")
+		print("[DEBUG]: task handling done")

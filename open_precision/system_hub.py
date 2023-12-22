@@ -80,9 +80,10 @@ class SystemHub:
 				# handle actions and deliver responses
 				await self._system_task_manager.handle_tasks(amount=10)
 			except Exception as e:
+				print(f"[ERROR]: Error while handling system tasks: {e}")
 				await self._data.emit_error(e)
 			await self._data.do_update()
-		await asyncio.sleep(0.05)  # uncomment to artificially slow down the update loop
+		# await asyncio.sleep(0.05)  # uncomment to artificially slow down the update loop
 
 	def stop_update_loop(self):
 		self._signal_stop = True

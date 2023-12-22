@@ -119,6 +119,7 @@
 
     // implement visualizer functions
     export function visualizeCourse(data) {
+        console.log("[DEBUG]: visualizing course")
         data["connections"].forEach(conn => {
             // find and add starting point of path
             if (conn["a"].startsWith("Path") && conn["relationship"] === "BEGINS_WITH" && conn["b"].startsWith("Waypoint")) {
@@ -174,7 +175,6 @@
 
 </script>
 <canvas bind:this={canvas} class="u-position-absolute u-full-screen-height u-width-full-line u-z-index-0"></canvas>
-
 <!-- steering indicator: -->
 <div class="u-z-index-10 u-position-fixed" style="right: 7rem; bottom: 8rem;">
     <span aria-hidden="true" class="u-position-absolute icon-plus is-big"

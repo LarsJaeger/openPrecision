@@ -16,6 +16,7 @@ from open_precision.external.bno055_serial_driver import (
 	AXIS_REMAP_X,
 )
 import adafruit_bno055
+from adafruit_extended_bus import ExtendedI2C
 from open_precision.system_hub import SystemHub
 
 
@@ -29,7 +30,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 		"""this function contains the function that returns the quaternion"""
 
 		# new serial implementation
-		if self._manager.config.get_value("bno055_use_serial"):
+		if self._manager.config.get_value(self, "bno055_use_serial"):
 			self.sensor = BNO055(
 				serial_port=self._manager.config.get_value(self, "bno055_serial_path")
 			)
@@ -38,16 +39,13 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 			self._read = self.sensor.read_quaternion
 		else:
 			# init i2c
-			i2c = adafruit_bno055.I2C(
-				scl=self._manager.config.get_value("bno055_scl_pin"),
-				sda=self._manager.config.get_value("bno055_sda_pin"),
-			)
+			i2c = ExtendedI2C(2)
 
 			self.sensor = adafruit_bno055.BNO055_I2C(i2c)
-			self.sensor.mode = adafruit_bno055.NDOF_MODE
-			self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
-			self.sensor.accel_range = adafruit_bno055.ACCEL_2G
-			self.sensor.accel_range = adafruit_bno055.ACCEL_2G
+			# self.sensor.mode = adafruit_bno055.NDOF_MODE
+			# self.sensor.gyro_range = adafruit_bno055.GYRO_250_DPS
+			# self.sensor.accel_range = adafruit_bno055.ACCEL_2G
+			# self.sensor.accel_range = adafruit_bno055.ACCEL_2G
 			self._read = lambda: self.sensor.quaternion
 
 		self._calibration_quat: Quaternion = Quaternion(1.0, 0.0, 0.0, 0.0)
@@ -87,7 +85,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 			# self._scaled_angular_acceleration = np.array(self.sensor.gyro)
 			# self._scaled_magnetometer = np.array(self.sensor.magnetic)
 			for i in range(10):
-				current_quat = self.sensor._read()
+				current_quat = self._read()
 				if current_quat != (None, None, None, None):
 					self._orientation = Quaternion(
 						(

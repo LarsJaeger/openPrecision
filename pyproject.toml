@@ -17,7 +17,6 @@ flatten-dict = "^0.4.2"
 "ruamel.yaml" = "^0.17.21"
 sparkfun-qwiic-icm20948 = "^0.0.1"
 adafruit-circuitpython-bno055 = "^5.4.1"
-uvicorn = "^0.18.2"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
 sparkfun-ublox-gps = { git = "https://github.com/LarsJaeger/Sparkfun_Ublox_Gps_Py_ecef.git", rev = "master" }
@@ -32,6 +31,8 @@ makefun = "^1.15.1"
 gpiod = "^1.5.4"
 httpx = "^0.25.0"
 adafruit-bno055 = "^1.0.2"
+uvicorn = "^0.18.2"
+adafruit-extended-bus = "^1.0.2"
 
 [tool.poetry.group.dev] # Development dependencies for testing, formatting/ linting and building docs.
 optional = true
