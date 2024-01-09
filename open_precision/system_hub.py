@@ -76,14 +76,22 @@ class SystemHub:
 
 	async def start_update_loop(self):
 		while not self._signal_stop:
+			artificial_slow_down = asyncio.sleep(0.05)
+			
+			# handle actions and deliver responses
 			try:
-				# handle actions and deliver responses
 				await self._system_task_manager.handle_tasks(amount=10)
 			except Exception as e:
 				print(f"[ERROR]: Error while handling system tasks: {e}")
 				await self._data.emit_error(e)
-			await self._data.do_update()
-		# await asyncio.sleep(0.05)  # uncomment to artificially slow down the update loop
+
+			# doing data updates (of data subscriptions)
+			try:
+				await self._data.do_update()
+			except Exception as e:
+				print(f"[ERROR]: Error while handling data updates: {e}")
+				await self._data.emit_error(e)
+			await artificial_slow_down # uncomment to artificially slow down the update loop
 
 	def stop_update_loop(self):
 		self._signal_stop = True

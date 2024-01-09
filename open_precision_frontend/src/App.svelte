@@ -154,19 +154,19 @@
     $socket.on("connect", () => {
         console.log("[INFO]: Registered with socket id: " + $socket.id);
         sid = $socket.id;
-        $socket.onAny((event, ...args) => {
-            setTimeout(function () {
-                if (event_id_to_function_map.has(event)) {
-                    event_id_to_function_map.get(event)(...args);
-                } else {
-                    console.log("[INFO]: Received unknown event: " + event + " with args: " + args);
-                }
-            }, 1000);
-        });
         sub_to_course();
         sub_to_vehicle_data();
         sub_to_target_steering_angle();
         sub_to_raw_location();
+    });
+    $socket.onAny((event, ...args) => {
+        setTimeout(function () {
+            if (event_id_to_function_map.has(event)) {
+                event_id_to_function_map.get(event)(...args);
+            } else {
+                console.log("[INFO]: Received unknown event: " + event + " with args: " + args);
+            }
+        }, 1000);
     });
     $socket.connect();
 

@@ -970,6 +970,21 @@ plugins = ["importlib-metadata"]
 windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
+name = "pynmeagps"
+version = "1.0.32"
+description = "NMEA protocol parser and generator"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pynmeagps-1.0.32-py3-none-any.whl", hash = "sha256:aa4955fd314c0519f2e44a47aae5afad329c90defcf5b8b055bceee91249453b"},
+    {file = "pynmeagps-1.0.32.tar.gz", hash = "sha256:59ccaff44c783c5beb8a60f41665fef0de1aaf205581915ca22f9cb21ce241d9"},
+]
+
+[package.extras]
+deploy = ["build", "pip", "setuptools (>=66.0)", "wheel"]
+test = ["Sphinx", "bandit", "black", "isort", "pylint", "pytest", "pytest-cov", "sphinx-rtd-theme"]
+
+[[package]]
 name = "pyquaternion"
 version = "0.9.9"
 description = "A fully featured, pythonic library for representing and using quaternions."
@@ -987,6 +1002,21 @@ numpy = "*"
 [package.extras]
 dev = ["mkdocs"]
 test = ["nose"]
+
+[[package]]
+name = "pyrtcm"
+version = "1.0.14"
+description = "RTCM3 protocol parser"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyrtcm-1.0.14-py3-none-any.whl", hash = "sha256:5952325941ae6683e03e0670751e490cbe640b247e39cf83136628f59f3b404d"},
+    {file = "pyrtcm-1.0.14.tar.gz", hash = "sha256:7f7494d121c6d43563dc189478ae81130b260510199ce5cdc6ad4e62e822779e"},
+]
+
+[package.extras]
+deploy = ["build", "pip", "setuptools (>=66.0)", "wheel"]
+test = ["Sphinx", "bandit", "black", "pylint", "pytest", "pytest-cov", "sphinx-rtd-theme"]
 
 [[package]]
 name = "pyserial"
@@ -1071,6 +1101,25 @@ files = [
     {file = "pytz-2023.3.post1-py2.py3-none-any.whl", hash = "sha256:ce42d816b81b68506614c11e8937d3aa9e41007ceb50bfdcb0749b921bf646c7"},
     {file = "pytz-2023.3.post1.tar.gz", hash = "sha256:7b4fddbeb94a1eba4b557da24f19fdf9db575192544270a9101d8509f9f43d7b"},
 ]
+
+[[package]]
+name = "pyubx2"
+version = "1.2.35"
+description = "UBX protocol parser and generator"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pyubx2-1.2.35-py3-none-any.whl", hash = "sha256:f777d14c73d922e59661717de1ff37e3ff22303b3d90e11687f0e43c842b7ebb"},
+    {file = "pyubx2-1.2.35.tar.gz", hash = "sha256:3363a95a2e34bfebc600bceaba9baa71b4c649587cae741e7df6692d1f0661b2"},
+]
+
+[package.dependencies]
+pynmeagps = ">=1.0.32"
+pyrtcm = ">=1.0.14"
+
+[package.extras]
+deploy = ["build", "pip", "setuptools (>=66.0)", "wheel"]
+test = ["Sphinx", "bandit", "black", "isort", "pylint", "pytest", "pytest-cov", "sphinx-rtd-theme"]
 
 [[package]]
 name = "pyusb"
@@ -1621,4 +1670,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "232ae4ebdef806db0b91a84fd8aec23b5e981753cb8e6fef1cfa0120711b57d8"
+content-hash = "14f7617f686026add80b552ad06c1a08e0a0a2eaacd3c4d324a81968c1112805"

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Dict, Any, List, Tuple
 
 from socketio import AsyncRedisManager, AsyncServer
@@ -77,8 +77,6 @@ class DataManager:
 			del self._data_update_mapping[key]
 			del self._data_update_mem[key]
 			del self._subscription_exec_time_mapping[key]
-		print("subscriptions_to_delete")
-		print(subscriptions_to_delete)
 		print("disconnect ", sid)
 
 	async def do_update(self):
@@ -93,7 +91,7 @@ class DataManager:
 		now = datetime.now()
 		for subscription, (val, time) in self._data_update_mem.items():
 			if (time is None) or (
-				((now - time).total_seconds() * 1000) >= subscription.period_length
+				time <= now
 			):
 				out_of_date.append(subscription)
 
@@ -118,11 +116,6 @@ class DataManager:
 						self._subscription_exec_time_mapping[subscription] * 0.95
 						+ exec_time.total_seconds() * 0.05
 					)
-				"""
-				print(f"executed data subscription {str(hash(subscription))}")
-				print(f"data_subscription: {subscription}")
-				print(f"result: {exec_result}")
-				"""
 			except Exception:
 				exec_result = {"exception": traceback.format_exc()}
 				if current_mem_time is None or current_mem_val != exec_result:
@@ -131,7 +124,7 @@ class DataManager:
 					)
 
 			if current_mem_time is None or current_mem_val != exec_result:
-				self._data_update_mem[subscription] = (exec_result, datetime.now())
+				self._data_update_mem[subscription] = (exec_result, datetime.now() + timedelta(milliseconds=subscription.period_length))
 				for subscriber in self._data_update_mapping[subscription]:
 					if isinstance(exec_result, DataModelBase):
 						serialized_result = exec_result.to_json()
@@ -139,7 +132,6 @@ class DataManager:
 						serialized_result = exec_result
 					else:
 						serialized_result = CustomJSONEncoder().encode(exec_result)
-					# print("sending data subscription update to client: ", subscriber)
 					await self._sio.emit(
 						str(hash(subscription)), data=serialized_result, to=subscriber
 					)

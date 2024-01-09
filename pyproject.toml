@@ -19,7 +19,6 @@ sparkfun-qwiic-icm20948 = "^0.0.1"
 adafruit-circuitpython-bno055 = "^5.4.1"
 python-socketio = "^5.7.1"
 websockets = "^10.3"
-sparkfun-ublox-gps = { git = "https://github.com/LarsJaeger/Sparkfun_Ublox_Gps_Py_ecef.git", rev = "master" }
 ruamel-yaml-string = "^0.1.0"
 neomodel = "^5.0.0"
 fastapi = "^0.96.0"
@@ -33,6 +32,7 @@ httpx = "^0.25.0"
 adafruit-bno055 = "^1.0.2"
 uvicorn = "^0.18.2"
 adafruit-extended-bus = "^1.0.2"
+pyubx2 = "^1.2.35"
 
 [tool.poetry.group.dev] # Development dependencies for testing, formatting/ linting and building docs.
 optional = true
