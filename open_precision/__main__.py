@@ -3,10 +3,14 @@ This script initializes the SystemHub and therefore starts the whole system. It 
 """
 from __future__ import annotations
 from __future__ import print_function
-
+import argparse
 import sys
 
 from open_precision.system_hub import SystemHub
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--debug")
+args = parser.parse_args()
 
 
 def main():

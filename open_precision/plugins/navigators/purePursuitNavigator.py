@@ -43,6 +43,10 @@ class PurePursuitNavigator(Navigator):
 		self._current_course = course
 
 	@property
+	def current_path_id(self):
+		return self._current_path_uuid
+
+	@property
 	def target_machine_state(self) -> VehicleState | None:
 		target_machine_state = VehicleState(
 			steering_angle=self._steering_angle, speed=None

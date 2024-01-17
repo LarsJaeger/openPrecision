@@ -90,9 +90,7 @@ class DataManager:
 		out_of_date = []
 		now = datetime.now()
 		for subscription, (val, time) in self._data_update_mem.items():
-			if (time is None) or (
-				time <= now
-			):
+			if (time is None) or (time <= now):
 				out_of_date.append(subscription)
 
 		# if out of date and value changed: send current states to the user interface
@@ -124,7 +122,10 @@ class DataManager:
 					)
 
 			if current_mem_time is None or current_mem_val != exec_result:
-				self._data_update_mem[subscription] = (exec_result, datetime.now() + timedelta(milliseconds=subscription.period_length))
+				self._data_update_mem[subscription] = (
+					exec_result,
+					datetime.now() + timedelta(milliseconds=subscription.period_length),
+				)
 				for subscriber in self._data_update_mapping[subscription]:
 					if isinstance(exec_result, DataModelBase):
 						serialized_result = exec_result.to_json()

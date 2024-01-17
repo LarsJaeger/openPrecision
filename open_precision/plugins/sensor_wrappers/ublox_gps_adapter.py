@@ -60,10 +60,10 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 			for _, parsed_data in self._parser:
 				if parsed_data.identity == "NAV-HPPOSECEF":
 					self._location: Location = Location(
-						x=parsed_data.ecefX,
-						y=parsed_data.ecefY,
-						z=parsed_data.ecefZ,
-						error=parsed_data.pAcc,
+						x=parsed_data.ecefX * 0.01,
+						y=parsed_data.ecefY * 0.01,
+						z=parsed_data.ecefZ * 0.01,
+						error=parsed_data.pAcc * 0.001,
 					)
 					break
 			self._last_updated = _current_time

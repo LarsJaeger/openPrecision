@@ -48,3 +48,9 @@ def get_current_course(hub: SystemHub):
 	return course.to_json(
 		with_rels=[Course.CONTAINS, Path.CONTAINS, Waypoint.SUCCESSOR, Path.BEGINS_WITH]
 	)
+
+
+@navigator_router.get("/current_path_id")
+@engine_endpoint
+def get_current_path_id(hub: SystemHub):
+	return {"current_path_id": hub.plugins[Navigator].current_path_id}
