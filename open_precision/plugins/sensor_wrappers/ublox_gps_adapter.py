@@ -57,6 +57,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 			or (_current_time - self._last_updated).total_seconds() * 1000
 			>= self._min_update_dt
 		):
+			fail_counter = 0
 			for _, parsed_data in self._parser:
 				if parsed_data.identity == "NAV-HPPOSECEF":
 					self._location: Location = Location(
@@ -66,6 +67,10 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 						error=parsed_data.pAcc * 0.001,
 					)
 					break
+				else:
+					fail_counter += 1
+					if fail_counter >= 20:
+						break
 			self._last_updated = _current_time
 
 	@property

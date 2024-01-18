@@ -40,6 +40,19 @@
             console.log("[ERROR]: " + error);
         });
     }
+
+    function setPath() {
+        fetch(apiAddress + "/v1/navigator/set_path", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            console.log("[INFO]: path set");
+        }).catch((error) => {
+            console.log("[ERROR]: " + error);
+        });
+    }
 </script>
 
 <div class="u-position-absolute u-grid u-main-center u-cross-center u-gap-16 u-z-index-15"
@@ -47,4 +60,5 @@
     <ActionButton execFunc={generateCourse} iconName="icon-plus"/>
     <ActionButton execFunc={loadConfig} iconName="icon-cog"/>
     <ActionButton execFunc={calibrate} iconName="icon-support"/>
+    <ActionButton execFunc={setPath} iconName="icon-cheveron-up"/>
 </div>

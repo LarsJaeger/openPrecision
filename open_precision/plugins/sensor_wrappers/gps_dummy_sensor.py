@@ -8,7 +8,7 @@ from open_precision.system_hub import SystemHub
 class GPSDummySensor(GlobalPositioningSystem):
 	@property
 	def location(self) -> Location:
-		return Location(x=0, y=0, z=0)
+		return Location(x=0, y=0, z=0, error=0.01)
 
 	def __init__(self, manager: SystemHub):
 		pass

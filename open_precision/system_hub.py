@@ -95,12 +95,12 @@ class SystemHub:
 				artificial_slow_down
 			)  # uncomment to artificially slow down the update loop
 
-	def stop_update_loop(self):
+	def _stop_update_loop(self):
 		self._signal_stop = True
 
-	async def stop(self):
+	def stop(self):
 		self._signal_reload = False
-		self.stop_update_loop()
+		self._stop_update_loop()
 
 	@property
 	def config(self) -> ConfigManager:
@@ -132,4 +132,4 @@ class SystemHub:
 
 	def reload(self):
 		print("[INFO]: reloading system hub")
-		self.stop_update_loop()
+		self._stop_update_loop()

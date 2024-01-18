@@ -44,6 +44,7 @@
     const proxy_camera = camera.clone();
 
     // let world_offset = null; TODO
+    let locError = null;
 
     let pathIdPathMap = new Map();
     let currentPathId= null;
@@ -199,6 +200,7 @@
     scene.add(sphere);
 
     export function visualizeRawLocation(data) {
+        locError=data.error
         sphere.position.x = data.x;
         sphere.position.y = data.y;
         sphere.position.z = data.z;
@@ -207,6 +209,12 @@
 
 </script>
 <canvas bind:this={canvas} class="u-position-absolute u-full-screen-height u-width-full-line u-z-index-0"></canvas>
+<!-- precision indicator -->
+{#if locError !== null}
+<div class="u-z-index-10 u-position-fixed" style="left: 6rem; bottom: 0.5rem;"> 
+    <p class="text u-large u-bold" style="color:black">&pm;{(locError * 100).toFixed(2)}cm</p>
+</div>
+{/if}
 <!-- steering indicator: -->
 <div class="u-z-index-10 u-position-fixed" style="right: 7rem; bottom: 8rem;">
     <span aria-hidden="true" class="u-position-absolute icon-plus is-big"
