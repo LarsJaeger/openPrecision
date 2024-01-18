@@ -1,0 +1,62 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  open_precision:
+    build:
+      context: .
+      target: runtime
+      dockerfile: Dockerfile_dev
+      tags:
+        - larsjaeger/open_precision:latest
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    image: larsjaeger/open_precision:dev
+    restart: always
+    privileged: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - config:/app/config
+      - type: bind
+        source: ./logs
+        target: /app/logs
+    networks:
+      - internal
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyUSB1:/dev/ttyUSB1"
+      - "/dev/ttyUSB2:/dev/ttyUSB2"
+      - "/dev/i2c-2:/dev/i2c-2"
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    expose:
+      - 6379
+    networks:
+      - internal
+    command: redis-server --loglevel warning
+  neo4j:
+    image: neo4j:5.10-community
+    restart: always
+    environment:
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_AUTH=neo4j/password
+      - 'NEO4J_PLUGINS=["apoc"]'
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
+    networks:
+      - internal
+    volumes:
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+      - neo4j-logs:/logs
+networks:
+  internal:
+volumes:
+  neo4j-data:
+  neo4j-plugins:
+  neo4j-logs:
+  config:

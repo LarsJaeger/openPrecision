@@ -1,3 +1,5 @@
+logs/*
+
 .venv
 .*.egg-info
 falcetl/

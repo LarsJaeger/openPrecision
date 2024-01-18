@@ -50,13 +50,13 @@ class SystemTaskManager:
 			raise ret[0]
 		return ret
 
-	async def handle_tasks(self, amount: int = -1) -> None:
+	async def handle_tasks(self, amount: int = 0) -> None:
 		"""
 		Executes the passed amount of tasks from the queue.
 		:param amount: amount of tasks to execute;
-		    If amount is -1, tasks will be executed until the queue is empty. (default)
-		    If amount is 0, all currently queued tasks will be executed. (not the same as -1)
-		    Otherwise, the passed amount of tasks will be executed.
+		    If amount is 0, all currently queued tasks will be executed. (not the same as -1). (DEFAULT)
+		    If amount is -1, tasks will be executed until the queue is empty.
+		    Otherwise, min(queue_size, amount) number of tasks will be executed.
 
 		:return: None
 		"""
@@ -65,7 +65,7 @@ class SystemTaskManager:
 			while not self.task_queue.empty():
 				await self.handle_tasks(0)
 
-		elif amount == 0 or amount <= queue_size:
+		elif (amount == 0) or (amount >= queue_size):
 			amount = queue_size
 
 		for _ in range(amount):
@@ -83,4 +83,4 @@ class SystemTaskManager:
 			with conn as conn:
 				await conn.coro_send(ret)
 			print("[DEBUG]: finished sending result")
-		print("[DEBUG]: task handling done")
+		# print("[DEBUG]: task handling done")

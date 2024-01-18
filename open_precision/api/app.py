@@ -134,7 +134,10 @@ async def disconnect(sid):
 	endpoint_url = origin_url + "/api/v1/system/data_subscription/disconnect_client"
 	# perform api request with httpx
 	async with httpx.AsyncClient() as client:
-		response = await client.post(endpoint_url, json={"sid": sid})
+		try:
+			response = await client.post(endpoint_url, json={"sid": sid})
+		except Exception as e:
+			print(f"[ERROR]: {e}")
 	if response.status_code != 200:
 		print("[ERROR] could not disconnect data subscription with socketid: ", sid)
 		return

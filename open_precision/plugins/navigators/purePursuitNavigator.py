@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from math import sqrt
+from typing import Tuple
 
 import numpy as np
 from neomodel import db
@@ -43,50 +44,62 @@ class PurePursuitNavigator(Navigator):
 		self._current_course = course
 
 	@property
+	def current_path_id(self):
+		return self._current_path_uuid
+
+	@property
 	def target_machine_state(self) -> VehicleState | None:
 		target_machine_state = VehicleState(
 			steering_angle=self._steering_angle, speed=None
 		)
 		return target_machine_state
 
+	def set_path(
+		self, current_position: Position
+	) -> Tuple[Waypoint | None, Waypoint | None]:
+		"""
+		sets path based on lowest line error
+		"""
+		waypoint_base: Waypoint | None = None
+		waypoint_target: Waypoint | None = None
+		query = """
+	            MATCH (:Course {uuid: $course_uuid})-[:CONTAINS]->(p:Path)-[:CONTAINS]->(w_a:Waypoint)-[:SUCCESSOR]->(w_b:Waypoint)
+	            RETURN w_a, w_b, p.uuid
+	            """
+		results, meta = db.cypher_query(
+			query, {"course_uuid": self._current_course.uuid}, resolve_objects=True
+		)
+
+		result_losses = [
+			self.calc_line_error(current_position, wp_a, wp_b)
+			for wp_a, wp_b, _ in results
+		]
+		inverted_results_losses = [
+			self.calc_line_error(current_position, wp_b, wp_a)
+			for wp_a, wp_b, _ in results
+		]
+		best_loss = min(result_losses)
+		inverted_best_loss = min(inverted_results_losses)
+		if best_loss < inverted_best_loss:
+			waypoint_base, waypoint_target, self._current_path_uuid = results[
+				result_losses.index(best_loss)
+			]
+			self._is_segment_direction_positive = True
+		else:
+			waypoint_base, waypoint_target, self._current_path_uuid = results[
+				inverted_results_losses.index(inverted_best_loss)
+			]
+			self._is_segment_direction_positive = False
+
 	@property
 	def _steering_angle(self) -> float | None:
 		if self._current_course is None:
 			raise CourseNotSetException(self)
 		current_position = self._manager.plugins[VehicleStateBuilder].current_position
-		waypoint_base: Waypoint | None = None
-		waypoint_target: Waypoint | None = None
 
 		# if current path is not set, find the closest path segment and set it
 		if self._current_path_uuid is None:
-			query = """
-                    MATCH (:Course {uuid: $course_uuid})-[:CONTAINS]->(p:Path)-[:CONTAINS]->(w_a:Waypoint)-[:SUCCESSOR]->(w_b:Waypoint)
-                    RETURN w_a, w_b, p.uuid
-                    """
-			results, meta = db.cypher_query(
-				query, {"course_uuid": self._current_course.uuid}, resolve_objects=True
-			)
-
-			result_losses = [
-				self.calc_line_error(current_position, wp_a, wp_b)
-				for wp_a, wp_b, _ in results
-			]
-			inverted_results_losses = [
-				self.calc_line_error(current_position, wp_b, wp_a)
-				for wp_a, wp_b, _ in results
-			]
-			best_loss = min(result_losses)
-			inverted_best_loss = min(inverted_results_losses)
-			if best_loss < inverted_best_loss:
-				waypoint_base, waypoint_target, self._current_path_uuid = results[
-					result_losses.index(best_loss)
-				]
-				self._is_segment_direction_positive = True
-			else:
-				waypoint_base, waypoint_target, self._current_path_uuid = results[
-					inverted_results_losses.index(inverted_best_loss)
-				]
-				self._is_segment_direction_positive = False
+			self.set_path(current_position)
 
 		# determine the target steering location
 

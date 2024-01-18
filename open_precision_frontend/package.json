@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev_build": "NODE_ENV=development vite build --base='./' --mode development",
     "build": "vite build --base='./'",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"

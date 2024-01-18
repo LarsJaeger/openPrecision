@@ -43,6 +43,14 @@
     scene.add(camera);
     const proxy_camera = camera.clone();
 
+    // let world_offset = null; TODO
+    let locError = null;
+
+    let pathIdPathMap = new Map();
+    let currentPathId= null;
+    const pathMaterialColor = 0x00ffff;
+    const currentPathMaterialColor = 0x1313ff;
+    const course_group = new THREE.Group();
     // add axes helper
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
@@ -117,14 +125,30 @@
         requestAnimationFrame(render);
     });
 
+    export function visualizeCurrentPathId(data){
+        if (currentPathId !== null) {
+            const oldPath = pathIdPathMap.get(currentPathId);
+            oldPath.material = new THREE.LineBasicMaterial({color: pathMaterialColor});
+            oldPath.material.needsUpdate = true;
+        }
+        const newCurrentPathId = data.current_path_id;
+        if (newCurrentPathId !== null) {
+            const newPath = pathIdPathMap.get(newCurrentPathId);
+            newPath.material = new THREE.LineBasicMaterial({color: currentPathMaterialColor});
+            newPath.material.needsUpdate = true;
+        }
+        currentPathId = newCurrentPathId;
+    }
+
     // implement visualizer functions
     export function visualizeCourse(data) {
         console.log("[DEBUG]: visualizing course")
+        console.log(data);
+        scene.remove(course_group);
         data["connections"].forEach(conn => {
             // find and add starting point of path
             if (conn["a"].startsWith("Path") && conn["relationship"] === "BEGINS_WITH" && conn["b"].startsWith("Waypoint")) {
                 let wp = data.objects[conn["b"]];
-                console.log(wp);
                 const pathLinePoints = [];
                 pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
 
@@ -135,10 +159,19 @@
                         pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
                     }
                 });
-                const pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathLinePoints), new THREE.LineBasicMaterial({color: 0x00ffff}));
-                scene.add(pathLine);
+                const pathLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathLinePoints), new THREE.LineBasicMaterial({color: pathMaterialColor}));
+                const pathId = conn["a"].split(" ")[1]; 
+                pathIdPathMap.set(pathId, pathLine);
+                course_group.add(pathLine);
             }
         });
+        scene.add(course_group);
+        // update current path color
+        if (currentPathId !== null) {
+            const currentPath = pathIdPathMap.get(currentPathId);
+            currentPath.material = new THREE.LineBasicMaterial({color: currentPathMaterialColor});
+            currentPath.material.needsUpdate = true;
+        }
     }
 
     export function visualizeMachineState(data) {
@@ -167,6 +200,7 @@
     scene.add(sphere);
 
     export function visualizeRawLocation(data) {
+        locError=data.error
         sphere.position.x = data.x;
         sphere.position.y = data.y;
         sphere.position.z = data.z;
@@ -175,6 +209,12 @@
 
 </script>
 <canvas bind:this={canvas} class="u-position-absolute u-full-screen-height u-width-full-line u-z-index-0"></canvas>
+<!-- precision indicator -->
+{#if locError !== null}
+<div class="u-z-index-10 u-position-fixed" style="left: 6rem; bottom: 0.5rem;"> 
+    <p class="text u-large u-bold" style="color:black">&pm;{(locError * 100).toFixed(2)}cm</p>
+</div>
+{/if}
 <!-- steering indicator: -->
 <div class="u-z-index-10 u-position-fixed" style="right: 7rem; bottom: 8rem;">
     <span aria-hidden="true" class="u-position-absolute icon-plus is-big"

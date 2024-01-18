@@ -80,6 +80,12 @@
             <li>
                     <a class="function" href="#get_current_course">get_current_course</a>
             </li>
+            <li>
+                    <a class="function" href="#get_current_path_id">get_current_path_id</a>
+            </li>
+            <li>
+                    <a class="function" href="#post_set_path">post_set_path</a>
+            </li>
     </ul>
 
 
@@ -148,6 +154,18 @@
 </span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>	<span class="k">return</span> <span class="n">course</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>		<span class="n">with_rels</span><span class="o">=</span><span class="p">[</span><span class="n">Course</span><span class="o">.</span><span class="n">CONTAINS</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">CONTAINS</span><span class="p">,</span> <span class="n">Waypoint</span><span class="o">.</span><span class="n">SUCCESSOR</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">BEGINS_WITH</span><span class="p">]</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>	<span class="p">)</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="nd">@navigator_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/current_path_id&quot;</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="nd">@engine_endpoint</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="k">def</span> <span class="nf">get_current_path_id</span><span class="p">(</span><span class="n">hub</span><span class="p">:</span> <span class="n">SystemHub</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>	<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;current_path_id&quot;</span><span class="p">:</span> <span class="n">hub</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">Navigator</span><span class="p">]</span><span class="o">.</span><span class="n">current_path_id</span><span class="p">}</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="nd">@navigator_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/set_path&quot;</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="nd">@engine_endpoint</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="k">def</span> <span class="nf">post_set_path</span><span class="p">(</span><span class="n">hub</span><span class="p">:</span> <span class="n">SystemHub</span><span class="p">):</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>	<span class="n">hub</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">Navigator</span><span class="p">]</span><span class="o">.</span><span class="n">set_path</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -238,6 +256,52 @@
 </span><span id="get_current_course-49"><a href="#get_current_course-49"><span class="linenos">49</span></a>	<span class="k">return</span> <span class="n">course</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span>
 </span><span id="get_current_course-50"><a href="#get_current_course-50"><span class="linenos">50</span></a>		<span class="n">with_rels</span><span class="o">=</span><span class="p">[</span><span class="n">Course</span><span class="o">.</span><span class="n">CONTAINS</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">CONTAINS</span><span class="p">,</span> <span class="n">Waypoint</span><span class="o">.</span><span class="n">SUCCESSOR</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">BEGINS_WITH</span><span class="p">]</span>
 </span><span id="get_current_course-51"><a href="#get_current_course-51"><span class="linenos">51</span></a>	<span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                </section>
+                <section id="get_current_path_id">
+                            <input id="get_current_path_id-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@navigator_router.get(&#39;/current_path_id&#39;)</div>
+        <div class="decorator">@engine_endpoint</div>
+
+        <span class="def">async def</span>
+        <span class="name">get_current_path_id</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">queue_system_task</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">queue_system_task_dependency</span><span class="p">)</span>,</span><span class="param">	<span class="n">subscription_socket_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">subscription_period_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="get_current_path_id-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#get_current_path_id"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_current_path_id-54"><a href="#get_current_path_id-54"><span class="linenos">54</span></a><span class="nd">@navigator_router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/current_path_id&quot;</span><span class="p">)</span>
+</span><span id="get_current_path_id-55"><a href="#get_current_path_id-55"><span class="linenos">55</span></a><span class="nd">@engine_endpoint</span>
+</span><span id="get_current_path_id-56"><a href="#get_current_path_id-56"><span class="linenos">56</span></a><span class="k">def</span> <span class="nf">get_current_path_id</span><span class="p">(</span><span class="n">hub</span><span class="p">:</span> <span class="n">SystemHub</span><span class="p">):</span>
+</span><span id="get_current_path_id-57"><a href="#get_current_path_id-57"><span class="linenos">57</span></a>	<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;current_path_id&quot;</span><span class="p">:</span> <span class="n">hub</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">Navigator</span><span class="p">]</span><span class="o">.</span><span class="n">current_path_id</span><span class="p">}</span>
+</span></pre></div>
+
+
+    
+
+                </section>
+                <section id="post_set_path">
+                            <input id="post_set_path-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@navigator_router.post(&#39;/set_path&#39;)</div>
+        <div class="decorator">@engine_endpoint</div>
+
+        <span class="def">async def</span>
+        <span class="name">post_set_path</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">queue_system_task</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">queue_system_task_dependency</span><span class="p">)</span>,</span><span class="param">	<span class="n">subscription_socket_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">subscription_period_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="post_set_path-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#post_set_path"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="post_set_path-60"><a href="#post_set_path-60"><span class="linenos">60</span></a><span class="nd">@navigator_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/set_path&quot;</span><span class="p">)</span>
+</span><span id="post_set_path-61"><a href="#post_set_path-61"><span class="linenos">61</span></a><span class="nd">@engine_endpoint</span>
+</span><span id="post_set_path-62"><a href="#post_set_path-62"><span class="linenos">62</span></a><span class="k">def</span> <span class="nf">post_set_path</span><span class="p">(</span><span class="n">hub</span><span class="p">:</span> <span class="n">SystemHub</span><span class="p">):</span>
+</span><span id="post_set_path-63"><a href="#post_set_path-63"><span class="linenos">63</span></a>	<span class="n">hub</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">Navigator</span><span class="p">]</span><span class="o">.</span><span class="n">set_path</span><span class="p">()</span>
 </span></pre></div>
 
 

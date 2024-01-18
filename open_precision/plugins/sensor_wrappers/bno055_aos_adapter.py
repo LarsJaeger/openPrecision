@@ -89,10 +89,10 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 				if current_quat != (None, None, None, None):
 					self._orientation = Quaternion(
 						(
-							current_quat[3],
 							current_quat[0],
 							current_quat[1],
 							current_quat[2],
+							current_quat[3],
 						)
 					).normalised
 
@@ -115,7 +115,7 @@ class Bno055AosAdapter(AbsoluteOrientationSensor):
 	def calibrate(self) -> bool:
 		"""calibrate device, (depending on your implementation also set is_calibrated accordingly) and
 		return True if calibration succeeded"""
-		self._calibration_quat = Quaternion(self.sensor.read_quaternion())
+		self._calibration_quat = Quaternion(self.orientation)
 		return True
 
 	@property

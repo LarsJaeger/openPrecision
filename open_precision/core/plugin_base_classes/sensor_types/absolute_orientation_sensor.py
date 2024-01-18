@@ -13,10 +13,20 @@ class AbsoluteOrientationSensor(Plugin, ABC):
 	@abstractmethod
 	def orientation(self) -> Orientation | None:
 		"""returns an orientation quaternion"""
-		pass
+		raise NotImplementedError()
 
 	@property
 	@abstractmethod
 	def gravity(self) -> np.ndarray | None:
 		"""returns an gravity vector"""
-		pass
+		raise NotImplementedError()
+
+	@property
+	def is_calibrated(self) -> bool:
+		"""returns True if device is calibrated"""
+		raise NotImplementedError()
+
+	def calibrate(self) -> bool:
+		"""calibrate device, (depending on your implementation also set is_calibrated accordingly) and
+		return True if calibration succeeded"""
+		raise NotImplementedError()
