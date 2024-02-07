@@ -30,7 +30,7 @@ services:
       - "/dev/i2c-2:/dev/i2c-2"
     environment:
       - TRACER_ENTRIES=1000000
-  redis-dev:
+  redis:
     image: redis:alpine
     restart: unless-stopped
     expose:
@@ -38,7 +38,7 @@ services:
     networks:
       - internal
     command: redis-server --loglevel warning
-  neo4j-dev:
+  neo4j:
     image: neo4j:5.10-community
     restart: always
     environment:
