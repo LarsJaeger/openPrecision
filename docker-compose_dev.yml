@@ -28,6 +28,8 @@ services:
       - "/dev/ttyUSB1:/dev/ttyUSB1"
       - "/dev/ttyUSB2:/dev/ttyUSB2"
       - "/dev/i2c-2:/dev/i2c-2"
+    environment:
+      - TRACER_ENTRIES=1000000
   redis-dev:
     image: redis:alpine
     restart: unless-stopped
