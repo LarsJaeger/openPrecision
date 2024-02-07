@@ -1,12 +1,12 @@
 version: "3.9"  # optional since v1.27.0
 services:
-  open_precision:
+  open-precision:
     build:
       context: .
       target: runtime
       dockerfile: Dockerfile_dev
       tags:
-        - larsjaeger/open_precision:latest
+        - larsjaeger/open_precision:dev
       x-bake:
         platforms:
           - linux/amd64
@@ -28,7 +28,7 @@ services:
       - "/dev/ttyUSB1:/dev/ttyUSB1"
       - "/dev/ttyUSB2:/dev/ttyUSB2"
       - "/dev/i2c-2:/dev/i2c-2"
-  redis:
+  redis-dev:
     image: redis:alpine
     restart: unless-stopped
     expose:
@@ -36,7 +36,7 @@ services:
     networks:
       - internal
     command: redis-server --loglevel warning
-  neo4j:
+  neo4j-dev:
     image: neo4j:5.10-community
     restart: always
     environment:

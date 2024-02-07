@@ -33,7 +33,7 @@ class AHeadingParallelCourseGenerator(CourseGenerator):
 			raise ValueError("base position cannot be None")
 		# get user input for working width
 		# TODO get user input or read from config
-		working_width: float = 3.0
+		working_width: float = 0.5
 
 		name = "A+heading C1"
 

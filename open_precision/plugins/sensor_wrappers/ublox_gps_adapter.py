@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import atexit
-import os
-from datetime import datetime
+import subprocess
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 import serial
@@ -40,7 +40,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 		self._correction_is_active = None
 		if self._manager.config.get_value(self, "enable_rtk_correction"):
 			self.start_rtk_correction()
-		self._last_updated = None
+		self._next_update = None
 		self._location: Location | None = None
 
 		atexit.register(self.cleanup)
@@ -52,11 +52,7 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 
 	def update_values(self):
 		_current_time = datetime.now()
-		if (
-			self._last_updated is None
-			or (_current_time - self._last_updated).total_seconds() * 1000
-			>= self._min_update_dt
-		):
+		if self._next_update is None or (_current_time >= self._next_update):
 			fail_counter = 0
 			for _, parsed_data in self._parser:
 				if parsed_data.identity == "NAV-HPPOSECEF":
@@ -69,9 +65,11 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 					break
 				else:
 					fail_counter += 1
-					if fail_counter >= 20:
+					if fail_counter >= 100:
 						break
-			self._last_updated = _current_time
+			self._next_update = _current_time + timedelta(
+				milliseconds=self._min_update_dt
+			)
 
 	@property
 	def location(self) -> Location | None:
@@ -84,11 +82,11 @@ class UbloxGPSAdapter(GlobalPositioningSystem):
 	def start_rtk_correction(self):
 		print("[UBloxGpsAdapter] starting RTK correction stream")
 		command = f"screen -dmS rtk_correction ./app/rtklib/str2str -in {self._manager.config.get_value(self, 'rtk_str2str_in')} -out {self._manager.config.get_value(self, 'rtk_str2str_out')}"
-		os.system(command)
+		subprocess.run(command, shell=True)
 		self._correction_is_active = True
 
 	def stop_rtk_correction(self):
 		print("[UBloxGpsAdapter] stopping RTK correction stream")
 		command = "screen -r rtk_correction -X quit"
-		os.system(command)
+		subprocess.run(command, shell=True)
 		self._correction_is_active = False

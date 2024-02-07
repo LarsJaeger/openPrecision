@@ -27,6 +27,16 @@ def is_iterable(obj: any):
 		return True
 
 
+def run_once(f):
+	def wrapper(*args, **kwargs):
+		if not wrapper.has_run:
+			wrapper.has_run = True
+			return f(*args, **kwargs)
+
+	wrapper.has_run = False
+	return wrapper
+
+
 def get_attributes(
 	cls,
 	base_filter: Callable[[type], bool] = lambda x: True,

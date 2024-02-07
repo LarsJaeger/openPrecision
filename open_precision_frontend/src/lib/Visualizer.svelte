@@ -196,14 +196,16 @@
 
     const geometry = new THREE.SphereGeometry(0.1, 8, 8); //radius, widthSegments, heightSegments
     const material = new THREE.MeshBasicMaterial({color: 0xffff00});
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
+    // const sphere = new THREE.Mesh(geometry, material);
+    // scene.add(sphere);
 
     export function visualizeRawLocation(data) {
         locError=data.error
+        const sphere = new THREE.Mesh(geometry, material);
         sphere.position.x = data.x;
         sphere.position.y = data.y;
         sphere.position.z = data.z;
+        scene.add(sphere);
     }
 
 

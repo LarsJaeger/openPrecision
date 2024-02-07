@@ -25,5 +25,19 @@ for router in routers:
 
 @system_router.post("/stop")
 @engine_endpoint
-def post_stop(hub: SystemHub):
+def post_stop(hub: SystemHub) -> None:
 	hub.stop()
+
+
+@system_router.post("/start_trace")
+@engine_endpoint
+def post_start_trace(hub: SystemHub):
+	# TODO
+	pass
+
+
+@system_router.post("/stop_trace")
+@engine_endpoint
+def post_stop_trace(hub: SystemHub):
+	# TODO
+	pass
