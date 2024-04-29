@@ -6,7 +6,7 @@ from open_precision.core.model import DataModelBase
 from open_precision.core.model.position import Position, PositionProperty
 
 
-class VehicleState(StructuredNode, DataModelBase):
+class VehicleState(DataModelBase, StructuredNode):
 	uuid: str = UniqueIdProperty()
 
 	steering_angle: float | None = (

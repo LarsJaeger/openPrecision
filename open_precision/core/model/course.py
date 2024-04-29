@@ -8,15 +8,17 @@ from neomodel import (
 	RelationshipTo,
 	cardinality,
 	StringProperty,
+	StructuredRel,
 )
 
 from open_precision.core.model import DataModelBase
+from open_precision.core.model.relations.contains import Contains
 
 if TYPE_CHECKING:
 	from open_precision.core.model.path import Path
 
 
-class Course(StructuredNode, DataModelBase):
+class Course(DataModelBase, StructuredNode):
 	uuid: str = UniqueIdProperty()
 	name: str = StringProperty(required=True)
 	description: str = StringProperty(required=False)
@@ -25,6 +27,7 @@ class Course(StructuredNode, DataModelBase):
 		"open_precision.core.model.path.Path",
 		"CONTAINS",
 		cardinality=cardinality.ZeroOrMore,
+		model=Contains,
 	)
 
 	def add_path(self, path: Path):

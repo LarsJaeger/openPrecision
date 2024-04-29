@@ -18,7 +18,7 @@ The object graph mapper is neomodel, classes that should represent classes must 
 The annotation of class attribute show the datatype, the property type assigned to the attribute describes how the data
 type is stored.
 ### Adding Nodes
-To add a node, create a module with a class that inherits from neomodel.StructuredNode and DataModelBase, then add the class to the data_model_classes list in this module (the module import must happen in the map_model func).
+To add a node, create a module with a class that inherits from DataModelBase and neomodel.StructuredNode, then add the class to the data_model_classes list in this module (the module import must happen in the map_model func).
 The class attributes are the properties of the node.
 The annotation of the class attribute shows the datatype of the property.
 The value assigned to that attribute describes how the data type is stored and must be of neomodel.Property.
@@ -31,7 +31,7 @@ These Property classes should be defined in the same module as the corresponding
 The inflate method takes the value stored in the database and returns the data class, the deflate method takes the data class and returns the value that should be stored in the database.
 
 ### Adding Data Classes
-To add a data class, create a module with a class that inherits from DataModelBase and is decorated with dataclasses.dataclass(kw_only=True).
+To add a data class, create a module with a class that inherits from DataModelBase and is decorated with dataclasses.dataclass(kw_only=True, unsafe_hash=True).
 All attributes must have a value assigned to them in the class definition.
 In that same module create a class that inherits from neomodel.Property and implement the inflate and deflate methods to inflate/deflate an object from/into a neo4j native type.
 
@@ -46,13 +46,17 @@ Both serialization and deserialization ignore all relationships.
 from __future__ import annotations
 
 import json
-from functools import wraps
+import time
+from functools import wraps, reduce
+from operator import concat, add
 from types import FunctionType
-from typing import List, Any, Callable
+from typing import List, Any, Callable, Self, Set
+from neo4j.exceptions import ServiceUnavailable
 
 import neomodel
 from neomodel import (
 	StructuredNode,
+	StructuredRel,
 	RelationshipDefinition,
 	RelationshipManager,
 	RelationshipTo,
@@ -60,7 +64,7 @@ from neomodel import (
 )
 from neomodel.properties import validator
 from pyquaternion import Quaternion
-
+from neomodel import db
 from open_precision.utils.other import get_attributes, is_iterable
 
 signature_class_mapping: dict  # will be set by map_model func
@@ -107,91 +111,150 @@ def persist_arg(func: callable, position_or_kw: int | str = 0) -> callable:
 	return wrapper
 
 
-def _resolve_object_conns(
-	obj: Any,
+def _get_subgraph(
+	obj: DataModelBase,
 	with_conns: List[RelationshipDefinition],
-	resolved_objects: List = None,
-	main_obj: Any = None,
-):
-	connections = []
-	objects = {}
-	resolved_objects = resolved_objects if resolved_objects is not None else []
+	min_depth: int = 0,
+	max_depth: int = 5,
+) -> Tuple[List[StructuredNode], List[StructuredRel]]:
+	"""
+	returns a subgraph of all nodes and connections that are reachable via any of the `with_conns` relations
+	"""
+	results, meta = db.cypher_query(
+		f"""MATCH (n: {type(obj).__name__}{{uuid: $uuid}})
+		CALL apoc.path.subgraphAll(n, {{
+			relationshipFilter: "{'|'.join([con.definition['relation_type'] for con in with_conns])}",
+		    minLevel: {min_depth},
+		    maxLevel: {max_depth}
+		}})
+		YIELD nodes, relationships
+		UNWIND relationships as rel
+		RETURN rel, apoc.rel.startNode(rel) as a, apoc.rel.endNode(rel) as b;""",
+		{"uuid": obj.uuid},
+		resolve_objects=True,
+	)
+	nodes = reduce(
+		lambda x, y: x.union(y), map(lambda record: set(record[1:2]), results), set()
+	)
+	return nodes, list(results)
 
-	if main_obj is None:  # only the case on the first recursion level
-		main_obj = obj
-		objects["main"] = main_obj
-	else:
-		objects[str(type(obj).__qualname__) + " " + str(obj.uuid)] = obj
 
-	for field, value in obj.__dict__.items():
-		if isinstance(value, RelationshipManager) and value.definition in with_conns:
-			relationship = getattr(obj.__class__, field)
+def _make_key(node: DataModelBase) -> str:
+	return f"{type(node).__qualname__} {node.uuid}"
 
-			if isinstance(relationship, RelationshipTo):
-				rel_type = "to"
-			elif isinstance(relationship, RelationshipFrom):
-				rel_type = "from"
-			else:
-				rel_type = "undirected"
 
-			# iterate over all connected objects and resolve their connections (recursion)
-			for x in list(value):
-				obj_a_ref: str = (
-					str(type(obj).__qualname__) + " " + str(obj.uuid)
-					if obj != main_obj
-					else "main"
-				)
-				obj_b_ref: str = (
-					str(type(x).__qualname__) + " " + str(x.uuid)
-					if x != main_obj
-					else "main"
-				)
-				connections.append(
-					{
-						"a": obj_a_ref,
-						"relationship": field,
-						"type": rel_type,
-						"b": obj_b_ref,
-					}
-				)
+def _make_connection_dict(
+	connection: Tuple[StructuredNode, StructuredRel, StructuredNode],
+) -> Dict:
+	return {
+		"a": _make_key(connection[1]),
+		"name": type(connection[0]).__qualname__,  # TODO fix: currently always "list"
+		"b": _make_key(connection[2]),
+	}
 
-				if x in resolved_objects:  # prevent infinite recursion
-					continue
-				resolved_objects.append(x)
 
-				inner_objs, inner_conns = _resolve_object_conns(
-					x,
-					with_conns=with_conns,
-					resolved_objects=resolved_objects,
-					main_obj=main_obj,
-				)
-				objects.update(inner_objs)
-				connections.extend(inner_conns)
+def _build_dict_for_graph(
+	nodes: List[DataModelBase], relations: List[StructuredRel]
+) -> Dict:
+	graph_dict = {
+		"nodes": {_make_key(node): node for node in nodes},
+		"relations": [_make_connection_dict(rel) for rel in relations],
+	}
+	return graph_dict
 
-	return objects, connections
+
+# def _resolve_object_conns(
+# 	obj: DataModelBase,
+# 	with_conns: List[RelationshipDefinition],
+# 	resolved_objects: List = None,
+# 	main_obj: Any = None,
+# ):
+# 	results, meta = db.cypher_query(
+# 		f"MATCH (a:{type(obj).__name__}{{uuid: $uuid}})-[c:{"|".join[con.definition["relationship_type"] for con in with_conns]}]-{1,2}(b) RETURN a, c, b",
+# 		{"uuid": obj.uuid},
+# 	)
+
+
+# 	connections = []
+# 	objects = {}
+# 	resolved_objects = resolved_objects if resolved_objects is not None else []
+
+# 	if main_obj is None:  # only the case on the first recursion level
+# 		main_obj = obj
+# 		objects["main"] = main_obj
+# 	else:
+# 		objects[str(type(obj).__qualname__) + " " + str(obj.uuid)] = obj
+
+# 	for field, value in obj.__dict__.items():
+# 		if isinstance(value, RelationshipManager) and value.definition in with_conns:
+# 			relationship = getattr(obj.__class__, field)
+
+# 			if isinstance(relationship, RelationshipTo):
+# 				rel_type = "to"
+# 			elif isinstance(relationship, RelationshipFrom):
+# 				rel_type = "from"
+# 			else:
+# 				rel_type = "undirected"
+
+# 			# iterate over all connected objects and resolve their connections (recursion)
+# 			for x in list(value):
+# 				obj_a_ref: str = (
+# 					str(type(obj).__qualname__) + " " + str(obj.uuid)
+# 					if obj != main_obj
+# 					else "main"
+# 				)
+# 				obj_b_ref: str = (
+# 					str(type(x).__qualname__) + " " + str(x.uuid)
+# 					if x != main_obj
+# 					else "main"
+# 				)
+# 				connections.append(
+# 					{
+# 						"a": obj_a_ref,
+# 						"relationship": field,
+# 						"type": rel_type,
+# 						"b": obj_b_ref,
+# 					}
+# 				)
+
+# 				if x in resolved_objects:  # prevent infinite recursion
+# 					continue
+# 				resolved_objects.append(x)
+
+# 				inner_objs, inner_conns = _resolve_object_conns(
+# 					x,
+# 					with_conns=with_conns,
+# 					resolved_objects=resolved_objects,
+# 					main_obj=main_obj,
+# 				)
+# 				objects.update(inner_objs)
+# 				connections.extend(inner_conns)
+
+# 	return objects, connections
 
 
 class DataModelBase:
 	def to_json(
 		self,
-		with_rels: List[RelationshipDefinition] = None,
+		with_rels: List[RelationshipDefinition] | None = None,
 		field_key_filter: Callable = None,
 		field_type_filter: Callable = None,
 	) -> str:
+		"""
+		Serializes objects or subgraphs to json.
+		If with_rels is not None, a subgraph dict will be generated.
+		"""
 		encoder = CustomJSONEncoder(
 			field_type_filter=field_type_filter, field_key_filter=field_key_filter
 		)
 		if with_rels is None:
 			return encoder.encode(self)
 		else:
-			objects, connections = _resolve_object_conns(
-				self, [x.definition for x in with_rels]
-			)
-			composite_object_dict = {"objects": objects, "connections": connections}
-			return encoder.encode(composite_object_dict)
+			nodes, relations = _get_subgraph(self, with_rels)
+			return encoder.encode(_build_dict_for_graph(nodes, relations))
 
 	@classmethod
-	def from_json(cls, json_string: str, with_conns: bool = False):
+	def from_json(cls, json_string: str):
 		"""
 		Deserializes a json string to an object of the class. If the json string is a composite object (i.e. it contains
 		connections), the main object is returned.
@@ -214,6 +277,9 @@ class DataModelBase:
 			return obj_dict["objects"]["main"]
 		else:
 			return obj_dict
+
+	def __hash__(self) -> int:
+		return hash(self.uuid)
 
 
 # extend the json.JSONEncoder class
@@ -332,7 +398,24 @@ def map_model(database_url: str):
 	from open_precision.core.model.vehicle_state import VehicleState
 	from open_precision.core.model.waypoint import Waypoint
 
-	neomodel.db.set_connection(database_url)  # database_url)
+	RETRIES = 10
+	DELAY = 3
+	for i in range(RETRIES):
+		try:
+			neomodel.db.set_connection(database_url)
+			neomodel.db.driver.verify_connectivity()
+			break
+		except ServiceUnavailable:
+			print(
+				f"[WARNING]: connecting to database with URL '{database_url}' failed. Trying again in {DELAY} sec (try {i + 1} of {RETRIES})... "
+			)
+			time.sleep(5)
+			continue
+	else:
+		print(f"[ERROR]: cannot connect to database at {database_url}, exiting...")
+		raise ConnectionError(
+			f"[ERROR]: cannot connect to database at {database_url}, exiting..."
+		)
 
 	data_model_classes: List[DataModelBase] = [
 		Action,
@@ -371,5 +454,4 @@ def map_model(database_url: str):
 	class_signature_mapping = {
 		v: k for k, v in signature_class_mapping.items()
 	}  # reverse lookup table for signature_class_mapping
-
 	print(class_signature_mapping)

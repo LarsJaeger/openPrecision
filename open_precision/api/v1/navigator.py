@@ -38,13 +38,16 @@ def get_target_steering_angle(hub) -> float:
 
 @navigator_router.post("/generate_course")
 @engine_endpoint
-def generate_course(hub: SystemHub, strategy: str = "AHeadingParallel"):
+def generate_course(hub: SystemHub):
+	strategy = "AHeadingParallel"
 	if strategy == "AHeadingParallel":
-		hub.plugins[
-			Navigator
-		].course = AHeadingParallelCourseGenerator.generate_course()
+		hub.plugins[Navigator].current_course = AHeadingParallelCourseGenerator(
+			hub
+		).generate_course()
 	elif strategy == "ABCParallel":
-		hub.plugins[Navigator].course = ABCCourseGenerator.generate_course()
+		hub.plugins[Navigator].current_course = ABCCourseGenerator(
+			hub
+		).generate_course()
 	course = hub.plugins[Navigator].current_course
 	if course is None:
 		return None

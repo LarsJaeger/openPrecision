@@ -10,7 +10,7 @@ from neomodel import (
 from open_precision.core.model import DataModelBase
 
 
-class Vehicle(StructuredNode, DataModelBase):
+class Vehicle(DataModelBase, StructuredNode):
 	name: str = StringProperty(unique_index=True)
 	turn_radius_left: float = FloatProperty(required=True)
 	turn_radius_right: float = FloatProperty(required=True)

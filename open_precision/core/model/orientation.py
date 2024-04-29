@@ -10,7 +10,7 @@ from pyquaternion import Quaternion
 from open_precision.core.model import DataModelBase
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, unsafe_hash=True)
 class Orientation(Quaternion, DataModelBase):
 	q: np.ndarray = None  # will never be None after init, this is just a placeholder for the ClassRegistry
 	pass

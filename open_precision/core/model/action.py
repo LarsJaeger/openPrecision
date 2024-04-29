@@ -12,9 +12,10 @@ from neomodel import (
 )
 
 from open_precision.core.model import DataModelBase
+from open_precision.core.model.relations.responds_to import RespondsTo
 
 
-class Action(StructuredNode, DataModelBase):
+class Action(DataModelBase, StructuredNode):
 	uuid: str = UniqueIdProperty()
 	initiator: str = StringProperty(required=True)
 	function_identifier: str = StringProperty(
@@ -28,4 +29,5 @@ class Action(StructuredNode, DataModelBase):
 		"open_precision.core.model.action_response.ActionResponse",
 		"RESPONDS_TO",
 		cardinality=cardinality.ZeroOrOne,
+		model=RespondsTo,
 	)

@@ -9,7 +9,7 @@ from open_precision.core.model.location import Location
 from open_precision.core.model.orientation import Orientation
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, unsafe_hash=True)
 class Position(DataModelBase):
 	"""
 	A position consists of a location and an orientation.
@@ -19,7 +19,7 @@ class Position(DataModelBase):
 	orientation: Orientation | None = None
 
 
-class PositionProperty(Property, DataModelBase):
+class PositionProperty(Property):
 	"""
 	Property for storing Position objects in Neo4j.
 	Position values are stored as a list of 8 floats. The first 4 are the location, the last 4 are the orientation.

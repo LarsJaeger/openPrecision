@@ -10,7 +10,7 @@ from neomodel.properties import validator
 from open_precision.core.model import DataModelBase
 
 
-@dataclass(kw_only=True)
+@dataclass(kw_only=True, unsafe_hash=True)
 class Location(DataModelBase):
 	x: float = 0.0  # ECEF X coordinate in meters
 	y: float = 0.0  # ECEF Y coordinate in meters
