@@ -74,7 +74,7 @@ class SystemHub:
 
 	async def start_update_loop(self):
 		while not self._signal_stop:
-			artificial_slow_down = asyncio.sleep(0.05)
+			artificial_slow_down = asyncio.sleep(1.05)
 
 			# handle actions and deliver responses
 			try:

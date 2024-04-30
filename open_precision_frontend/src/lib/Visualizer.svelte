@@ -142,20 +142,21 @@
 
     // implement visualizer functions
     export function visualizeCourse(data) {
-        console.log("[DEBUG]: visualizing course")
+        console.log("[DEBUG]: visualizing course");
         console.log(data);
         scene.remove(course_group);
         data["relations"].forEach(conn => {
             // find and add starting point of path
             if (conn["a"].startsWith("Path") && conn["name"] === "BEGINS_WITH" && conn["b"].startsWith("Waypoint")) {
-                let wp = data.objects[conn["b"]];
+                let wp = data.nodes[conn["b"]];
                 const pathLinePoints = [];
                 pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
 
+
                 // iterate over successors and add to line
                 data["relations"].forEach(sub_conn => {
-                    if (sub_conn["a"] === conn["b"] && sub_conn["name"] === "SUCCESSOR" && sub_conn["b"].startsWith("Waypoint")) {
-                        wp = data.objects[sub_conn["b"]];
+                    if (sub_conn["b"] === conn["b"] && sub_conn["name"] === "SUCCESSOR" && sub_conn["a"].startsWith("Waypoint")) {
+                        wp = data.nodes[sub_conn["a"]];
                         pathLinePoints.push(new THREE.Vector3(wp.location.x, wp.location.y, wp.location.z));
                     }
                 });
