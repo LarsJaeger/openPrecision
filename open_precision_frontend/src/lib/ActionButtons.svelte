@@ -24,7 +24,8 @@
         add(
             "Upload New Config",
             configUpload,
-            null
+            null,
+            null,
         );
     }
 

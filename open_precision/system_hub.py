@@ -40,7 +40,7 @@ class SystemHub:
 			# map model
 			print("[INFO]: starting model mapping")
 			self._config.register_value(
-				self, "neo4j_address", "bolt://neo4j:password@localhost:7687"
+				self, "neo4j_address", "bolt://neo4j:password@neo4j:7687"
 			)
 			map_model(database_url=self._config.get_value(self, "neo4j_address"))
 			print("[INFO]: finished model mapping")

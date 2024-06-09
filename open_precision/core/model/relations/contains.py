@@ -1,4 +1,5 @@
 from neomodel import StructuredRel
+from neomodel.properties import StringProperty
 
 
 class Contains(StructuredRel):
