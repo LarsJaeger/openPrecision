@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script context="module">
     import {writable} from 'svelte/store';
     import {SvelteComponent} from "svelte";
 
@@ -7,7 +7,7 @@
 
         return {
             subscribe,
-            add(title: string, bodyComponent: SvelteComponent, bodyProps: Object, onClose: Function) {
+            add(title, bodyComponent, bodyProps, onClose) {
                 let item = {title, bodyComponent, bodyProps, onClose};
                 update((prev) => {
                     // insert item into modal list
@@ -40,7 +40,7 @@
 
     const modals = createModals();
 
-    export function add(title: string, bodyComponent: SvelteComponent, bodyProps: Object, onClose: Function) {
+    export function add(title, bodyComponent, bodyProps, onClose) {
         modals.add(title, bodyComponent, bodyProps, onClose);
     }
 

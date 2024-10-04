@@ -4,14 +4,19 @@
 
     export let locationNames = [];
 
-    function doAction(){
-        fetch(apiAddress + "/v1/?" + new URLSearchParams(), {
+    function generateCourse(){
+        alert("not yet implemented");
+    }
+
+    function calibrateAccelerometer(){
+        fetch(apiAddress + "/api/v1/sensor/aos/calibrate?" + new URLSearchParams(), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              "location_names":locationNames,
+              "waypoint_name_1":locationNames[0],
+              "waypoint_name_2":locationNames[1],
             })
         }).then(async (response) => {
         }).catch((error) => {
@@ -23,14 +28,14 @@
     <ul class="clickable-list">
         <li class="clickable-list-item">
             <a href="/" class="clickable-list-button">
-                <h5 class="clickable-list-title u-trim-1" on:keypress={doAction}>
+                <h5 class="clickable-list-title u-trim-1" on:keypress={generateCourse}>
                     <span class="">AB Course</span>
                 </h5>
             </a>
         </li>
         <li class="clickable-list-item">
             <a href="/" class="clickable-list-button">
-                <h5 class="clickable-list-title u-trim-1" on:keypress={doAction}>
+                <h5 class="clickable-list-title u-trim-1" on:keypress={calibrateAccelerometer}>
                     <span class="">calibrate accelerometer</span>
                 </h5>
             </a>
