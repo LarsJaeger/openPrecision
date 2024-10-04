@@ -43,11 +43,13 @@ The CustomJSONDecoder uses duck typing to determine the class of the object (mor
 
 Both serialization and deserialization ignore all relationships.
 """
+# TODO create meta classes for relations (and nodes)
 from __future__ import annotations
 
 import json
 import time
 from functools import wraps, reduce
+from itertools import chain
 from operator import concat, add
 from types import FunctionType
 from typing import List, Any, Callable, Self, Set
@@ -115,7 +117,7 @@ def _get_subgraph(
 	obj: DataModelBase,
 	with_conns: List[RelationshipDefinition],
 	min_depth: int = 0,
-	max_depth: int = 5,
+	max_depth: int = 1000,
 ) -> Tuple[List[StructuredNode], List[StructuredRel]]:
 	"""
 	returns a subgraph of all nodes and connections that are reachable via any of the `with_conns` relations
@@ -133,8 +135,8 @@ def _get_subgraph(
 		{"uuid": obj.uuid},
 		resolve_objects=True,
 	)
-	nodes = reduce(
-		lambda x, y: x.union(y), map(lambda record: set(record[1:2]), results), set()
+	nodes = set(
+		chain.from_iterable(map(lambda record: [record[1], record[2]], results))
 	)
 	return nodes, list(results)
 
@@ -144,11 +146,11 @@ def _make_key(node: DataModelBase) -> str:
 
 
 def _make_connection_dict(
-	connection: Tuple[StructuredNode, StructuredRel, StructuredNode],
+	connection: Tuple[StructuredRel, StructuredNode, StructuredNode],
 ) -> Dict:
 	return {
 		"a": _make_key(connection[1]),
-		"name": type(connection[0]).__qualname__,  # TODO fix: currently always "list"
+		"name": type(connection[0]).__rel_type__,
 		"b": _make_key(connection[2]),
 	}
 
@@ -251,7 +253,8 @@ class DataModelBase:
 			return encoder.encode(self)
 		else:
 			nodes, relations = _get_subgraph(self, with_rels)
-			return encoder.encode(_build_dict_for_graph(nodes, relations))
+			res = encoder.encode(_build_dict_for_graph(nodes, relations))
+			return res
 
 	@classmethod
 	def from_json(cls, json_string: str):

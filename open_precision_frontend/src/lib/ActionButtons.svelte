@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     import {add} from "./Modals/Modals.svelte";
     import configUpload from "./Modals/ConfigUpload.svelte";
     import {apiAddress} from "../App.svelte";
@@ -24,7 +24,8 @@
         add(
             "Upload New Config",
             configUpload,
-            null
+            null,
+            null,
         );
     }
 

@@ -1,9 +1,9 @@
-<script context="module" lang="ts">
-    export const backendAddress: string = window.location.href.slice(0, window.location.href.length - window.location.pathname.length); //"http://192.168.9.129:8000", //window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
-    export const apiAddress: string = backendAddress + "/api";
+<script context="module">
+    export const backendAddress = "http://localhost:8000"// window.location.href.slice(0, window.location.href.length - window.location.pathname.length); //"http://192.168.9.129:8000", //window.location.href.slice(0, window.location.href.length - window.location.pathname.length);
+    export const apiAddress = backendAddress + "/api";
     console.log("[INFO]: using API address: " + apiAddress);
 </script>
-<script lang="ts">
+<script>
     import Visualizer from "./lib/Visualizer.svelte";
     import io from "socket.io-client";
     import ActionButtons from "./lib/ActionButtons.svelte";
@@ -19,12 +19,12 @@
     let visualizeCurrentPathId; // set by visualizer
 
 
-    let sid: string;
-    let event_id_to_function_map: Map<string, Function> = new Map<string, Function>();
-    let showVisualizer: boolean = true;
+    let sid;
+    let event_id_to_function_map = new Map();
+    let showVisualizer = true;
 
     function course_update(data) {
-        const parsedData: any = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         console.log("[INFO]: (course): Received message: ");
         console.log(parsedData);
         if (parsedData != null) {
@@ -32,7 +32,7 @@
         }
     }
 
-    function sub_to_course(): void {
+    function sub_to_course() {
         // subscribe to course
         fetch(apiAddress + "/v1/navigator/course?" + new URLSearchParams({
             subscription_socket_id: sid,
@@ -56,7 +56,7 @@
     }
 
     function current_path_update(data) {
-        const parsedData: any = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         console.log("[INFO]: (current_path_id): Received message: ");
         console.log(parsedData);
         if (parsedData != null) {
@@ -64,7 +64,7 @@
         }
     }
 
-    function sub_to_current_path(): void {
+    function sub_to_current_path() {
         // subscribe to course
         fetch(apiAddress + "/v1/navigator/current_path_id?" + new URLSearchParams({
             subscription_socket_id: sid,
@@ -90,7 +90,7 @@
 
     // vehicle data
     function vehicle_data_update(data) {
-        const parsedData: any = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         console.log("[INFO]: (vehicle_state): Received message: ");
         console.log(parsedData);
         visualizeMachineState(parsedData);
@@ -122,7 +122,7 @@
 
     // target_steering_angle data
     function target_steering_angle_update(data) {
-        const parsedData: any = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         console.log("[INFO]: (target_vehicle_state): Received message: ");
         console.log(parsedData);
         visualizeTargetSteeringAngle(parsedData);
@@ -154,7 +154,7 @@
 
     // uncorrected location data
     function raw_location_update(data) {
-        const parsedData: any = JSON.parse(data);
+        const parsedData = JSON.parse(data);
         console.log("[INFO]: (raw_location): Received message: ");
         console.log(parsedData);
         visualizeRawLocation(parsedData);

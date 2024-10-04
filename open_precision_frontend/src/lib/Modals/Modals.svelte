@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script context="module">
     import {writable} from 'svelte/store';
     import {SvelteComponent} from "svelte";
 
@@ -7,21 +7,30 @@
 
         return {
             subscribe,
-            add(title: string, bodyComponent: SvelteComponent, bodyProps: Object) {
-                let item = {title, bodyComponent, bodyProps};
+            add(title, bodyComponent, bodyProps, onClose) {
+                let item = {title, bodyComponent, bodyProps, onClose};
                 update((prev) => {
+                    // insert item into modal list
                     return [item, ...prev];
                 })
             },
 
             close(index) {
                 update((prev) => {
+                    // optionally call onClose callback
+                    if (prev[index].onClose !== null) {prev[index].onClose()};
+
+                    // remove modal from list
                     prev.splice(index, 1);
                     return prev;
                 })
             },
             closeAll() {
                 update((prev) => {
+                    // optionally call onClose callback
+                    prev.forEach((item, index, array) => {if (item.onClose !== null) {item.onClose();}});
+
+                    // empty list
                     return [];
                 })
             }
@@ -31,8 +40,8 @@
 
     const modals = createModals();
 
-    export function add(title: string, bodyComponent: SvelteComponent, bodyProps: Object) {
-        modals.add(title, bodyComponent, bodyProps);
+    export function add(title, bodyComponent, bodyProps, onClose) {
+        modals.add(title, bodyComponent, bodyProps, onClose);
     }
 
     export function closeCurrent() {

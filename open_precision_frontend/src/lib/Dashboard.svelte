@@ -1,8 +1,8 @@
 <script>
-    let locations;
+    import GeostoreAdd from "./Modals/GeostoreAdd.svelte";
+    import GeoStore from "./GeoStore.svelte"
 </script>
-
-<div class="u-z-index-0 u-full-screen-height u-width-full-line u-grid">
+<div class="u-z-index-0 u-width-full-line">
     <div class="tabs">
         <ul class="tabs-list">
             <li class="tabs-item">
@@ -20,18 +20,8 @@
                 <button class="tabs-button"><span class="text">Settings</span></button>
             </li>
         </ul>
-    </div>
-    <div class="Card">
-        <ul class="clickable-list">
-          {#each locations as location}
-              <li class="clickable-list-item">
-                <a href="/" class="clickable-list-button">
-                  <h5 class="clickable-list-title u-trim-1">
-                    <span class="">{location.name}</span>
-                  </h5>
-                </a>
-              </li>
-            {/each}
-        </ul>
+        <div class="container">
+            <GeoStore />
+        </div>
     </div>
 </div>

@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-from neomodel import StructuredNode, UniqueIdProperty, cardinality, RelationshipFrom
+from neomodel import UniqueIdProperty, cardinality, RelationshipFrom
+from neomodel.contrib.semi_structured import SemiStructuredNode
 
 from open_precision.core.model import DataModelBase
 from open_precision.core.model.location import Location, LocationProperty
+from open_precision.core.model.node_traits import Storable
 from open_precision.core.model.relations.contains import Contains
 from open_precision.core.model.relations.successor import Successor
 
 
-class Waypoint(DataModelBase, StructuredNode):
+class Waypoint(DataModelBase, Storable):
 	uuid: str = UniqueIdProperty()
 	location: Location = LocationProperty(required=True)
 
